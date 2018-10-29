@@ -1,7 +1,8 @@
 .. _index:
 
-nanite is a Python library for loading, fitting, and
-rating AFM force-indentation data
+Nanite is a Python library for loading, fitting, and
+rating AFM force-indentation data. This is the documentation
+of nanite version |release|.
 
 
 Documentation
@@ -9,7 +10,6 @@ Documentation
 
 .. toctree::
    :maxdepth: 3
-   :caption: Contents:
 
    sec_getting_started
    sec_cli
