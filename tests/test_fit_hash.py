@@ -39,11 +39,11 @@ def test_hash_time():
     apret.fit_model()
     t4 = time.time()
 
-    assert t1-t0 > 100 * \
+    assert t1-t0 >= 100 * \
         (t2-t1), "Consecutive fits with same parameters should be instant"
-    assert t3-t2 > 100 * \
+    assert t3-t2 >= 100 * \
         (t2-t1), "Changing parameters again should cause a new fit"
-    assert t3-t2 > 100*(t4-t3), "And computing the same should be faster again"
+    assert t3-t2 >= 100*(t4-t3), "And computing the same should be faster"
 
 
 if __name__ == "__main__":

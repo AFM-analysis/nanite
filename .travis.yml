@@ -12,9 +12,6 @@ matrix:
  - os: linux
    language: python
    python: 3.6
- - os: linux
-   language: python
-   python: 3.7
 before_install:
 # install other dependencies
 - source ./.travis/${TRAVIS_OS_NAME}_setup_python.sh $MAC_PYTHON_VERSION
