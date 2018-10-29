@@ -17,7 +17,7 @@ def test_hash_time():
 
     inparams = nanite.model.model_hertz_parabolic.get_parameter_defaults()
     inparams["baseline"].vary = True
-    inparams["contact_point"].set(1.8e-5)
+    inparams["contact_point"].set(1.8321e-5)
 
     # Fit with absolute full range
     kwargs = dict(model_key="hertz_para",
