@@ -1,0 +1,5 @@
+=============
+Bilbliography
+=============
+
+.. bibliography:: nanite.bib
