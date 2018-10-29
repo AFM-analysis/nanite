@@ -1,0 +1,52 @@
+clone_depth: 256
+
+notifications:
+  - provider: Email
+    on_build_success: false
+    on_build_failure: false
+    on_build_status_changed: false
+
+environment:
+  PYPI_PWD:
+    secure: Ry77Jz+ZhUApoPN/x3oOxDjDWhDXYwWCakp7ak0uiDExS97/wqVpZ5PZzKq3Liof
+  PYPI_USR: ci_afm
+  matrix:
+    - PYTHON: "C:\\Python36"
+    - PYTHON: "C:\\Python36-x64"
+
+install:
+  - "set PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
+
+  # Check that we have the expected version and architecture for Python
+  - "python --version"
+  # install
+  - "appveyor-retry pip install wheel"
+  # dependencies
+  - "appveyor-retry pip install ."
+  - "python -m pip freeze"
+
+build: off
+
+test_script:
+  - "appveyor-retry pip install coverage"
+  - "appveyor-retry pip install codecov"
+  - "coverage run --source=nanite ./setup.py test"
+  - "coverage report -m"
+  # Allow codecov to fail
+  - "codecov || exit 0"
+
+after_test:
+  - "appveyor-retry pip install twine wheel"
+  # If tests are successful, create a whl package for the project.
+  - "python setup.py bdist_wheel"
+  # setup PyPI credentials
+  - cmd: "echo [pypi] > %USERPROFILE%\\.pypirc"
+  - cmd: "echo username: %PYPI_USR% >> %USERPROFILE%\\.pypirc"
+  - cmd: "echo password: %PYPI_PWD% >> %USERPROFILE%\\.pypirc"
+
+artifacts:
+  # Archive the generated wheel package in the ci.appveyor.com build report.
+  - path: dist\*
+
+on_success:
+  - cmd: "if [%APPVEYOR_REPO_TAG%]==[true] twine upload --skip-existing dist\\*.whl"
