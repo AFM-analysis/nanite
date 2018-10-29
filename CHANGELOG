@@ -1,2 +1,4 @@
+0.8.1
+ - fix: sample weight computation failed when a rating level was missing
 0.8.0
  - initial release

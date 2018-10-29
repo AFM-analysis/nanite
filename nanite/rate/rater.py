@@ -111,11 +111,18 @@ class IndentationRater(IndentationFeatures):
     @staticmethod
     def compute_sample_weight(X, y):
         """Weight samples according to occurence in y"""
-        occur = np.zeros(y.shape[0], dtype=float)
+        if not np.all(np.array(y, dtype=int) == y):
+            msg = "Only integer ratings allowed."
+            raise NotImplementedError(msg)
+        weight = np.zeros(y.shape[0], dtype=float)
         for ii in range(11):
             idxii = y == ii
-            occur[idxii] = np.sum(idxii)
-        weight = 1/occur
+            occur = np.sum(idxii)
+            if occur:
+                # Sometimes the training set is not large enough.
+                # If no occurences were found, the weights remain
+                # zero.
+                weight[idxii] = 1 / occur
         # normalize
         weight /= np.sum(weight)
         return weight
