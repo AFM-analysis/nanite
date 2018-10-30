@@ -1,4 +1,6 @@
 0.8.1
  - fix: sample weight computation failed when a rating level was missing
+ - tests: reduce warnings
+ - cleanup: old docs in nanite.rate.io
 0.8.0
  - initial release

@@ -216,6 +216,16 @@ def get_meta_data_seg(path_segment):
                              size_px=md["grid size y [px]"])
         md["position x [px]"] = pxpx
         md["position y [px]"] = pypx
+
+    integer_keys = ["position x [px]",
+                    "position y [px]",
+                    "grid size x [px]",
+                    "grid size y [px]",
+                    "points",
+                    ]
+    for ik in integer_keys:
+        if ik in md:
+            md[ik] = int(round(md[ik]))
     return md
 
 
@@ -323,6 +333,9 @@ def position_m2px(pos_m, size_m, center_m, size_px):
     pos_px: int
         index position of `pos_m`
     """
+    if size_px != int(size_px):
+        raise ValueError("`size_px` must be integer, got {}!".format(size_px))
+    size_px = int(size_px)
     s1 = center_m - size_m / 2
     s2 = center_m + size_m / 2
 

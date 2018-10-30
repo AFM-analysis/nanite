@@ -6,7 +6,6 @@ import shutil
 import tempfile
 import time
 
-import appdirs
 import h5py
 import lmfit
 import numpy as np
@@ -14,9 +13,6 @@ from sklearn import model_selection
 
 from ..dataset import IndentationDataSet
 from . import rater
-
-
-APP_DIR = pathlib.Path(appdirs.user_cache_dir(appname="python-afmfit"))
 
 
 class RateManager():
@@ -57,13 +53,6 @@ class RateManager():
         raters = rater.IndentationRater.get_feature_funcs()
         samples = self.samples
         for ii, rti in enumerate(raters):
-            try:
-                samples[:, ii]
-            except IndexError:
-                import IPython
-                IPython.embed()
-                msg = "Please clear cache with 'afmfit_clear_cache' first!"
-                raise ValueError(msg)
             rpath = path / "train_{}.txt".format(rti[0])
             np.savetxt(rpath, samples[:, ii].flatten(), fmt="%.2e")
         user = self.get_rates(which="user")
@@ -134,10 +123,6 @@ class RateManager():
         """
         X = self.samples
         Y = self.get_rates(which="user")
-
-        if len(Y) != X.shape[0]:
-            raise ValueError("Test an train sizes don't match. Try running"
-                             " 'afmfit_clear_cache'!")
 
         if prefilter_binary:
             # remove binary excluded stuff
@@ -247,7 +232,7 @@ def load_hdf5(path, meta_only=False):
     ratings = []
     path = pathlib.Path(path)
     # temporary directory for original data
-    tdir = tempfile.mkdtemp(prefix="afmfit_rate_data_")
+    tdir = tempfile.mkdtemp(prefix="nanite_rate_data_")
     with h5py.File(path, mode="r") as h5:
         if not meta_only:
             # extract experimental data
@@ -310,8 +295,8 @@ def save_hdf5(h5path, indent, user_rate, user_name, user_comment, h5mode="a"):
     ----------
     h5path: str
         Path to HDF5 file where data will be stored
-    indent: afmfit.Indentation
-        The experimental data processed and fitted with afmfit
+    indent: nanite.Indentation
+        The experimental data processed and fitted with nanite
     user_rate: float
         Rating given by the user
     user_name: str
