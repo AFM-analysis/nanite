@@ -18,7 +18,7 @@ To install the latest release, simply run
 
 ::
 
-    pip install nanite
+    pip install nanite[CLI]
 
 
 .. |PyPI Version| image:: http://img.shields.io/pypi/v/nanite.svg

@@ -32,54 +32,53 @@ else:
                  ]
 
 
-if __name__ == "__main__":
-    setup(
-        name=name,
-        author=author,
-        author_email='dev@craban.de',
-        url='https://github.com/AFM-analysis/nanite',
-        version=version,
-        packages=find_packages(),
-        package_dir={name: name},
-        include_package_data=True,
-        license="GPL v3",
-        description=description,
-        long_description=open('README.rst').read() if exists('README.rst') else '',
-        install_requires=["appdirs",
-                          "h5py>=2.8.0",
-                          "jprops",
-                          "lmfit==0.9.5",
-                          "numpy>=1.12.0",
-                          "pandas",
-                          "scipy",
-                          "scikit-learn>=0.18.0",
-                          ],
-        ext_modules = extensions,
-        setup_requires=["cython", "numpy", "pytest-runner"],
-        tests_require=["pytest"],
-        extras_require = {
-            'CLI':  ["matplotlib >= 2.2.2",
-                     "tifffile >= 0.15.0",
-                     ],
-            },
-        python_requires='>=3.6, <4',
-        entry_points={
-           "console_scripts": [
-               "nanite-setup-profile = nanite.cli:setup_profile",
-               "nanite-rate = nanite.cli:rate",
-               "nanite-fit = nanite.cli:fit",
-                ],
-           },
+setup(
+    name=name,
+    author=author,
+    author_email='dev@craban.de',
+    url='https://github.com/AFM-analysis/nanite',
+    version=version,
+    packages=find_packages(),
+    package_dir={name: name},
+    include_package_data=True,
+    license="GPL v3",
+    description=description,
+    long_description=open('README.rst').read() if exists('README.rst') else '',
+    install_requires=["appdirs",
+                      "h5py>=2.8.0",
+                      "jprops",
+                      "lmfit==0.9.5",
+                      "numpy>=1.12.0",
+                      "pandas",
+                      "scipy",
+                      "scikit-learn>=0.18.0",
+                      ],
+    ext_modules = extensions,
+    setup_requires=["cython", "numpy", "pytest-runner"],
+    tests_require=["pytest"],
+    extras_require = {
+        'CLI':  ["matplotlib>=2.2.2",
+                 "tifffile>=0.15.0",
+                 ],
+        },
+    python_requires='>=3.6, <4',
+    entry_points={
+       "console_scripts": [
+           "nanite-setup-profile = nanite.cli:setup_profile",
+           "nanite-rate = nanite.cli:rate",
+           "nanite-fit = nanite.cli:fit",
+            ],
+       },
 
-        keywords=["atomic force microscopy",
-                  "mechanical phenotyping",
-                  "tissue analysis"],
-        classifiers= [
-            'Operating System :: OS Independent',
-            'Programming Language :: Python :: 3',
-            'Topic :: Scientific/Engineering :: Visualization',
-            'Intended Audience :: Science/Research'
-                     ],
-        platforms=['ALL'],
-        )
+    keywords=["atomic force microscopy",
+              "mechanical phenotyping",
+              "tissue analysis"],
+    classifiers= [
+        'Operating System :: OS Independent',
+        'Programming Language :: Python :: 3',
+        'Topic :: Scientific/Engineering :: Visualization',
+        'Intended Audience :: Science/Research'
+                 ],
+    platforms=['ALL'],
+    )
 
