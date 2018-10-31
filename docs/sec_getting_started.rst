@@ -6,12 +6,16 @@ Installation
 ============
 
 To install nanite, use one of the following methods
-(the above package dependencies will be installed automatically):
-    
+(the package dependencies will be installed automatically):
+
 * from `PyPI <https://pypi.python.org/pypi/nanite>`_:
-    ``pip install nanite [CLI]``
+    ``pip install nanite[CLI]``
 * from `sources <https://github.com/AFM-Analysus/nanite>`_:
     ``pip install -e .[CLI]``
+
+The appendix ``[CLI]`` makes sure that all dependencies for the command
+line interface are installed. If you are only using nanite as a Python
+module, you may safely omit it.
 
 Note that if you are installing from source or if no binary wheel is
 available for your platform and Python version, `Cython <http://cython.org/>`_
