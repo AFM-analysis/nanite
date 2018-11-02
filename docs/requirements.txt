@@ -7,3 +7,4 @@ CommonMark==0.7.5
 sphinxcontrib.bibtex
 matplotlib
 ipython
+cython
