@@ -10,3 +10,4 @@ ipython
 
 cython
 numpy
+tifffile
