@@ -178,13 +178,24 @@ class QMap(object):
             coords.append(cc)
         return coords
 
-    def get_qmap(self, feature):
+    def get_qmap(self, feature, qmap_only=False):
         """Return the quantitative map for a feature
 
         Parameters
         ----------
         feature: str
             Feature to compute map for (see `QMap.features`)
+        qmap_only:
+            Only return the quantitative map data,
+            not the coordinates
+
+        Returns
+        -------
+        x, y: 1d ndarray
+            Only returned if `qmap_only` is False; Pixel grid
+            coordinates along x and y
+        qmap: 2d ndarray
+            Quantitative map
         """
         coords = self.get_coords(which="px")
 
@@ -195,7 +206,10 @@ class QMap(object):
             map_data.append(val)
 
         x, y, qmap = self._map_grid(coords=coords, map_data=map_data)
-        return x, y, qmap
+        if qmap_only:
+            return qmap
+        else:
+            return x, y, qmap
 
 
 unit_scales = {}
