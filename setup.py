@@ -48,7 +48,7 @@ setup(
                       "h5py>=2.8.0",
                       "jprops",
                       "lmfit==0.9.5",
-                      "numpy>=1.12.0",
+                      "numpy>=1.14.0",
                       "pandas",
                       "scikit-learn>=0.18.0",
                       "scipy",
