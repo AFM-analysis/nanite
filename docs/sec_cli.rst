@@ -29,3 +29,13 @@ rate
    :module: afmfit.cli.rating
    :func: rate_parser
    :prog: nanite-rate
+
+   
+.. _sec_cli_generate_training_set:
+
+rate
+----
+.. argparse::
+   :module: afmfit.cli.rating
+   :func: generate_training_set_parser
+   :prog: nanite-generate-training-set

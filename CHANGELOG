@@ -1,4 +1,6 @@
 0.8.1
+ - enh: add `nanite-generate-training-set` command line program
+ - fix: add missing "zef18" training set
  - fix: sample weight computation failed when a rating level was missing
  - tests: reduce warnings
  - cleanup: old docs in nanite.rate.io

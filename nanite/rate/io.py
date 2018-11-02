@@ -16,14 +16,17 @@ from . import rater
 
 
 class RateManager():
-    def __init__(self, path):
+    def __init__(self, path, verbose=0):
         """Manage user-defined rates"""
+        #: Path to the manual ratings (directory or .h5 file)
         self.path = pathlib.Path(path)
+        #: verbosity level
+        self.verbose = verbose
         self._ratings = None
 
     @staticmethod
-    def _get_samples(path):
-        rm = RateManager(path)
+    def _get_samples(path, verbose=0):
+        rm = RateManager(path, verbose=verbose)
         samples = []
         idr = rater.IndentationRater
         for ds in rm.datasets:
@@ -39,13 +42,13 @@ class RateManager():
     @property
     def ratings(self):
         if self._ratings is None:
-            self._ratings = load(self.path)
+            self._ratings = load(self.path, verbose=self.verbose)
         return self._ratings
 
     @property
     def samples(self):
         """The individual sample ratings computed by afmlib"""
-        return RateManager._get_samples(self.path)
+        return RateManager._get_samples(self.path, verbose=self.verbose)
 
     def export_training_set(self, path):
         path = pathlib.Path(path)
@@ -223,8 +226,10 @@ def load(path, meta_only=False, verbose=0):
             ratings += load(fpath, meta_only=meta_only)
     elif path.suffix == ".h5":
         if verbose:
-            print("loading {}".format(fpath))
+            print("Loading file '{}'... ".format(path), end="", flush=True)
         ratings += load_hdf5(path, meta_only=meta_only)
+        if verbose:
+            print("Done.")
     return ratings
 
 

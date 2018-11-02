@@ -67,6 +67,7 @@ setup(
            "nanite-setup-profile = nanite.cli:setup_profile",
            "nanite-rate = nanite.cli:rate",
            "nanite-fit = nanite.cli:fit",
+           "nanite-generate-training-set = nanite.cli:generate_training_set",
             ],
        },
 
