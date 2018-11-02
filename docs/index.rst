@@ -15,7 +15,6 @@ Documentation
    sec_cli
    sec_examples
    sec_code_reference
-   sec_changelog
 
 .. toctree::
    :maxdepth: 1
