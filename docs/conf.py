@@ -31,6 +31,8 @@ sys.path.insert(0, pdir)
 # include extenstions
 sys.path.append(op.abspath('extensions'))
 
+sys.modules["nanite.model.model_sneddon_spherical"] = mock.Mock()
+
 # http://www.sphinx-doc.org/en/stable/ext/autodoc.html#confval-autodoc_member_order
 # Order class attributes and functions in separate blocks
 autodoc_member_order = 'groupwise'
