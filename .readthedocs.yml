@@ -6,3 +6,5 @@ build:
 python:
    version: 3.6
    pip_install: true
+   extra_requirements:
+       - CLI
