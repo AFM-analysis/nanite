@@ -31,20 +31,6 @@ sys.path.insert(0, pdir)
 # include extenstions
 sys.path.append(op.abspath('extensions'))
 
-if False:
-    # Mock all dependencies
-    install_requires=["appdirs",
-                      "h5py",
-                      "jprops",
-                      "lmfit",
-                      "scipy",
-                      "skimage",
-                      ]
-    
-    for mod_name in install_requires:
-        sys.modules[mod_name] = mock.Mock()
-    autodoc_mock_imports = install_requires
-
 # http://www.sphinx-doc.org/en/stable/ext/autodoc.html#confval-autodoc_member_order
 # Order class attributes and functions in separate blocks
 autodoc_member_order = 'groupwise'

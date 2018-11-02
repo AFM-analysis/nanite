@@ -34,7 +34,7 @@ rate
 .. _sec_cli_generate_training_set:
 
 nanite-generate-training-set
-----
+----------------------------
 .. argparse::
    :module: nanite.cli.rating
    :func: generate_training_set_parser
