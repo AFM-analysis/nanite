@@ -16,7 +16,7 @@ class QMap(object):
 
         Parameters
         ----------
-        path_or_dataset: str or IndentationDataSet
+        path_or_dataset: str or nanite.IndentationDataSet
             The path to the data file. The data format is determined
             using the extension of the file and the data is loaded
             with the correct method.

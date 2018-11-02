@@ -7,11 +7,106 @@ Code reference
 
 
 
-.. _sec_ref_definitions:
+.. _sec_ref_alias:
 
-
-module-level methods
+Module level aliases
 ====================
-autofunction ...
+For user convenience, the following objects are available
+at the module level.
 
+.. class:: nanite.Indentation
+    
+    alias of :class:`nanite.indent.Indentation`
+
+.. class:: nanite.IndentationDataSet
+    
+    alias of :class:`nanite.dataset.IndentationDataSet`
+
+.. class:: nanite.IndentationRater
+    
+    alias of :class:`nanite.rate.IndentationRater`
+
+.. class:: nanite.QMap
+    
+    alias of :class:`nanite.qmap.QMap`
+
+
+.. _sec_ref_indent:
+
+Force-indentation data
+======================
+
+.. automodule:: nanite.indent
+   :members:
+   :undoc-members:
+
+
+.. _sec_ref_dataset:
+
+Datasets
+========
+
+.. automodule:: nanite.dataset
+   :members:
+   :undoc-members:
+
+
+.. _sec_ref_read:
+
+Loading data
+============
+
+.. automodule:: nanite.read
+   :members:
+   :undoc-members:
+
+
+.. _sec_ref_preproc:
+
+Preprocessing
+=============
+
+.. automodule:: nanite.preproc
+   :members:
+   :undoc-members:
+
+
+.. _sec_ref_model:
+
+Modeling
+========
+
+.. automodule:: nanite.model
+   :members:
+   :undoc-members:
+
+
+.. _sec_ref_fit:
+
+Fitting
+=======
+
+.. automodule:: nanite.fit
+   :members:
+   :undoc-members:
+
+
+.. _sec_ref_rate:
+
+Rating
+======
+
+.. automodule:: nanite.rate
+   :members:
+   :undoc-members:
+
+
+.. _sec_ref_qmap:
+
+Quantitative maps
+=================
+
+.. automodule:: nanite.qmap
+   :members:
+   :undoc-members:
 

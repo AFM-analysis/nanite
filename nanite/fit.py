@@ -49,12 +49,14 @@ class FitProperties(dict):
     and dynamically manage resets due to new initial parameters.
 
     Dynamic properties include:
+
     - set "params_initial" to `None` if the "model_key" changes
     - remove all keys except those in `FP_DEFAULT` if a key that is
       in `FP_DEFAULT` changes (All other keys are considered to be
       obsolete fitting results).
 
     Additional attributes:
+
     - "segment_bool": bool
         `False` for "approach" and `True` for "retract"
     """
@@ -121,6 +123,7 @@ class IndentationFitter(object):
             The range for fitting, see `range_type` below.
         range_type: str
             One of:
+
             - absolute:
                 Set the absolute fitting range in values
                 given by the `x_axis`.
@@ -290,6 +293,7 @@ class IndentationFitter(object):
         """Determine the plateau of an emodulus-indentation curve
 
         The following procedure is performed:
+
         1. Smooth the emodulus data with a Butterworth filter
         2. Label sequences that have similar values by binning
            into ten regions between the min and max.

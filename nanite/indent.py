@@ -24,6 +24,7 @@ class Indentation(object):
         approach, retract: [1d ndarray, unit, title]
             The respective curves obtained by the `readfiles` module.
             The columns must be available:
+
               - "time" [s]
               - "force" [N]
               - "height (measured)" [m]
@@ -167,14 +168,14 @@ class Indentation(object):
         that one which returns the smallest index is returned.
 
         Method 1: baseline deviation
-        ----------------------------
+
         1. Obtain the baseline (initial 10% of the approach curve)
         2. Compute average and maximum deviation of the baseline
         3. The CP is the index of the approach curve where it exceeds
            twice of the maximum deviation
 
         Method 2: sign of gradient
-        ----------------------------
+
         1. Perform a median filter on the approach curve
         2. Compute the gradient
         3. Cut off trailing 10 points from the gradient (noise)
@@ -247,6 +248,7 @@ class Indentation(object):
             The range for fitting, see `range_type` below.
         range_type: str
             One of:
+
             - absolute:
                 Set the absolute fitting range in values
                 given by the `x_axis`.
