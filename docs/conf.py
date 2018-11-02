@@ -24,9 +24,8 @@
 # Get version number from nanite._version file
 import os.path as op
 import sys
-# include parent directory
+# parent directory
 pdir = op.dirname(op.dirname(op.abspath(__file__)))
-sys.path.insert(0, pdir)
 # include extenstions
 sys.path.append(op.abspath('extensions'))
 
@@ -34,7 +33,6 @@ sys.path.append(op.abspath('extensions'))
 # Order class attributes and functions in separate blocks
 autodoc_member_order = 'groupwise'
 autoclass_content = 'both'
-autodoc_mock_imports = ["nanite.model.model_sneddon_spherical"]
 
 # include source of matplotlib plots
 plot_include_source = True
