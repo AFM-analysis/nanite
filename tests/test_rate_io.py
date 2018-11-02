@@ -33,7 +33,7 @@ def test_wite():
                     segment="approach",
                     weight_cp=False)
 
-    tdir = tempfile.mkdtemp(prefix="test_afmfit_rate_io_")
+    tdir = tempfile.mkdtemp(prefix="test_nanite_rate_io_")
     h5path = pathlib.Path(tdir) / "simple.h5"
     save_hdf5(h5path=h5path,
               indent=apret,
@@ -75,7 +75,7 @@ def test_write_read():
                     segment="approach",
                     weight_cp=False)
 
-    tdir = tempfile.mkdtemp(prefix="test_afmfit_rate_io_")
+    tdir = tempfile.mkdtemp(prefix="test_nanite_rate_io_")
     h5path = pathlib.Path(tdir) / "simple.h5"
     save_hdf5(h5path=h5path,
               indent=apret,

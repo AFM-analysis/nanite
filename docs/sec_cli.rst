@@ -7,7 +7,7 @@ Command line interface
 setup-profile
 -------------
 .. argparse::
-   :ref: afmfit.cli.profile.setup_profile_parser
+   :ref: nanite.cli.profile.setup_profile_parser
    :prog: nanite-setup-profile
 
 
@@ -16,7 +16,7 @@ setup-profile
 fit
 ---
 .. argparse::
-   :module: afmfit.cli.rating
+   :module: nanite.cli.rating
    :func: fit_parser
    :prog: nanite-fit
 
@@ -26,7 +26,7 @@ fit
 rate
 ----
 .. argparse::
-   :module: afmfit.cli.rating
+   :module: nanite.cli.rating
    :func: rate_parser
    :prog: nanite-rate
 
@@ -36,6 +36,6 @@ rate
 nanite-generate-training-set
 ----
 .. argparse::
-   :module: afmfit.cli.rating
+   :module: nanite.cli.rating
    :func: generate_training_set_parser
    :prog: nanite-generate-training-set

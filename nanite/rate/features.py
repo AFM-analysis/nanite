@@ -76,7 +76,7 @@ class IndentationFeatures(object):
 
         Parameters
         ----------
-        dataset: afmfit.Indentation
+        dataset: nanite.Indentation
             A dataset to rate
         names: list of str
             The names of the rating methods to use,

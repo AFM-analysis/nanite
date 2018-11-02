@@ -129,12 +129,12 @@ class IndentationRater(IndentationFeatures):
 
     @staticmethod
     def get_training_set_path(label="zef18"):
-        """Return the path to a training set shipped with afmfit
+        """Return the path to a training set shipped with nanite
 
-        Training sets are stored in the `afmfit.rate`
+        Training sets are stored in the `nanite.rate`
         module path with "ts_" prepended to `label`.
         """
-        data_loc = "afmfit.rate"
+        data_loc = "nanite.rate"
         resp_path = resource_filename(data_loc, "ts_{}".format(label))
         return resp_path
 
@@ -181,7 +181,7 @@ class IndentationRater(IndentationFeatures):
         ----------
         samples: 1d or 2d ndarray (cast to 2d ndarray) or None
             Measured samples, if set to None, `dataset` must be given.
-        dataset: list of afmfit.Indentation
+        dataset: list of nanite.Indentation
             Full, fitted measurement
 
         Returns
@@ -256,7 +256,7 @@ def get_rater(regressor, training_set="zef18", names=None,
         If a string, must be in `reg_names`.
     training_set: str or pathlib.Path or tuple (X, y)
         A string label representing a training set shipped with
-        afmfit, the path to a training set, or a tuple
+        nanite, the path to a training set, or a tuple
         representing the training set (samples, response)
         for use with sklearn.
 

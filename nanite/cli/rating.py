@@ -33,7 +33,7 @@ class RatingGUI():
         tk.Grid.rowconfigure(root, 0, weight=1)
         tk.Grid.columnconfigure(root, 0, weight=1)
 
-        root.title("afmfit curve rater")
+        root.title("nanite curve rater")
 
         master = tk.Frame(root)
         master.grid(row=0, column=0, sticky=tk.N+tk.S+tk.E+tk.W)

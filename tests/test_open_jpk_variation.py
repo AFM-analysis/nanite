@@ -9,7 +9,7 @@ datadir = pathlib.Path(__file__).resolve().parent / "data"
 
 def test_process_flipsign():
     # This is a curve extracted from a map file. When loading it
-    # with afmfit, the sign of the force curve was flipped.
+    # with nanite, the sign of the force curve was flipped.
     flipped = datadir / "flipsign_2015.05.22-15.31.49.352.jpk-force"
     apret = IndentationDataSet(flipped)[0]
     apret.apply_preprocessing(["compute_tip_position",

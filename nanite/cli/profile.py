@@ -8,7 +8,7 @@ from .. import model
 from .. import preproc
 
 
-APP_DIR = pathlib.Path(appdirs.user_cache_dir(appname="python-afmfit"))
+APP_DIR = pathlib.Path(appdirs.user_cache_dir(appname="python-nanite"))
 PROFILE_PATH = APP_DIR / "cli_profile.cfg"
 
 DEFAULTS = {"model_key": "sneddon_spher_approx",
@@ -32,7 +32,7 @@ class Profile(object):
             path.parent.mkdir(exist_ok=True, parents=True)
             path.touch()
         elif not path.exists():
-            raise ValueError("Please run `afmfit_setup_profile` first!")
+            raise ValueError("Please run `nanite-setup-profile` first!")
         self.path = path
         # initialize with defaults
         for key in DEFAULTS:

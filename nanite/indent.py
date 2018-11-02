@@ -239,7 +239,7 @@ class Indentation(object):
         ----------
         model_key: str
             A key referring to a model in
-            `afmfit.model.models_available`
+            `nanite.model.models_available`
         params_initial: instance of lmfit.Parameters or dict
             Parameters for fitting. If not given,
             default parameters are used.
@@ -311,7 +311,7 @@ class Indentation(object):
             Regressor used for rating.
         ts_label: str
             A string label representing a training set shipped with
-            afmfit.
+            nanite.
 
         Returns
         -------

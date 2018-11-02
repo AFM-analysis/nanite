@@ -12,7 +12,7 @@ class IndentationPreprocessor(object):
 
         Parameters
         ----------
-        apret: afmfit.Indentation
+        apret: nanite.Indentation
             The afm data to preprocess
         preproc_names: list
             A list of names for static methods in

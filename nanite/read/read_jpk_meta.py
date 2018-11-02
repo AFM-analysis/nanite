@@ -16,7 +16,7 @@ class ReadJPKMetaKeyError(BaseException):
 def extract_jpk(path_jpk, props_only=False):
     """ Extract the JPK data files and return the extracted path.
     """
-    tdir = tempfile.mkdtemp(prefix="afmfit_jpk_")
+    tdir = tempfile.mkdtemp(prefix="nanite_jpk_")
     with zipfile.ZipFile(str(path_jpk)) as fd:
         if props_only:
             for name in fd.namelist():

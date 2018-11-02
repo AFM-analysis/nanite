@@ -113,7 +113,7 @@ class IndentationFitter(object):
         ----------
         model_key: str
             A key referring to a model in
-            `afmfit.model.models_available`
+            `nanite.model.models_available`
         params_initial: instance of lmfit.Parameters
             Parameters for fitting. If not given,
             default parameters are used.
