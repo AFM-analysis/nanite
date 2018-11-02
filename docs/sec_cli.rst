@@ -7,7 +7,7 @@ Command line interface
 setup-profile
 -------------
 .. argparse::
-   :moduleref: nanite.cli.profile
+   :module: nanite.cli.profile
    :func: setup_profile_parser
    :prog: nanite-setup-profile
 
