@@ -1,7 +1,7 @@
 mock
 sphinx>=1.6.4
 # sphinx-argparse 0.2.2 gave no output
-sphinx-argparse==0.2.1
+sphinx-argparse==0.2.3
 # CommonMark 0.8.3 did not work with argparse
 CommonMark==0.7.5
 sphinxcontrib.bibtex
