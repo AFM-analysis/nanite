@@ -22,7 +22,6 @@
 # sys.path.insert(0, os.path.abspath('.'))
 
 # Get version number from nanite._version file
-import mock
 import os.path as op
 import sys
 # include parent directory
@@ -31,12 +30,11 @@ sys.path.insert(0, pdir)
 # include extenstions
 sys.path.append(op.abspath('extensions'))
 
-sys.modules["nanite.model.model_sneddon_spherical"] = mock.Mock()
-
 # http://www.sphinx-doc.org/en/stable/ext/autodoc.html#confval-autodoc_member_order
 # Order class attributes and functions in separate blocks
 autodoc_member_order = 'groupwise'
 autoclass_content = 'both'
+autodoc_mock_imports = ["nanite.model.model_sneddon_spherical"]
 
 # include source of matplotlib plots
 plot_include_source = True
