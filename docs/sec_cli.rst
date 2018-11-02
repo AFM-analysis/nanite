@@ -33,7 +33,7 @@ rate
    
 .. _sec_cli_generate_training_set:
 
-rate
+nanite-generate-training-set
 ----
 .. argparse::
    :module: afmfit.cli.rating
