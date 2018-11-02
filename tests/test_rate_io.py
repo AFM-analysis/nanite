@@ -14,7 +14,7 @@ datadir = pathlib.Path(__file__).resolve().parent / "data"
 jpkfile = datadir / "spot3-0192.jpk-force"
 
 
-def test_wite():
+def test_write():
     ds1 = IndentationDataSet(jpkfile)
     apret = ds1[0]
     apret.apply_preprocessing(["compute_tip_position"])

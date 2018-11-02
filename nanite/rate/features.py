@@ -70,13 +70,13 @@ class IndentationFeatures(object):
         return self.dataset.metadata
 
     @staticmethod
-    def compute_features(dataset, which_type="all", names=None,
+    def compute_features(idnt, which_type="all", names=None,
                          ret_names=False):
         """Compute the features for a data set
 
         Parameters
         ----------
-        dataset: nanite.Indentation
+        idnt: nanite.Indentation
             A dataset to rate
         names: list of str
             The names of the rating methods to use,
@@ -90,7 +90,7 @@ class IndentationFeatures(object):
         E.g. if a "bool" feature is in `names` but `which_type` is
         "float", then the "bool" feature will be silently ignored.
         """
-        inst = IndentationFeatures(dataset)
+        inst = IndentationFeatures(idnt)
         # make sure to keep the order of `names`, i.e. only compute
         # names if they are not given.
         if names is None or which_type != "all":
