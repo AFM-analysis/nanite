@@ -4,6 +4,7 @@ sphinx>=1.6.4
 sphinx-argparse
 # CommonMark 0.8.3 did not work with argparse
 #CommonMark==0.7.5
+CommonMark
 sphinxcontrib.bibtex
 matplotlib
 ipython
