@@ -5,6 +5,10 @@ import numpy as np
 from .smooth import smooth_axis_monotone
 
 
+class CannotSplitWarning(UserWarning):
+    pass
+
+
 class IndentationPreprocessor(object):
     @staticmethod
     def apply(apret, preproc_names):
@@ -119,7 +123,7 @@ class IndentationPreprocessor(object):
         else:
             msg = "Cannot correct splitting of approach and retract curve " +\
                   "because the contact point position could not be estimated."
-            warnings.warn(msg)
+            warnings.warn(msg, CannotSplitWarning)
 
     @staticmethod
     def smooth_height(apret):

@@ -1,9 +1,12 @@
-""" smooth data
-"""
+"""smooth data"""
 import warnings
 
 import numpy as np
 import scipy.ndimage as im
+
+
+class DoubledSmoothingWindowWarning(UserWarning):
+    pass
 
 
 def smooth_axis(data, window=15):
@@ -39,7 +42,10 @@ def smooth_axis_monotone(data, window=15):
         window = window * 2 + 1
         smooth = smooth_axis(data, window=window)
         gradient = np.gradient(smooth)
-        warnings.warn("Doubled smoothing window size to {}".format(window))
+        warnings.warn("Automatically doubled smoothing `window` size to "
+                      + "{}. You might consider using a ".format(window)
+                      + "larger value by default.",
+                      DoubledSmoothingWindowWarning)
 
     while (np.unique(smooth).shape != smooth.shape):
         # keep axis unique

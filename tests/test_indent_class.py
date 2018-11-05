@@ -2,6 +2,7 @@
 import pathlib
 
 import numpy as np
+import pytest
 
 from nanite import IndentationDataSet
 
@@ -10,6 +11,8 @@ datapath = pathlib.Path(__file__).parent / "data"
 jpkfile = datapath / "spot3-0192.jpk-force"
 
 
+@pytest.mark.filterwarnings('ignore::nanite.smooth.'
+                            + 'DoubledSmoothingWindowWarning')
 def test_app_ret():
     ds = IndentationDataSet(jpkfile)
     ar = ds[0]
