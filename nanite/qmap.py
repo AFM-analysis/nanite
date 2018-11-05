@@ -171,12 +171,11 @@ class QMap(object):
             ky = "position y [µm]"
         coords = []
         for idnt in self.ds:
-            if kx in idnt.metadata and ky in idnt.metadata:
-                cc = [idnt.metadata[kx], idnt.metadata[ky]]
-            else:
-                cc = [np.nan, np.nan]
+            # We assume that kx and ky are given. This has to be
+            # ensured by the file format reader for qmaps.
+            cc = [idnt.metadata[kx], idnt.metadata[ky]]
             coords.append(cc)
-        return coords
+        return np.array(coords)
 
     def get_qmap(self, feature, qmap_only=False):
         """Return the quantitative map for a feature

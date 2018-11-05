@@ -4,20 +4,12 @@ import warnings
 
 import numpy as np
 
-from nanite import model, qmap
+from nanite import model, qmap, IndentationDataSet
 
 
 datadir = pathlib.Path(__file__).resolve().parent / "data"
 jpkfile = datadir / "map2x2_extracted.jpk-force-map"
 jpkfile2 = datadir / "map-data-reference-points.jpk-force-map"
-
-
-def test_metadata():
-    qm = qmap.QMap(jpkfile)
-    assert np.allclose(qm.extent,
-                       [1.97265625, 601.97265625,
-                        -783.53515625, -183.53515625000006])
-    assert qm.shape == (10, 10)
 
 
 def test_feat_scan_order():
@@ -109,6 +101,62 @@ def test_feat_rating():
     assert np.allclose(vals[0], 9.765420865311263), "gray matter"
     assert np.allclose(vals[2], 4.981720718347044), "white matter"
     assert np.allclose(vals[1], 1.7713407492968665), "background"
+
+
+def test_feat_rating_nofit():
+    qm = qmap.QMap(jpkfile)
+    with warnings.catch_warnings(record=True) as w:
+        # No data availabale, because there is no fit
+        qd = qm.get_qmap("meta rating", qmap_only=True)
+        assert len(w) == 4
+        assert w[0].category is qmap.DataMissingWarning
+    assert np.alltrue(np.isnan(qd))
+
+
+def test_get_coords():
+    qm = qmap.QMap(jpkfile)
+
+    px = qm.get_coords(which="px")
+    refpx = np.array([[0, 0], [9, 0], [9, 9], [0, 9]])
+    assert np.all(px == refpx)
+
+    um = qm.get_coords(which="um")
+    refum = np.array([[31.972656250000004, -753.5351562500001],
+                      [571.8359375000001, -753.90625],
+                      [571.8359375000001, -213.73046875000003],
+                      [31.855468750000004, -213.73046875000003]])
+    assert np.all(um == refum)
+
+
+def test_get_coords_bad():
+    qm = qmap.QMap(jpkfile)
+    try:
+        qm.get_coords(which="mm")
+    except ValueError:
+        pass
+    else:
+        assert False, "Units [mm] should not be supported."
+
+
+def test_get_qmap():
+    qm = qmap.QMap(jpkfile)
+    x, y, _ = qm.get_qmap(feature="data min height", qmap_only=False)
+    assert x.size == 10
+    assert y.size == 10
+
+
+def test_init_with_dataset():
+    ds = IndentationDataSet(jpkfile)
+    qm = qmap.QMap(ds)
+    assert qm.shape == (10, 10)
+
+
+def test_metadata():
+    qm = qmap.QMap(jpkfile)
+    assert np.allclose(qm.extent,
+                       [1.97265625, 601.97265625,
+                        -783.53515625, -183.53515625000006])
+    assert qm.shape == (10, 10)
 
 
 if __name__ == "__main__":

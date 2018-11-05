@@ -25,28 +25,35 @@ reg_dict = {
     "AdaBoost": [
         ensemble.AdaBoostRegressor,
         {"learning_rate": .5,
-         "n_estimators": 30},
+         "n_estimators": 30,
+         "random_state": 42,
+         },
     ],
     "Decision Tree": [
         tree.DecisionTreeRegressor,
         {"max_depth": 6,
          "min_samples_leaf": 4,
          "min_samples_split": 4,
-         "random_state": 42}
+         "random_state": 42,
+         }
     ],
     "Extra Trees": [
         ensemble.ExtraTreesRegressor,
         {"max_depth": 15,
          "min_samples_leaf": 2,
          "min_samples_split": 5,
-         "random_state": 42}
+         "n_estimators": 10,
+         "random_state": 42,
+         }
     ],
     "Gradient Tree Boosting": [
         ensemble.GradientBoostingRegressor,
         {"max_depth": 5,
          "min_samples_leaf": 4,
          "min_samples_split": 7,
-         "random_state": 42}
+         "n_estimators": 100,
+         "random_state": 42,
+         }
     ],
     "MERGE": [
         AverageTreeRegressor,
@@ -59,12 +66,15 @@ reg_dict = {
         {"max_depth": 15,
          "min_samples_leaf": 2,
          "min_samples_split": 7,
-         "random_state": 42}
+         "n_estimators": 10,
+         "random_state": 42,
+         }
     ],
     "SVR (linear kernel)": [
         svm.LinearSVR,
         {"C": 2,
          "epsilon": 1.0,
+         "random_state": 42,
          },
     ],
     "SVR (RBF kernel)": [
@@ -72,6 +82,7 @@ reg_dict = {
         {"kernel": "rbf",
          "C": 25,
          "epsilon": 0.7,
+         "random_state": 42,
          },
     ],
 }
