@@ -93,14 +93,13 @@ def test_feat_rating():
                        y_axis="force",
                        segment="approach",
                        weight_cp=2e-6)
-        idnt.rate_quality(method="MERGE", ts_label="zef18")
+        idnt.rate_quality(method="Extra Trees", ts_label="zef18")
 
     qd = qm.get_qmap("meta rating", qmap_only=True)
     vals = qd.flat[~np.isnan(qd.flat)]
-
-    assert np.allclose(vals[0], 9.765420865311263), "gray matter"
-    assert np.allclose(vals[2], 4.981720718347044), "white matter"
-    assert np.allclose(vals[1], 1.7713407492968665), "background"
+    assert np.allclose(vals[0], 9.471932624275558), "gray matter"
+    assert np.allclose(vals[2], 4.75182041147194), "white matter"
+    assert np.allclose(vals[1], 2.568823857492953), "background"
 
 
 def test_feat_rating_nofit():

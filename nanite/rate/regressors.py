@@ -1,31 +1,12 @@
 """scikit-learn regressors and their keyword arguments"""
-import numpy as np
 from sklearn import ensemble, svm, tree
-
-
-class AverageTreeRegressor(object):
-    def __init__(self, ensemble_names, random_states):
-        for n, rs in zip(ensemble_names, random_states):
-            kwargs = reg_dict[n][1].copy()
-            kwargs["random_state"] = rs
-            reg_dict[n][0](**kwargs)
-
-        self.ensemble_regs = [reg_dict[n][0](**reg_dict[n][1])
-                              for n in ensemble_names]
-
-    def fit(self, *args, **kwargs):
-        [er.fit(*args, **kwargs) for er in self.ensemble_regs]
-
-    def predict(self, *args, **kwargs):
-        vals = [er.predict(*args, **kwargs) for er in self.ensemble_regs]
-        return np.mean(np.array(vals), axis=0)
 
 
 reg_dict = {
     "AdaBoost": [
         ensemble.AdaBoostRegressor,
         {"learning_rate": .5,
-         "n_estimators": 30,
+         "n_estimators": 100,
          "random_state": 42,
          },
     ],
@@ -42,7 +23,7 @@ reg_dict = {
         {"max_depth": 15,
          "min_samples_leaf": 2,
          "min_samples_split": 5,
-         "n_estimators": 10,
+         "n_estimators": 100,
          "random_state": 42,
          }
     ],
@@ -55,18 +36,12 @@ reg_dict = {
          "random_state": 42,
          }
     ],
-    "MERGE": [
-        AverageTreeRegressor,
-        {"ensemble_names": ["Extra Trees", "Random Forest",
-                            "Gradient Tree Boosting"],
-         "random_states": [42, 42, 42]}
-    ],
     "Random Forest": [
         ensemble.RandomForestRegressor,
         {"max_depth": 15,
          "min_samples_leaf": 2,
          "min_samples_split": 7,
-         "n_estimators": 10,
+         "n_estimators": 100,
          "random_state": 42,
          }
     ],
@@ -94,7 +69,6 @@ reg_names = sorted(reg_dict.keys())
 #: List of tree-based regressor class names (used for keyword defaults in
 #: :class:`IndentationRater`)
 reg_trees = ["AdaBoostRegressor",
-             "AverageTreeRegressor",
              "DecisionTreeRegressor",
              "ExtraTreesRegressor",
              "GradientBoostingRegressor",
