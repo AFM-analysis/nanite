@@ -216,14 +216,14 @@ class IndentationRater(IndentationFeatures):
             fsamples = []
             bsamples = []
             # float features
-            for dataset in datasets:
+            for idnt in datasets:
                 samp = self.compute_features(
-                    dataset=dataset,
+                    idnt=idnt,
                     names=self.names,
                     which_type=["continuous", "discrete"])
                 fsamples.append(samp)
-            for dataset in datasets:
-                bsamp = self.compute_features(dataset=dataset,
+            for idnt in datasets:
+                bsamp = self.compute_features(idnt=idnt,
                                               names=self.names,
                                               which_type="binary")
                 bsamples.append(bsamp)

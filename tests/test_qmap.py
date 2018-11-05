@@ -4,11 +4,12 @@ import warnings
 
 import numpy as np
 
-from nanite import qmap
+from nanite import model, qmap
 
 
 datadir = pathlib.Path(__file__).resolve().parent / "data"
 jpkfile = datadir / "map2x2_extracted.jpk-force-map"
+jpkfile2 = datadir / "map-data-reference-points.jpk-force-map"
 
 
 def test_metadata():
@@ -46,6 +47,68 @@ def test_feat_emod_nofit():
         assert len(w) == 4
         assert w[0].category is qmap.DataMissingWarning
     assert np.alltrue(np.isnan(qd))
+
+
+def test_feat_emod_withfit():
+    qm = qmap.QMap(jpkfile2)
+    # fit data
+    for idnt in qm.ds:
+        idnt.apply_preprocessing(["compute_tip_position",
+                                  "correct_force_offset",
+                                  "correct_tip_offset",
+                                  ])
+        inparams = model.model_sneddon_spherical_approximation \
+            .get_parameter_defaults()
+        inparams["E"].value = 50
+        inparams["R"].value = 37.28e-6 / 2
+
+        # Fit with absolute full range
+        idnt.fit_model(model_key="sneddon_spher_approx",
+                       params_initial=inparams,
+                       range_x=(0, 0),
+                       range_type="absolute",
+                       x_axis="tip position",
+                       y_axis="force",
+                       segment="approach",
+                       weight_cp=2e-6)
+
+    qd = qm.get_qmap("fit young's modulus", qmap_only=True)
+    vals = qd.flat[~np.isnan(qd.flat)]
+    assert np.allclose(vals[0], 57.629464729399096), "gray matter"
+    assert np.allclose(vals[2], 46.614068655067435), "white matter"
+    assert np.allclose(vals[1], 17605.034108797558), "background"
+
+
+def test_feat_rating():
+    """Reproduces rating in figures 5K-M"""
+    qm = qmap.QMap(jpkfile2)
+    # fit data
+    for idnt in qm.ds:
+        idnt.apply_preprocessing(["compute_tip_position",
+                                  "correct_force_offset",
+                                  "correct_tip_offset"])
+        inparams = model.model_sneddon_spherical_approximation \
+            .get_parameter_defaults()
+        inparams["E"].value = 50
+        inparams["R"].value = 37.28e-6 / 2
+
+        # Fit with absolute full range
+        idnt.fit_model(model_key="sneddon_spher_approx",
+                       params_initial=inparams,
+                       range_x=(0, 0),
+                       range_type="absolute",
+                       x_axis="tip position",
+                       y_axis="force",
+                       segment="approach",
+                       weight_cp=2e-6)
+        idnt.rate_quality(method="MERGE", ts_label="zef18")
+
+    qd = qm.get_qmap("meta rating", qmap_only=True)
+    vals = qd.flat[~np.isnan(qd.flat)]
+
+    assert np.allclose(vals[0], 9.765420865311263), "gray matter"
+    assert np.allclose(vals[2], 4.981720718347044), "white matter"
+    assert np.allclose(vals[1], 1.7713407492968665), "background"
 
 
 if __name__ == "__main__":
