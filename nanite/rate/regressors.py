@@ -57,7 +57,6 @@ reg_dict = {
         {"kernel": "rbf",
          "C": 25,
          "epsilon": 0.7,
-         "random_state": 42,
          },
     ],
 }
