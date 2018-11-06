@@ -1,6 +1,5 @@
 import copy
 import inspect
-import io
 import pathlib
 
 import numpy as np
@@ -224,9 +223,10 @@ class Indentation(object):
 
         return min(idp1, idp2)
 
-    def export(self, filename):
+    def export(self, path):
         """Saves the current data as tab separated values"""
-        with io.open(filename, "w") as fd:
+        path = pathlib.Path(path)
+        with path.open("w") as fd:
             self.data.to_csv(path_or_buf=fd,
                              sep="\t",
                              encoding="utf-8",

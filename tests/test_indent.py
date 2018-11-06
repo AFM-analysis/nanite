@@ -1,5 +1,6 @@
 """Test of data set functionalities"""
 import pathlib
+import tempfile
 
 import numpy as np
 
@@ -64,6 +65,30 @@ def test_basic():
     # This value is subject to change if a better way to estimate the
     # contact point is found:
     assert idnt["tip position"].values[0] == 4.765854684370548e-06
+
+
+def test_export():
+    ds1 = nanite.IndentationDataSet(jpkfile)
+    idnt = ds1[0]
+    # tip-sample separation
+    idnt.apply_preprocessing(["compute_tip_position"])
+    # create temporary file
+    _, path = tempfile.mkstemp(suffix=".tsv", prefix="nanite_idnt_export")
+    idnt.export(path)
+    converters = {3: lambda x: x.decode() == "True"}  # segment
+    data = np.loadtxt(path, skiprows=1, converters=converters)
+    assert data.shape == (4000, 5)
+    assert np.allclose(data[100, 0], 0.04999999999999999)
+    assert np.allclose(data[100, 1], -4.853736717639109e-10)
+    assert np.allclose(data[100, 2], 2.256791903750211e-05, atol=1e-10, rtol=0)
+    assert data[100, 3] == 0
+    assert np.allclose(data[100, 4], 2.255675939721752e-05, atol=1e-10, rtol=0)
+    assert data[3000, 3] == 1
+
+    try:
+        pathlib.Path(path).unlink()
+    except OSError:
+        pass
 
 
 def test_fitting():
