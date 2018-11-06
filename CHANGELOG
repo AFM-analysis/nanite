@@ -1,8 +1,10 @@
-0.8.1
- - enh: add `nanite-generate-training-set` command line program
+0.9.0
+ - ref: replace dataset.IndentationDataSet with group.IndentationGroup
+   to avoid ambiguities
  - fix: add missing "zef18" training set
  - fix: sample weight computation failed when a rating level was missing
- - tests: reduce warnings
+ - enh: add `nanite-generate-training-set` command line program
+ - tests: reduce warnings and increase coverage
  - cleanup: old docs in nanite.rate.io
 0.8.0
  - initial release
