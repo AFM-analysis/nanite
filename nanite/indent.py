@@ -301,7 +301,7 @@ class Indentation(object):
             parms = IndentationFitter(self).fp["params_initial"]
         return parms
 
-    def rate_quality(self, method="MERGE", ts_label="zef18",
+    def rate_quality(self, method="Extra Trees", ts_label="zef18",
                      names=None, lda=None):
         """Compute the quality of the obtained curve
 

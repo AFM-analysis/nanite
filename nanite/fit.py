@@ -42,6 +42,10 @@ class FitDataError(BaseException):
     pass
 
 
+class FitWarning(UserWarning):
+    pass
+
+
 class FitProperties(dict):
     """Fit property manager class
 
@@ -232,7 +236,7 @@ class IndentationFitter(object):
 
         if self.fp["range_x"][0] > self.fp["range_x"][1]:
             msg = "Fitting range is inverted: {}".format(self.fp["range_x"])
-            warnings.warn(msg)
+            warnings.warn(msg, FitWarning)
 
     def compute_emodulus_vs_mindelta(self, callback=None):
         """Compute elastic modulus vs. minimal indentation curve"""
@@ -339,7 +343,7 @@ class IndentationFitter(object):
             counts.pop(labmax)
         else:
             # Nothing found: select the middle value
-            warnings.warn("Could not find correct plateau.")
+            warnings.warn("Could not find correct plateau.", FitWarning)
             labmax = 5
         # Determine the interval in the original array
         indices = np.where(labelarray == labmax)[0]
@@ -490,7 +494,7 @@ class IndentationFitter(object):
             else:
                 msg = "Cannot estimate contact point, because of missing "\
                       + "column 'tip position'"
-                warnings.warn(msg)
+                warnings.warn(msg, FitWarning)
         return params
 
     def _hash(self):

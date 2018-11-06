@@ -19,7 +19,7 @@ DEFAULTS = {"model_key": "sneddon_spher_approx",
             "range_x": [0, 0],
             "segment": "approach",
             "weight_cp": 5e-7,
-            "rating method": "MERGE",
+            "rating method": "Extra Trees",
             "rating train set": "zef18",
             }
 

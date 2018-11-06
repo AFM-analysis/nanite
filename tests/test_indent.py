@@ -3,6 +3,7 @@ import pathlib
 import tempfile
 
 import numpy as np
+import pytest
 
 import nanite
 
@@ -142,11 +143,96 @@ def test_fitting():
     assert np.allclose(params3["E"].value, 14839.821714634612)
 
 
+@pytest.mark.filterwarnings('ignore::nanite.fit.FitWarning')
+def test_get_initial_fit_parameters():
+    """This is a convenience function"""
+    ds1 = nanite.IndentationDataSet(jpkfile)
+    idnt = ds1[0]
+    # A: sanity check
+    try:
+        idnt.get_initial_fit_parameters()
+    except KeyError:
+        pass
+    else:
+        assert False, "need to get tip position first"
+    # B: get default fit parameters (hertz_para)
+    idnt.apply_preprocessing(["compute_tip_position"])
+    fp = idnt.get_initial_fit_parameters()
+    for kk in ['E', 'R', 'nu', 'contact_point', 'baseline']:
+        assert kk in fp.keys()
+    # C: set other model and get fit parameters
+    idnt.fit_properties["model_key"] = "hertz_pyr3s"
+    fp2 = idnt.get_initial_fit_parameters()
+    for kk in ['E', 'alpha', 'nu', 'contact_point', 'baseline']:
+        assert kk in fp2.keys()
+    # D: fit and get from fit_properties
+    idnt.fit_model(params_initial=fp2)
+    fp3 = idnt.get_initial_fit_parameters()
+    assert fp2 == fp3
+
+
 def test_get_model():
     md = nanite.model.model_hertz_parabolic
     model_name = "parabolic indenter (Hertz)"
     md2 = nanite.model.get_model_by_name(model_name)
     assert md2 is md
+
+
+def test_rate_quality_cache():
+    ds1 = nanite.IndentationDataSet(jpkfile)
+    idnt = ds1[0]
+    idnt.apply_preprocessing(["compute_tip_position"])
+
+    inparams = nanite.model.model_hertz_parabolic.get_parameter_defaults()
+    inparams["baseline"].vary = True
+    inparams["contact_point"].set(1.8e-5)
+
+    # Fit with absolute full range
+    idnt.fit_model(model_key="hertz_para",
+                   params_initial=inparams,
+                   range_x=(0, 0),
+                   range_type="absolute",
+                   x_axis="tip position",
+                   y_axis="force",
+                   segment="approach",
+                   weight_cp=False)
+    r1 = idnt.rate_quality(ts_label="zef18",
+                           method="Extra Trees")
+    assert idnt._rating[-1] == r1
+    r2 = idnt.rate_quality(ts_label="zef18",
+                           method="Extra Trees")
+    assert r1 == r2
+
+
+def test_rate_quality_disabled():
+    ds1 = nanite.IndentationDataSet(jpkfile)
+    idnt = ds1[0]
+    idnt.apply_preprocessing(["compute_tip_position"])
+
+    inparams = nanite.model.model_hertz_parabolic.get_parameter_defaults()
+    inparams["baseline"].vary = True
+    inparams["contact_point"].set(1.8e-5)
+
+    # Fit with absolute full range
+    idnt.fit_model(model_key="hertz_para",
+                   params_initial=inparams,
+                   range_x=(0, 0),
+                   range_type="absolute",
+                   x_axis="tip position",
+                   y_axis="force",
+                   segment="approach",
+                   weight_cp=False)
+
+    r1 = idnt.rate_quality(ts_label="zef18",
+                           method="none")
+    assert r1 == -1
+
+
+def test_rate_quality_nofit():
+    ds1 = nanite.IndentationDataSet(jpkfile)
+    idnt = ds1[0]
+    r1 = idnt.rate_quality()
+    assert r1 == -1
 
 
 if __name__ == "__main__":
