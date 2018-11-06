@@ -1,5 +1,6 @@
 """Test of basic opening functionalities"""
 import pathlib
+import shutil
 
 from nanite.read import read_jpk_meta
 
@@ -13,6 +14,7 @@ def test_meta_simple():
     tdir = read_jpk_meta.extract_jpk(jpkfilemap)
     hpfile = tdir / "index/0/segments/0/segment-header.properties"
     read_jpk_meta.get_seg_head_prop(hpfile)
+    shutil.rmtree(tdir, ignore_errors=True)
 
 
 def test_mata_single():

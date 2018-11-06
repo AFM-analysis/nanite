@@ -1,7 +1,7 @@
-"""Methods to open JPK data files and to obtain meta data.
-"""
+"""Methods to open JPK data files and to obtain meta data"""
 import functools
 import pathlib
+import shutil
 import tempfile
 import zipfile
 
@@ -14,8 +14,7 @@ class ReadJPKMetaKeyError(BaseException):
 
 
 def extract_jpk(path_jpk, props_only=False):
-    """ Extract the JPK data files and return the extracted path.
-    """
+    """Extract the JPK data files and return the extracted path"""
     tdir = tempfile.mkdtemp(prefix="nanite_jpk_")
     with zipfile.ZipFile(str(path_jpk)) as fd:
         if props_only:
@@ -123,6 +122,8 @@ def get_meta_data(jpk_file):
     # join curve types
     md["curve type"] = "-".join(md["curve type"])
     md["file"] = jpk_file
+    # cleanup
+    shutil.rmtree(tdir, ignore_errors=True)
     return md
 
 

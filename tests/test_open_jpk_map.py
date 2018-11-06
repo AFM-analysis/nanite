@@ -3,14 +3,13 @@ import pathlib
 
 import numpy as np
 
-from nanite.read import read_jpk, read_jpk_meta
+from nanite.read import read_jpk
 
 datadir = pathlib.Path(__file__).resolve().parent / "data"
 
 
 def test_open_jpk_map():
     jpkfile = datadir / "map0d_extracted.jpk-force-map"
-    read_jpk_meta.get_meta_data(jpkfile)
     data = read_jpk.load_jpk(jpkfile)
     force = data[0][0][0]["force"]
     height = data[0][0][0]["height (measured)"]
@@ -21,7 +20,6 @@ def test_open_jpk_map():
 
 def test_open_jpk_map2():
     jpkfile = datadir / "map2x2_extracted.jpk-force-map"
-    read_jpk_meta.get_meta_data(jpkfile)
     data = read_jpk.load_jpk(jpkfile)
     force = data[2][0][0]["force"]
     height = data[2][0][0]["height (measured)"]

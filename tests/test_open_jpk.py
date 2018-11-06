@@ -19,7 +19,7 @@ def test_open_jpk_simple():
         key = ch.stem
         chan_data[key] = read_jpk.load_dat_raw(ch)
     assert chan_data["height"][0] == 50.425720226584403
-    shutil.rmtree(str(tdir))
+    shutil.rmtree(tdir, ignore_errors=True)
 
 
 def test_open_jpk_callibration():
@@ -47,7 +47,7 @@ def test_open_jpk_conversion():
     assert chan_data["vDeflection"][0][0] == -5.145579192349918e-10
     assert chan_data["height"][0][0] == 2.8783223430683289e-05
     assert chan_data["strainGaugeHeight"][0][0] == 2.2815672438768612e-05
-    shutil.rmtree(str(tdir))
+    shutil.rmtree(tdir, ignore_errors=True)
 
 
 def test_get_single_curves():
