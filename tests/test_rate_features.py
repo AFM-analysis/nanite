@@ -96,6 +96,65 @@ def test_get_feature_funcs_order():
         assert np.allclose(func(feat), samp)
 
 
+def test_get_feature_names_bad_names():
+    idnt = setup_indent()
+    feat = features.IndentationFeatures(idnt)
+    try:
+        feat.get_feature_names(names=["feat_con_apr_flatness",
+                                      "feat_con_unknown"])
+    except ValueError:
+        pass
+    else:
+        assert False, "Unknown names should not work"
+
+
+def test_get_feature_names_bad_type():
+    idnt = setup_indent()
+    feat = features.IndentationFeatures(idnt)
+    try:
+        feat.get_feature_names(which_type="unknown")
+    except ValueError:
+        pass
+    else:
+        assert False, "Unknown types should not work"
+
+
+def test_get_feature_names_type():
+    idnt = setup_indent()
+    feat = features.IndentationFeatures(idnt)
+    # binary
+    names = feat.get_feature_names(which_type="binary")
+    for nn in names:
+        assert nn.startswith("feat_bin_")
+    # continuous
+    names = feat.get_feature_names(which_type="continuous")
+    for nn in names:
+        assert nn.startswith("feat_con_")
+
+
+def test_get_feature_names_mix():
+    idnt = setup_indent()
+    feat = features.IndentationFeatures(idnt)
+    # binary
+    names = feat.get_feature_names(which_type="binary",
+                                   names=["feat_bin_size",
+                                          "feat_con_idt_sum"])
+    assert len(names) == 1
+    assert names[0] == "feat_bin_size"
+
+
+def test_get_feature_names_indices():
+    idnt = setup_indent()
+    feat = features.IndentationFeatures(idnt)
+    # binary
+    names, idx = feat.get_feature_names(which_type="binary",
+                                        names=["feat_bin_size",
+                                               "feat_con_idt_sum"],
+                                        ret_indices=True)
+    nall = feat.get_feature_names()
+    assert idx[0] == nall.index(names[0])
+
+
 if __name__ == "__main__":
     # Run all tests
     loc = locals()
