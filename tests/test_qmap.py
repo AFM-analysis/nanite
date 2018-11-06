@@ -4,7 +4,7 @@ import warnings
 
 import numpy as np
 
-from nanite import model, qmap, IndentationDataSet
+from nanite import model, qmap, IndentationGroup
 
 
 datadir = pathlib.Path(__file__).resolve().parent / "data"
@@ -44,7 +44,7 @@ def test_feat_emod_nofit():
 def test_feat_emod_withfit():
     qm = qmap.QMap(jpkfile2)
     # fit data
-    for idnt in qm.ds:
+    for idnt in qm.group:
         idnt.apply_preprocessing(["compute_tip_position",
                                   "correct_force_offset",
                                   "correct_tip_offset",
@@ -75,7 +75,7 @@ def test_feat_rating():
     """Reproduces rating in figures 5K-M"""
     qm = qmap.QMap(jpkfile2)
     # fit data
-    for idnt in qm.ds:
+    for idnt in qm.group:
         idnt.apply_preprocessing(["compute_tip_position",
                                   "correct_force_offset",
                                   "correct_tip_offset"])
@@ -145,7 +145,7 @@ def test_get_qmap():
 
 
 def test_init_with_dataset():
-    ds = IndentationDataSet(jpkfile)
+    ds = IndentationGroup(jpkfile)
     qm = qmap.QMap(ds)
     assert qm.shape == (10, 10)
 

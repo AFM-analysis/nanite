@@ -13,7 +13,7 @@ jpkfile = datapath / "spot3-0192.jpk-force"
 
 
 def test_apply_preprocessing():
-    ds1 = nanite.IndentationDataSet(jpkfile)
+    ds1 = nanite.IndentationGroup(jpkfile)
     idnt = ds1[0]
     # apply preprocessing by manually setting the list
     idnt.preprocessing = ["compute_tip_position"]
@@ -26,7 +26,7 @@ def test_apply_preprocessing_remember_fit_properties():
     if the preprocessing changes. For user convenience,
     nanite remembers it. This is the test
     """
-    ds1 = nanite.IndentationDataSet(jpkfile)
+    ds1 = nanite.IndentationGroup(jpkfile)
     idnt = ds1[0]
     idnt.apply_preprocessing(["compute_tip_position"])
 
@@ -55,7 +55,7 @@ def test_apply_preprocessing_remember_fit_properties():
 
 
 def test_basic():
-    ds1 = nanite.IndentationDataSet(jpkfile)
+    ds1 = nanite.IndentationGroup(jpkfile)
     idnt = ds1[0]
     # tip-sample separation
     idnt.apply_preprocessing(["compute_tip_position"])
@@ -69,7 +69,7 @@ def test_basic():
 
 
 def test_export():
-    ds1 = nanite.IndentationDataSet(jpkfile)
+    ds1 = nanite.IndentationGroup(jpkfile)
     idnt = ds1[0]
     # tip-sample separation
     idnt.apply_preprocessing(["compute_tip_position"])
@@ -93,7 +93,7 @@ def test_export():
 
 
 def test_fitting():
-    ds1 = nanite.IndentationDataSet(jpkfile)
+    ds1 = nanite.IndentationGroup(jpkfile)
     idnt = ds1[0]
     idnt.apply_preprocessing(["compute_tip_position"])
 
@@ -146,7 +146,7 @@ def test_fitting():
 @pytest.mark.filterwarnings('ignore::nanite.fit.FitWarning')
 def test_get_initial_fit_parameters():
     """This is a convenience function"""
-    ds1 = nanite.IndentationDataSet(jpkfile)
+    ds1 = nanite.IndentationGroup(jpkfile)
     idnt = ds1[0]
     # A: sanity check
     try:
@@ -179,7 +179,7 @@ def test_get_model():
 
 
 def test_rate_quality_cache():
-    ds1 = nanite.IndentationDataSet(jpkfile)
+    ds1 = nanite.IndentationGroup(jpkfile)
     idnt = ds1[0]
     idnt.apply_preprocessing(["compute_tip_position"])
 
@@ -205,7 +205,7 @@ def test_rate_quality_cache():
 
 
 def test_rate_quality_disabled():
-    ds1 = nanite.IndentationDataSet(jpkfile)
+    ds1 = nanite.IndentationGroup(jpkfile)
     idnt = ds1[0]
     idnt.apply_preprocessing(["compute_tip_position"])
 
@@ -229,7 +229,7 @@ def test_rate_quality_disabled():
 
 
 def test_rate_quality_nofit():
-    ds1 = nanite.IndentationDataSet(jpkfile)
+    ds1 = nanite.IndentationGroup(jpkfile)
     idnt = ds1[0]
     r1 = idnt.rate_quality()
     assert r1 == -1

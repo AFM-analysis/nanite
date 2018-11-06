@@ -11,7 +11,7 @@ import lmfit
 import numpy as np
 from sklearn import model_selection
 
-from ..dataset import IndentationDataSet
+from ..group import IndentationGroup
 from . import rater
 
 
@@ -248,7 +248,7 @@ def load_hdf5(path, meta_only=False):
                 name = dkey + "_" + pathlib.Path(dset.attrs["path"]).name
                 dpath = pathlib.Path(tdir) / name
                 dbin.tofile(str(dpath))
-                dataset_dict[dkey] = IndentationDataSet(dpath)
+                dataset_dict[dkey] = IndentationGroup(dpath)
         # load individual curves
         for akey in h5["analysis"]:
             h5gr = h5["analysis"][akey]

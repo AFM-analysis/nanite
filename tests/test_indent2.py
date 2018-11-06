@@ -4,7 +4,7 @@ import pathlib
 import numpy as np
 import pytest
 
-from nanite import IndentationDataSet
+from nanite import IndentationGroup
 
 
 datapath = pathlib.Path(__file__).parent / "data"
@@ -14,7 +14,7 @@ jpkfile = datapath / "spot3-0192.jpk-force"
 @pytest.mark.filterwarnings('ignore::nanite.smooth.'
                             + 'DoubledSmoothingWindowWarning')
 def test_app_ret():
-    ds = IndentationDataSet(jpkfile)
+    ds = IndentationGroup(jpkfile)
     ar = ds[0]
     ar.apply_preprocessing(["smooth_height"])
     hms = np.array(ar.data["height (measured, smoothed)"])
@@ -26,7 +26,7 @@ def test_app_ret():
 
 
 def test_tip_sample_separation():
-    ds = IndentationDataSet(jpkfile)
+    ds = IndentationGroup(jpkfile)
     ar = ds[0]
     # This computation correctly reproduces the column
     # "Vertical Tip Position" as it is exported by the
@@ -38,7 +38,7 @@ def test_tip_sample_separation():
 
 
 def test_correct_app_ret():
-    ds = IndentationDataSet(jpkfile)
+    ds = IndentationGroup(jpkfile)
     ar = ds[0]
     ar.apply_preprocessing(["compute_tip_position",
                             "correct_split_approach_retract"])
@@ -47,7 +47,7 @@ def test_correct_app_ret():
 
 
 def test_correct_force_offset():
-    ds = IndentationDataSet(jpkfile)
+    ds = IndentationGroup(jpkfile)
     ar = ds[0]
     ar.apply_preprocessing(["compute_tip_position",
                             "correct_force_offset"])

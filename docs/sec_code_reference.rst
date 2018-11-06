@@ -18,9 +18,9 @@ at the module level.
     
     alias of :class:`nanite.indent.Indentation`
 
-.. class:: nanite.IndentationDataSet
+.. class:: nanite.IndentationGroup
     
-    alias of :class:`nanite.dataset.IndentationDataSet`
+    alias of :class:`nanite.group.IndentationGroup`
 
 .. class:: nanite.IndentationRater
     
@@ -41,12 +41,12 @@ Force-indentation data
    :undoc-members:
 
 
-.. _sec_ref_dataset:
+.. _sec_ref_group:
 
-Datasets
-========
+Groups
+======
 
-.. automodule:: nanite.dataset
+.. automodule:: nanite.group
    :members:
    :undoc-members:
 

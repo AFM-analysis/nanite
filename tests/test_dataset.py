@@ -1,7 +1,7 @@
 """Test of data set functionalities"""
 import pathlib
 
-from nanite import Indentation, IndentationDataSet
+from nanite import Indentation, IndentationGroup
 
 
 datadir = pathlib.Path(__file__).resolve().parent / "data"
@@ -9,8 +9,8 @@ jpkfile = datadir / "spot3-0192.jpk-force"
 
 
 def test_afm_data_set():
-    ds1 = IndentationDataSet(jpkfile)
-    ds2 = IndentationDataSet(jpkfile)
+    ds1 = IndentationGroup(jpkfile)
+    ds2 = IndentationGroup(jpkfile)
 
     ds3 = ds1 + ds2
     assert len(ds3) == 2

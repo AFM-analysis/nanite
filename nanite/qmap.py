@@ -3,7 +3,7 @@ import warnings
 
 import numpy as np
 
-from .dataset import IndentationDataSet
+from .group import IndentationGroup
 
 
 class DataMissingWarning(UserWarning):
@@ -16,7 +16,7 @@ class QMap(object):
 
         Parameters
         ----------
-        path_or_dataset: str or nanite.IndentationDataSet
+        path_or_dataset: str or nanite.IndentationGroup
             The path to the data file. The data format is determined
             using the extension of the file and the data is loaded
             with the correct method.
@@ -24,12 +24,12 @@ class QMap(object):
             A method that accepts a float between 0 and 1
             to externally track the process of loading the data.
         """
-        if isinstance(path_or_dataset, IndentationDataSet):
-            ds = path_or_dataset
+        if isinstance(path_or_dataset, IndentationGroup):
+            group = path_or_dataset
         else:
-            ds = IndentationDataSet(path=path_or_dataset, callback=callback)
-        #: Experimental dataset
-        self.ds = ds
+            group = IndentationGroup(path=path_or_dataset, callback=callback)
+        #: Indentation data (instance of :class:`nanite.IndentationGroup`)
+        self.group = group
 
         # Feature functions
         self._feature_funcs = {
@@ -98,7 +98,7 @@ class QMap(object):
     @functools.lru_cache(maxsize=32)
     def extent(self):
         """extent (x1, x2, y1, y2) [µm]"""
-        idnt0 = self.ds[0]
+        idnt0 = self.group[0]
         # get extent of the map
         sx = idnt0.metadata["grid size x [µm]"]
         sy = idnt0.metadata["grid size y [µm]"]
@@ -113,7 +113,7 @@ class QMap(object):
     @functools.lru_cache(maxsize=32)
     def shape(self):
         """shape of the map [px]"""
-        idnt0 = self.ds[0]
+        idnt0 = self.group[0]
         # get shape of the map
         shape = (idnt0.metadata["grid size x [px]"],
                  idnt0.metadata["grid size y [px]"]
@@ -170,7 +170,7 @@ class QMap(object):
             kx = "position x [µm]"
             ky = "position y [µm]"
         coords = []
-        for idnt in self.ds:
+        for idnt in self.group:
             # We assume that kx and ky are given. This has to be
             # ensured by the file format reader for qmaps.
             cc = [idnt.metadata[kx], idnt.metadata[ky]]
@@ -200,7 +200,7 @@ class QMap(object):
 
         map_data = []
         ffunc = self._feature_funcs[feature]
-        for idnt in self.ds:
+        for idnt in self.group:
             val = ffunc(idnt)
             map_data.append(val)
 

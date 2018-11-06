@@ -3,7 +3,7 @@ import pathlib
 
 import numpy as np
 
-from nanite import IndentationDataSet, model
+from nanite import IndentationGroup, model
 from nanite.rate import features
 
 
@@ -12,7 +12,7 @@ jpkfile = datadir / "spot3-0192.jpk-force"
 
 
 def setup_indent():
-    idnt = IndentationDataSet(jpkfile)[0]
+    idnt = IndentationGroup(jpkfile)[0]
     idnt.apply_preprocessing(["compute_tip_position"])
     inparams = model.model_hertz_parabolic.get_parameter_defaults()
     inparams["baseline"].vary = True
@@ -31,7 +31,7 @@ def setup_indent():
 
 
 def test_basic_nofit():
-    idnt = IndentationDataSet(jpkfile)[0]
+    idnt = IndentationGroup(jpkfile)[0]
     feat = features.IndentationFeatures(idnt)
     assert not feat.is_fitted
     assert not feat.is_valid

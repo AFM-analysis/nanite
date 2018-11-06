@@ -4,7 +4,7 @@ import pathlib
 import lmfit
 import numpy as np
 
-from nanite import IndentationDataSet
+from nanite import IndentationGroup
 from nanite.model import model_conical_indenter as hertz_conical
 
 
@@ -13,7 +13,7 @@ jpkfile = datadir / "spot3-0192.jpk-force"
 
 
 def test_app_ret():
-    ds = IndentationDataSet(jpkfile)
+    ds = IndentationGroup(jpkfile)
     ar = ds[0]
     ar.apply_preprocessing(["compute_tip_position",
                             "correct_force_offset"])
@@ -76,7 +76,7 @@ def test_app_ret():
 
 
 def test_fit_apret():
-    ds = IndentationDataSet(jpkfile)
+    ds = IndentationGroup(jpkfile)
     ar = ds[0]
     ar.apply_preprocessing(["compute_tip_position",
                             "correct_force_offset"])

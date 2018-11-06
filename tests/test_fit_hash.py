@@ -3,7 +3,7 @@ import pathlib
 import time
 
 import nanite
-from nanite import IndentationDataSet
+from nanite import IndentationGroup
 
 
 datapath = pathlib.Path(__file__).parent / "data"
@@ -11,7 +11,7 @@ jpkfile = datapath / "spot3-0192.jpk-force"
 
 
 def test_hash_time():
-    ds1 = IndentationDataSet(jpkfile)
+    ds1 = IndentationGroup(jpkfile)
     apret = ds1[0]
     apret.apply_preprocessing(["compute_tip_position"])
 

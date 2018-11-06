@@ -4,9 +4,9 @@ from .read import load_data
 from .indent import Indentation, type_indentation
 
 
-class IndentationDataSet(object):
+class IndentationGroup(object):
     def __init__(self, path=None, callback=None):
-        """Collection of Indentation
+        """Group of Indentation
 
         Parameters
         ----------
@@ -34,7 +34,7 @@ class IndentationDataSet(object):
                                             ))
 
     def __add__(self, ds):
-        out = IndentationDataSet()
+        out = IndentationGroup()
         out._mmlist = self._mmlist + ds._mmlist
         return out
 
@@ -52,7 +52,7 @@ class IndentationDataSet(object):
         return len(self._mmlist)
 
     def __repr__(self):
-        return "IndentationDataSet: {} ".format(self._mmlist.__repr__())
+        return "IndentationGroup: {} ".format(self._mmlist.__repr__())
 
     def append(self, item):
         self._mmlist.append(item)
@@ -60,10 +60,10 @@ class IndentationDataSet(object):
     def index(self, item):
         return self._mmlist.index(item)
 
-    def subset_with_path(self, path):
-        """Return a subset with measurements matching `path`"""
-        subset = IndentationDataSet()
+    def subgroup_with_path(self, path):
+        """Return a subgroup with measurements matching `path`"""
+        subgroup = IndentationGroup()
         for idnt in self:
             if pathlib.Path(idnt.path) == pathlib.Path(path):
-                subset.append(idnt)
-        return subset
+                subgroup.append(idnt)
+        return subgroup

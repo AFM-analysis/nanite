@@ -3,7 +3,7 @@
 import pathlib
 
 from nanite.fit import FitProperties, FP_DEFAULT, FitKeyError
-from nanite import IndentationDataSet
+from nanite import IndentationGroup
 from nanite import model
 
 
@@ -34,7 +34,7 @@ def test_fp_reset():
 
 
 def test_with_dataset():
-    ar = IndentationDataSet(jpkfile)[0]
+    ar = IndentationGroup(jpkfile)[0]
     # Initially, fit properties are not set
     assert not ar.fit_properties
     assert isinstance(ar.fit_properties, dict)
@@ -64,7 +64,7 @@ def test_with_dataset():
 
 
 def test_change_model_key():
-    ar = IndentationDataSet(jpkfile)[0]
+    ar = IndentationGroup(jpkfile)[0]
     # Prepprocessing
     ar.apply_preprocessing(["compute_tip_position",
                             "correct_tip_offset",
@@ -91,7 +91,7 @@ def test_wrong_key():
 
 
 def test_wrong_params_initial():
-    ar = IndentationDataSet(jpkfile)[0]
+    ar = IndentationGroup(jpkfile)[0]
     # Prepprocessing
     ar.apply_preprocessing(["compute_tip_position",
                             "correct_tip_offset",

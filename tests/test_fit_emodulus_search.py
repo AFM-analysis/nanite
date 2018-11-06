@@ -4,7 +4,7 @@ import time
 
 import numpy as np
 
-from nanite import IndentationDataSet
+from nanite import IndentationGroup
 from nanite.fit import FitDataError
 
 
@@ -14,7 +14,7 @@ badjpk = datapath / "bad_GWATspot1-data-2017.10.17-16.39.42.396-5.jpk-force"
 
 
 def test_emodulus_search():
-    ds = IndentationDataSet(jpkfile)
+    ds = IndentationGroup(jpkfile)
     ar = ds[0]
     ar.apply_preprocessing(["compute_tip_position",
                             "correct_force_offset",
@@ -65,7 +65,7 @@ def test_cache_emodulus():
     # Check that the fitting procedure does not perform unneccessary
     # double fits and uses the cached variables for emoduli and
     # minimal indentations.
-    ds = IndentationDataSet(jpkfile)
+    ds = IndentationGroup(jpkfile)
     ar = ds[0]
     ar.apply_preprocessing(["compute_tip_position",
                             "correct_force_offset",
@@ -99,7 +99,7 @@ def test_cache_emodulus():
 def test_fit_data_error():
     # a FitDataError is raised when it is not possible to compute an
     # E(delta) curve:
-    ds = IndentationDataSet(badjpk)
+    ds = IndentationGroup(badjpk)
     ar = ds[0]
     ar.apply_preprocessing(["compute_tip_position",
                             "correct_force_offset",

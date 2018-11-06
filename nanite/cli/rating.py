@@ -13,7 +13,7 @@ import matplotlib.image as mpimg
 import tifffile
 
 from ..indent import Indentation
-from ..dataset import IndentationDataSet
+from ..group import IndentationGroup
 from ..read import get_data_paths, get_data_paths_enum
 from ..rate import io as rio
 
@@ -186,8 +186,8 @@ def fit():
             ptsv.open(mode="a") as ts:
         for pp in datapaths:
             print("Processing: {}".format(pp))
-            ds = IndentationDataSet(pp)
-            for idnt in ds:
+            grp = IndentationGroup(pp)
+            for idnt in grp:
                 fit_data(idnt)
                 # save statistics
                 stats = [str(dd[1](idnt)) for dd in dlist]
@@ -211,7 +211,7 @@ def fit_data(path, enum=0, profile_path=PROFILE_PATH):
     if isinstance(path, Indentation):
         idnt = path
     else:
-        idnt = IndentationDataSet(path)[enum]
+        idnt = IndentationGroup(path)[enum]
 
     pf = Profile(path=profile_path, create=False)
 

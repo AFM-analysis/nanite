@@ -6,7 +6,7 @@ import tempfile
 import h5py
 import numpy as np
 
-from nanite import model, IndentationDataSet
+from nanite import model, IndentationGroup
 from nanite.rate.io import save_hdf5, load_hdf5
 
 
@@ -15,7 +15,7 @@ jpkfile = datadir / "spot3-0192.jpk-force"
 
 
 def test_write():
-    ds1 = IndentationDataSet(jpkfile)
+    ds1 = IndentationGroup(jpkfile)
     apret = ds1[0]
     apret.apply_preprocessing(["compute_tip_position"])
 
@@ -57,7 +57,7 @@ def test_write():
 
 
 def test_write_read():
-    ds1 = IndentationDataSet(jpkfile)
+    ds1 = IndentationGroup(jpkfile)
     apret = ds1[0]
     apret.apply_preprocessing(["compute_tip_position"])
 
