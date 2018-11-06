@@ -1,6 +1,6 @@
 include CHANGELOG
 include LICENSE
 include README.rst
-recursive-include tests *.jpk-force .jpk-force-map *.py
+recursive-include tests *.jpk-force *.jpk-force-map *.py
 recursive-include nanite *.txt
 
