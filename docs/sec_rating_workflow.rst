@@ -42,3 +42,4 @@ Generating the training set
 Applying the training set
 =========================
 - set file system location of training set in rate_quality
+- ref to scripting example

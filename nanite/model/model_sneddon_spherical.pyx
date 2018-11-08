@@ -19,23 +19,31 @@ def get_parameter_defaults():
 def hertz_spherical(double E, delta, double R, double nu, double contact_point=0, double baseline=0):
     """Hertz model for Spherical indenter - modified by Sneddon
 
-    F = E/(1-nu**2)*((R^2+a^2)/2*ln((R+a)/(R-a))-a*R)
-    delta - contact_point = a/2*ln((R+a)/(R-a))
-    
+
+    .. math::
+
+        F &= \\frac{E}{1-\\nu^2} \\left( \\frac{R^2+a^2}{2} \\ln \\! \\left(
+             \\frac{R+a}{R-a}\\right) -aR  \\right)\\\\
+        \\delta &= \\frac{a}{2} \\ln
+             \\! \\left(\\frac{R+a}{R-a}\\right)
+
+    (:math:`a` is the radius of the circular contact area between bead
+    and sample.)
+
     Parameters
     ----------
     E: float
         Young's modulus [N/m²]
     delta: 1d ndarray
-        Point of maximal indentation at given force [m]
+        Indentation [m]
     R: float
-        Radius of tip curvature [m]
+        Tip radius [m]
     nu: float
-        Poisson's ratio; incompressible materials have nu=0.5 (rubber)
+        Poisson's ratio
     contact_point: float
-        Indentation offset
+        Indentation offset [m]
     baseline: float
-        Force offset
+        Force offset [N]
     negindent: bool
         If `True`, will assume that the indentation value(s) given by
         `delta` are negative and must be multiplied by -1.
@@ -45,14 +53,9 @@ def hertz_spherical(double E, delta, double R, double nu, double contact_point=0
     F: float
         Force [N]
 
-    Notes
-    -----
-    These approximations are made by the Hertz model:
-    - sample is isotropic
-    - sample is linear elastic solid
-    - sample extended infinitely in half space
-    - indenter is not deformable
-    - no additional interactions between sample and indenter   
+    References
+    ----------
+    Sneddon 1965 :cite:`Sneddon1965`
     """
     cdef double a
     cdef int ii
@@ -90,7 +93,7 @@ cdef double _get_a(double R, double delta, double accuracy=1e-12):
 
 
 def get_a(R, delta, accuracy=1e-12):
-    """Makes method _get_a available for pytest"""
+    """Compute the contact area radius (wrapper)"""
     return _get_a(R, delta, accuracy)
 
 
@@ -101,7 +104,7 @@ cdef double _delta_of_a(double a, double R):
 
 
 def delta_of_a(a, R):
-    """Makes method _delta_of_a available for pytest"""
+    """Compute indentation from contact area radius (wrapper)"""
     return _delta_of_a(a, R)
 
 
@@ -151,11 +154,10 @@ def residual(params, delta, force, weight_cp=5e-7):
         resid *= weights
     return resid
 
-
-model_name = "spherical indenter (Sneddon)"
+model_doc = hertz_spherical.__doc__
 model_key = "sneddon_spher"
+model_name = "spherical indenter (Sneddon)"
 parameter_keys = ["E", "R", "nu", "contact_point", "baseline"]
 parameter_names = ["Young's Modulus", "Tip Radius", "Poisson Ratio", "Contact Point", "Force Baseline"]
 valid_axes_x = ["tip position"]
 valid_axes_y = ["force"]
-doc = hertz_spherical.__doc__

@@ -13,6 +13,7 @@ Documentation
 
    sec_getting_started
    sec_cli
+   sec_fitting_guide
    sec_rating_workflow
    sec_examples
    sec_code_reference

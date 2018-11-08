@@ -106,3 +106,4 @@ venv.bak/
 *.c
 _version_save.py
 *.bib.bak
+*.bib.sav
