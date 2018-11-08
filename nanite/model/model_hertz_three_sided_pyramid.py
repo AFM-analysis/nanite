@@ -24,7 +24,7 @@ def hertz_three_sided_pyramid(E, delta, alpha, nu, contact_point=0,
     .. math::
 
         F = 0.887 \\tan\\alpha
-            \cdot \\frac{E}{1-\\nu^2}
+            \\cdot \\frac{E}{1-\\nu^2}
             \\delta^2
 
     Parameters

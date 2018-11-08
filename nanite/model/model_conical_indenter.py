@@ -122,4 +122,3 @@ parameter_names = ["Young's Modulus", "Half Cone Angle",
                    "Poisson Ratio", "Contact Point", "Force Baseline"]
 valid_axes_x = ["tip position"]
 valid_axes_y = ["force"]
-
