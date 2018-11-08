@@ -86,9 +86,8 @@ class ModelTable(Base):
 
         for kk in keys:
             mod = model.models_available[kk]
-            mloc = mod.__name__.split(".")[-1]
             ref = "sec_ref_model_{}".format(kk)
-            details = ":ref:`code reference <{}>`".format(mloc, ref)
+            details = ":ref:`code reference <{}>`".format(ref)
             rst.append("    {}\t {}\t {}".format(kk, mod.model_name, details))
 
         rst.append("")
