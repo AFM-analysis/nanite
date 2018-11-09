@@ -22,7 +22,7 @@ install:
   # install
   - "appveyor-retry pip install wheel"
   # dependencies
-  - "appveyor-retry pip install ."
+  - "appveyor-retry pip install .[CLI]"
   - "python -m pip freeze"
 
 build: off

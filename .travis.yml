@@ -19,7 +19,7 @@ install:
 # install binary packages
 - travis_retry pip install --upgrade pip setuptools wheel
 # install all dependencies
-- travis_retry pip install -e .
+- travis_retry pip install -e .[CLI]
 # for tests:
 - travis_retry pip install codecov coverage
 - pip freeze
