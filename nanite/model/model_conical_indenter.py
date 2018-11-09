@@ -119,6 +119,7 @@ model_key = "hertz_cone"
 model_name = "conical indenter (Hertz)"
 parameter_keys = ["E", "alpha", "nu", "contact_point", "baseline"]
 parameter_names = ["Young's Modulus", "Half Cone Angle",
-                   "Poisson Ratio", "Contact Point", "Force Baseline"]
+                   "Poisson's Ratio", "Contact Point", "Force Baseline"]
+parameter_units = ["Pa", "°", "", "m", "N"]
 valid_axes_x = ["tip position"]
 valid_axes_y = ["force"]

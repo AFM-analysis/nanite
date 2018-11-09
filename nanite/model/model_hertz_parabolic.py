@@ -119,6 +119,7 @@ model_key = "hertz_para"
 model_name = "parabolic indenter (Hertz)"
 parameter_keys = ["E", "R", "nu", "contact_point", "baseline"]
 parameter_names = ["Young's Modulus", "Tip Radius",
-                   "Poisson Ratio", "Contact Point", "Force Baseline"]
+                   "Poisson's Ratio", "Contact Point", "Force Baseline"]
+parameter_units = ["Pa", "m", "", "m", "N"]
 valid_axes_x = ["tip position"]
 valid_axes_y = ["force"]

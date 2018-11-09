@@ -64,6 +64,7 @@ extensions = ['sphinx.ext.autodoc',
               'sphinxarg.ext',
               'fancy_include',
               'nanite_models',
+              'nanite_preprocs',
               'github_changelog',
               ]
 

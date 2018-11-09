@@ -53,7 +53,7 @@ class IndentationPreprocessor(object):
 
     @staticmethod
     def compute_tip_position(apret):
-        """Adds the column "tip position" to `self.data`
+        """Compute the tip-sample separation
 
         This computation correctly reproduces the column
         "Vertical Tip Position" as it is exported by the
@@ -67,7 +67,7 @@ class IndentationPreprocessor(object):
 
     @staticmethod
     def correct_force_offset(apret):
-        """Correct the force offset with the average baseline value.
+        """Correct the force offset with an average baseline value
         """
         idp = apret.estimate_contact_point_index()
         if idp:
@@ -87,7 +87,7 @@ class IndentationPreprocessor(object):
 
     @staticmethod
     def correct_split_approach_retract(apret):
-        """Correctly split the approach and retract curves
+        """Split the approach and retract curves (farthest point method)
 
         Approach and retract curves are defined by the microscope. When the
         direction of piezo movement is flipped, the force at the sample tip
@@ -127,7 +127,7 @@ class IndentationPreprocessor(object):
 
     @staticmethod
     def smooth_height(apret):
-        """Smooth height data
+        """Smoothen height data
 
         For the columns "height (measured)" and "tip position",
         and for the approach and retract data separately, this

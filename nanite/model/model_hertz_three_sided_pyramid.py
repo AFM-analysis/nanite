@@ -124,6 +124,7 @@ model_key = "hertz_pyr3s"
 model_name = "pyramidal indenter, three-sided (Hertz)"
 parameter_keys = ["E", "alpha", "nu", "contact_point", "baseline"]
 parameter_names = ["Young's Modulus", "Face Angle",
-                   "Poisson Ratio", "Contact Point", "Force Baseline"]
+                   "Poisson's Ratio", "Contact Point", "Force Baseline"]
+parameter_units = ["Pa", "°", "", "m", "N"]
 valid_axes_x = ["tip position"]
 valid_axes_y = ["force"]

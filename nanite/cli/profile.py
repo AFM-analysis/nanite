@@ -8,7 +8,7 @@ from .. import model
 from .. import preproc
 
 
-APP_DIR = pathlib.Path(appdirs.user_cache_dir(appname="python-nanite"))
+APP_DIR = pathlib.Path(appdirs.user_config_dir(appname="nanite"))
 PROFILE_PATH = APP_DIR / "cli_profile.cfg"
 
 DEFAULTS = {"model_key": "sneddon_spher_approx",
@@ -151,10 +151,14 @@ def setup_profile():
 
     print("\nSet fit parameters:")
     params = pf.get_fit_params()
-    for p in params:
+    usedmod = model.models_available[pf["model_key"]]
+    for ii, p in enumerate(params):
+        unit = usedmod.parameter_units[ii]
+        if unit:
+            unit = " [{}]".format(unit)
         value = input(
-            "- initial value for {} (currently '{}'): ".format(
-                p, params[p].value))
+            "- initial value for {}{} (currently '{}'): ".format(
+                p, unit, params[p].value))
         if value:
             params[p].value = float(value)
         while True:

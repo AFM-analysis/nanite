@@ -158,6 +158,8 @@ model_doc = hertz_spherical.__doc__
 model_key = "sneddon_spher"
 model_name = "spherical indenter (Sneddon)"
 parameter_keys = ["E", "R", "nu", "contact_point", "baseline"]
-parameter_names = ["Young's Modulus", "Tip Radius", "Poisson Ratio", "Contact Point", "Force Baseline"]
+parameter_names = ["Young's Modulus", "Tip Radius",
+                   "Poisson's Ratio", "Contact Point", "Force Baseline"]
+parameter_units = ["Pa", "m", "", "m", "N"]
 valid_axes_x = ["tip position"]
 valid_axes_y = ["force"]
