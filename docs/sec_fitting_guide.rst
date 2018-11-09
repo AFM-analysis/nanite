@@ -58,8 +58,8 @@ Workflow
 ========
 There are two ways to fit force-indentation curves with nanite: via the
 :ref:`command line interface (CLI) <sec_cli>` or via Python scripting. The
-CLI does not require programming knowledge and Python scripting allows
-fine-tuning.
+CLI does not require programming knowledge while Python-scripting allows
+fine-tuning and straight-forward automation.
 
 Command-line usage
 ------------------
@@ -148,9 +148,9 @@ or the Windows Photo Viewer) to the directory ``output_path``.
 Scripting usage
 ---------------
 
-Using nanite in a Python script for data fitting is straight forward:
-Load the data; ``group`` is an instance of
-:class:`nanite.IndentationGroup`.
+Using nanite in a Python script for data fitting is straight forward.
+First, load the data; ``group`` is an instance of
+:class:`nanite.IndentationGroup`:
 
 .. ipython::
 
@@ -158,8 +158,8 @@ Load the data; ``group`` is an instance of
 
     In [2]: group = nanite.load_group("data/force-save-example.jpk-force")
 
-Obtain the first :class:`nanite.Indentation` instance and apply
-the preprocessing.
+Second, obtain the first :class:`nanite.Indentation` instance and apply
+the preprocessing:
 
 .. ipython::
 
@@ -169,7 +169,7 @@ the preprocessing.
        ...:                           "correct_force_offset",
        ...:                           "correct_tip_offset"])
 
-Setup the model parameters.
+Now, setup the model parameters:
 
 .. ipython::
 
@@ -183,7 +183,7 @@ Setup the model parameters.
 
     In [9]: params.pretty_print()
 
-Fit the model.
+Finally, fit the model:
 
 .. ipython::
 
