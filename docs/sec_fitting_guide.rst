@@ -194,5 +194,6 @@ Finally, fit the model:
 The fitting results are identical to those shown in
 :numref:`figure %s above <fig-nanite-fit-example>`.
 
-Note that, amongst other things, preprocessing can also be specified in the
+Note that, amongst other things, preprocessing can also be specified
+directly in the
 :func:`fit_model <nanite.indent.Indentation.fit_model>` function.

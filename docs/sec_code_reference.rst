@@ -130,7 +130,11 @@ In addition, each submodule contains the following attributes:
 
 .. attribute:: nanite.model.model_submodule.parameter_names
 
-    Parameter names of the model with units for higher-level applications.
+    Parameter names of the model for higher-level applications.
+
+.. attribute:: nanite.model.model_submodule.parameter_names
+
+    Parameter units for higher-level applications.
 
 
 .. nanite_model_doc::
