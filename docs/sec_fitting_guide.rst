@@ -131,8 +131,8 @@ Finally, to perform the actual fitting, use the command-line script
     nanite-fit data_path output_path
 
 This command will recursively search the input folder ``data_path`` for
-data files, fit the data with the parameters set above and write the
-statistics (*statistics.tsv*) and visualizations of the fit
+data files, fit the data with the parameters in the profile, and write the
+statistics (*statistics.tsv*) and visualizations of the fits
 (multi-page TIFF file *plots.tif*, open with `Fiji <https://fiji.sc>`_
 or the Windows Photo Viewer) to the directory ``output_path``. 
 
