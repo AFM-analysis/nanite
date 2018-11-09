@@ -1,4 +1,6 @@
 0.9.0
+ - ref: new method `nanite.load_group` for loading experimental data
+ - ref: new class read.data.IndentationData for managing data
  - ref: replace dataset.IndentationDataSet with group.IndentationGroup
    to avoid ambiguities
  - fix: add missing "zef18" training set
@@ -6,5 +8,6 @@
  - enh: add `nanite-generate-training-set` command line program
  - tests: reduce warnings and increase coverage
  - cleanup: old docs in nanite.rate.io
+ - docs: major update using helper extensions
 0.8.0
  - initial release

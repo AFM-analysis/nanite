@@ -1,8 +1,8 @@
 .. _sec_examples:
 
-========
-Examples
-========
+==================
+Scripting examples
+==================
 
 .. toctree::
   :maxdepth: 2

@@ -96,7 +96,7 @@ simply hit enter without typing anything. A typical output will look like this:
     Set fit parameters:
     - initial value for E [Pa] (currently '3000.0'): 50 
       vary E (currently 'True'): 
-    - initial value for R [m] (currently '1e-5'): 18.64e-06 
+    - initial value for R [m] (currently '1e-5'): 18.64e-06
       vary R (currently 'False'): 
     - initial value for nu (currently '0.5'): 
       vary nu (currently 'False'): 
@@ -136,6 +136,7 @@ statistics (*statistics.tsv*) and visualizations of the fits
 (multi-page TIFF file *plots.tif*, open with `Fiji <https://fiji.sc>`_
 or the Windows Photo Viewer) to the directory ``output_path``. 
 
+.. _fig-nanite-fit-example:
 .. figure:: img/nanite-fit-example.jpg
 
     Example image generated with ``nanite-fit``. Note that the dataset
@@ -144,5 +145,54 @@ or the Windows Photo Viewer) to the directory ``output_path``.
     information on rating.
 
 
-Scripting example
------------------
+Scripting usage
+---------------
+
+Using nanite in a Python script for data fitting is straight forward:
+Load the data; ``group`` is an instance of
+:class:`nanite.IndentationGroup`.
+
+.. ipython::
+
+    In [1]: import nanite
+
+    In [2]: group = nanite.load_group("data/force-save-example.jpk-force")
+
+Obtain the first :class:`nanite.Indentation` instance and apply
+the preprocessing.
+
+.. ipython::
+
+    In [3]: idnt = group[0]
+
+    In [4]: idnt.apply_preprocessing(["compute_tip_position",
+       ...:                           "correct_force_offset",
+       ...:                           "correct_tip_offset"])
+
+Setup the model parameters.
+
+.. ipython::
+
+    In [5]: idnt.fit_properties["model_key"] = "sneddon_spher"
+
+    In [6]: params = idnt.get_initial_fit_parameters()
+
+    In [7]: params["E"].value = 50
+
+    In [8]: params["R"].value = 18.64e-06
+
+    In [9]: params.pretty_print()
+
+Fit the model.
+
+.. ipython::
+
+    In [10]: idnt.fit_model(model_key="sneddon_spher", params_initial=params, weight_cp=2e-6)
+
+    In [11]: idnt.fit_properties["params_fitted"].pretty_print()
+
+The fitting results are identical to those shown in
+:numref:`figure %s above <fig-nanite-fit-example>`.
+
+Note that, amongst other things, preprocessing can also be specified in the
+:func:`fit_model <nanite.indent.Indentation.fit_model>` function.

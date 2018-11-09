@@ -1,6 +1,4 @@
-from .group import IndentationGroup  # noqa: F401
-from . import fit  # noqa: F401
-from .indent import Indentation, type_indentation  # noqa: F401
-from . import model  # noqa: F401
-from .rate import IndentationRater  # noqa: F401
+from .group import IndentationGroup, load_group  # noqa: F401
+from .indent import Indentation  # noqa: F401
 from .qmap import QMap  # noqa: F401
+from .rate import IndentationRater  # noqa: F401

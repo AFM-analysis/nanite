@@ -4,7 +4,7 @@ Usage
 -----
 Directives:
 
-Table of all preprocessing methods available in nanite
+Table of all preprocessors available in nanite
 
    .. nanite_preproc_table::
 

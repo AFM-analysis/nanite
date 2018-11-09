@@ -1,7 +1,29 @@
 import pathlib
 
+from .indent import Indentation
 from .read import load_data
-from .indent import Indentation, type_indentation
+
+
+def load_group(path, callback=None):
+    """Load indentation data from disk
+
+    Parameters
+    ----------
+    path: path-like
+        Path to experimental data
+    callback: callable or None
+        Callback function for tracking loading progress
+
+    Returns
+    -------
+    group: nanite.IndetationGroup
+        Indentation group with force-indentation data
+    """
+    data = load_data(path, callback=callback)
+    grp = IndentationGroup()
+    for dd in data:
+        grp.append(Indentation(dd))
+    return grp
 
 
 class IndentationGroup(object):
@@ -21,17 +43,7 @@ class IndentationGroup(object):
         self._mmlist = []
 
         if path is not None:
-            measurements = load_data(path, callback=callback)
-            for enum, m in enumerate(measurements):
-                app, ret = m
-                metadata = app[1]
-                if metadata["curve type"] in type_indentation:
-                    self.append(Indentation(approach=app[0],
-                                            retract=ret[0],
-                                            metadata=metadata,
-                                            path=path,
-                                            enum=enum
-                                            ))
+            self += load_group(path, callback=callback)
 
     def __add__(self, ds):
         out = IndentationGroup()

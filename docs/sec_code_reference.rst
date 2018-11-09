@@ -30,6 +30,10 @@ at the module level.
     
     alias of :class:`nanite.qmap.QMap`
 
+.. function:: nanite.load_group
+
+    alias of :class:`nanite.group.load_group`
+
 
 .. _sec_ref_indent:
 

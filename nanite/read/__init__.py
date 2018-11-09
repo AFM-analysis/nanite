@@ -1,6 +1,7 @@
 import pathlib
 
 from . import read_jpk
+from .data import IndentationData, type_indentation
 
 #: All available readers and associated file extensions
 readers = [(read_jpk.load_jpk, read_jpk.extensions),
@@ -40,7 +41,7 @@ def get_data_paths_enum(path, skip_errors=False):
     enumpaths = []
     for pp in paths:
         try:
-            data = load_data(pp)
+            data = load_raw_data(pp)
         except BaseException:
             if skip_errors:
                 continue
@@ -52,7 +53,24 @@ def get_data_paths_enum(path, skip_errors=False):
 
 
 def load_data(path, callback=None):
-    """Load an experimental data file
+    """Load data and return list of Indentation"""
+    measurements = load_raw_data(path, callback=callback)
+    data = []
+    for enum, m in enumerate(measurements):
+        app, ret = m
+        metadata = app[1]
+        if metadata["curve type"] in type_indentation:
+            data.append(IndentationData(approach=app[0],
+                                        retract=ret[0],
+                                        metadata=metadata,
+                                        path=path,
+                                        enum=enum
+                                        ))
+    return data
+
+
+def load_raw_data(path, callback=None):
+    """Load raw data
 
     Parameters
     ----------
