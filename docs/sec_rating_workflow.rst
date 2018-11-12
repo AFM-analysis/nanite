@@ -118,6 +118,11 @@ look like this:
 
     Done. You may edit all parameters in '/home/user/.config/nanite/cli_profile.cfg'.
 
+When running ``nanite-fit data_path output_path`` now, the new training
+set is used for rating. The new ratings are stored in
+``output_path/statistics.tsv`` and can be used for further analysis,
+e.g. quality assessment or sorting.
+
 If you would like to employ a user-defined training set in a Python script,
 you may do so by specifying the training set path as an argument to
 :func:`nanite.Indentation.rate_quality <nanite.indent.Indentation.rate_quality>`.

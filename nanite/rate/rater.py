@@ -140,7 +140,7 @@ class IndentationRater(IndentationFeatures):
 
     @classmethod
     def load_training_set(cls, path=None, names=None,
-                          which_type=["continuous", "discrete"],
+                          which_type=["continuous"],
                           remove_nan=True, ret_names=False,
                           ret_sample_weights=False):
         """
@@ -198,9 +198,9 @@ class IndentationRater(IndentationFeatures):
             bsamples = []
             fnames = self.get_feature_names(
                 names=self.names,
-                which_type=["continuous", "discrete"])
+                which_type=["continuous"])
             for samp in samples:
-                fsamp = []  # continuous or discrete samples
+                fsamp = []  # continuous samples
                 bsamp = []  # binary samples
                 for ii, name in enumerate(self.names):
                     if name in fnames:
@@ -215,13 +215,14 @@ class IndentationRater(IndentationFeatures):
                 datasets = [datasets]
             fsamples = []
             bsamples = []
-            # float features
+            # continuous features
             for idnt in datasets:
                 samp = self.compute_features(
                     idnt=idnt,
                     names=self.names,
-                    which_type=["continuous", "discrete"])
+                    which_type=["continuous"])
                 fsamples.append(samp)
+            # binary features
             for idnt in datasets:
                 bsamp = self.compute_features(idnt=idnt,
                                               names=self.names,

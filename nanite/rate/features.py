@@ -4,7 +4,7 @@ import numpy as np
 import scipy.ndimage.filters as spfilt
 
 #: Valid keyword arguments for feature types
-VALID_FEATURE_TYPES = ["all", "binary", "continuous", "discrete"]
+VALID_FEATURE_TYPES = ["all", "binary", "continuous"]
 
 
 class IndentationFeatures(object):
@@ -165,8 +165,6 @@ class IndentationFeatures(object):
                 fstart = "feat_"
             elif which_type == "binary":
                 fstart = "feat_bin_"
-            elif which_type == "discrete":
-                fstart = "feat_dis_"
             elif which_type == "continuous":
                 fstart = "feat_con_"
             ffuncs = inspect.getmembers(cls, lambda a: (inspect.isroutine(a)))
