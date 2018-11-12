@@ -61,6 +61,8 @@ There are two ways to fit force-indentation curves with nanite: via the
 CLI does not require programming knowledge while Python-scripting allows
 fine-tuning and straight-forward automation.
 
+.. _sec_fit_workflow:
+
 Command-line usage
 ------------------
 First, setup up a fitting profile by running (e.g. in a command prompt
@@ -114,7 +116,20 @@ simply hit enter without typing anything. A typical output will look like this:
     
     Suppress residuals near contact point:
     size [µm] (currently '0.5'): 2
-    
+
+    Select training set:
+    training set (path or name) (currently 'zef18'): 
+
+    Select rating regressor:
+      1: AdaBoost
+      2: Decision Tree
+      3: Extra Trees
+      4: Gradient Tree Boosting
+      5: Random Forest
+      6: SVR (RBF kernel)
+      7: SVR (linear kernel)
+    (currently '3'):
+
     Done. You may edit all parameters in '/home/user/.config/nanite/cli_profile.cfg'.
 
 In this example, the only modifications of the default values are
@@ -122,7 +137,8 @@ the initial value of the Young's modulus (50 Pa),
 the value for the tip radius (18.64 µm),
 and the suppression of residuals near the contact point with a ±2 µm interval.
 When ``nanite-setup-profile`` is run again, it will use the values from the
-previous run as default values.
+previous run as default values. The training set and rating regressor
+options are discussed in the :ref:`rating workflow <sec_rating>`.
 
 Finally, to perform the actual fitting, use the command-line script
 
@@ -137,7 +153,7 @@ statistics (*statistics.tsv*) and visualizations of the fits
 or the Windows Photo Viewer) to the directory ``output_path``. 
 
 .. _fig-nanite-fit-example:
-.. figure:: img/nanite-fit-example.jpg
+.. figure:: img/nanite-fit-example.png
 
     Example image generated with ``nanite-fit``. Note that the dataset
     is already rated with the default method "Extra Tree" and the

@@ -6,6 +6,7 @@ import numpy as np
 import pytest
 
 import nanite
+import nanite.model
 
 
 datapath = pathlib.Path(__file__).parent / "data"
@@ -196,11 +197,11 @@ def test_rate_quality_cache():
                    y_axis="force",
                    segment="approach",
                    weight_cp=False)
-    r1 = idnt.rate_quality(ts_label="zef18",
-                           method="Extra Trees")
+    r1 = idnt.rate_quality(training_set="zef18",
+                           regressor="Extra Trees")
     assert idnt._rating[-1] == r1
-    r2 = idnt.rate_quality(ts_label="zef18",
-                           method="Extra Trees")
+    r2 = idnt.rate_quality(training_set="zef18",
+                           regressor="Extra Trees")
     assert r1 == r2
 
 
@@ -223,8 +224,8 @@ def test_rate_quality_disabled():
                    segment="approach",
                    weight_cp=False)
 
-    r1 = idnt.rate_quality(ts_label="zef18",
-                           method="none")
+    r1 = idnt.rate_quality(training_set="zef18",
+                           regressor="none")
     assert r1 == -1
 
 

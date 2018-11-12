@@ -6,7 +6,7 @@ import numpy as np
 
 from .. import model
 from .. import preproc
-
+from .. import rate
 
 APP_DIR = pathlib.Path(appdirs.user_config_dir(appname="nanite"))
 PROFILE_PATH = APP_DIR / "cli_profile.cfg"
@@ -19,8 +19,8 @@ DEFAULTS = {"model_key": "sneddon_spher_approx",
             "range_x": [0, 0],
             "segment": "approach",
             "weight_cp": 5e-7,
-            "rating method": "Extra Trees",
-            "rating train set": "zef18",
+            "rating regressor": "Extra Trees",
+            "rating training set": "zef18",
             }
 
 
@@ -202,7 +202,42 @@ def setup_profile():
     if wcp:
         pf["weight_cp"] = float(wcp) * 1e-6
 
-    print("\nDone. You may edit all parameters in '{}'.".format(pf.path))
+    print("\nSelect training set:")
+    cts = pf["rating training set"]
+    while True:
+        ts = input("training set (path or label) "
+                   + "(currently '{}'): ".format(cts))
+        if ts:
+            # Test whether the training set is implemented in nanite or
+            # whether the data exist and are complete.
+            ir = rate.IndentationRater
+            if not pathlib.Path(ts).exists():
+                pp = ir.get_training_set_path(ts)
+            else:
+                pp = ts
+            try:
+                ir.load_training_set(path=pp)
+            except OSError:
+                print("No training set found for '{}'!".format(ts))
+                continue
+            else:
+                pf["rating training set"] = ts
+                break
+        else:
+            break
+
+    print("\nSelect rating regressor:")
+    regs = rate.reg_names
+    rcur = pf["rating regressor"]
+    rcurid = regs.index(rcur) + 1
+    for ii, st in enumerate(regs):
+        print("  {}: {}".format(ii+1, st))
+    rstp = input("(currently '{}'): ".format(rcurid))
+    if rstp:
+        pf["rating regressor"] = regs[int(rstp) - 1]
+
+    print("\nDone. You may edit all parameters in '{}' ".format(pf.path)
+          + "or alternatively run nanite-setup-profile again.")
 
 
 def setup_profile_parser():

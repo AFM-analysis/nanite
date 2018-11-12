@@ -246,6 +246,16 @@ class IndentationRater(IndentationFeatures):
         return np.array(ratings).flatten()
 
 
+def get_available_training_sets():
+    """List of internal training sets"""
+    data_loc = "nanite"
+    resp_path = resource_filename(data_loc, "rate")
+    avail = []
+    for pp in pathlib.Path(resp_path).glob("ts_*"):
+        avail.append(pp.name[3:])
+    return sorted(avail)
+
+
 def get_rater(regressor, training_set="zef18", names=None,
               lda=None, **reg_kwargs):
     """Convenience method to get a rater
@@ -265,18 +275,19 @@ def get_rater(regressor, training_set="zef18", names=None,
     irater: IndentationRater
         The rating instance.
     """
-
-    if isinstance(training_set, pathlib.Path):
-        training_set = IndentationRater.load_training_set(
-            path=training_set,
-            names=names)
-    elif isinstance(training_set, str):
-        ts_path = IndentationRater.get_training_set_path(label=training_set)
+    avr = get_available_training_sets()
+    if isinstance(training_set, tuple):
+        pass
+    else:
+        if training_set in avr:
+            ts_path = IndentationRater.get_training_set_path(
+                label=training_set)
+        else:
+            ts_path = training_set
         training_set = IndentationRater.load_training_set(
             path=ts_path,
             names=names)
-    else:
-        pass
+
     if len(training_set) != 2:
         raise ValueError("Expected training_set of the form (X, y)!")
 

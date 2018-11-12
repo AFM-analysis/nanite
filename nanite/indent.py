@@ -284,7 +284,7 @@ class Indentation(object):
             parms = IndentationFitter(self).fp["params_initial"]
         return parms
 
-    def rate_quality(self, method="Extra Trees", ts_label="zef18",
+    def rate_quality(self, regressor="Extra Trees", training_set="zef18",
                      names=None, lda=None):
         """Compute the quality of the obtained curve
 
@@ -292,11 +292,11 @@ class Indentation(object):
 
         Parameters
         ----------
-        method: str
+        regressor: str
             Regressor used for rating.
-        ts_label: str
+        training_set: str
             A string label representing a training set shipped with
-            nanite.
+            nanite or a path to a training set.
 
         Returns
         -------
@@ -313,21 +313,21 @@ class Indentation(object):
             curhash = self.fit_properties["hash"]
         else:
             curhash = "none"
-        if method.lower() == "none":
+        if regressor.lower() == "none":
             rt = -1
         elif (self._rating is None or
               self._rating[0] != curhash or
-              self._rating[1] != method or
-              self._rating[2] != ts_label or
+              self._rating[1] != regressor or
+              self._rating[2] != training_set or
               self._rating[3] != names or
               self._rating[4] != lda):
             # Perform rating
-            rater = get_rater(regressor=method,
-                              training_set=ts_label,
+            rater = get_rater(regressor=regressor,
+                              training_set=training_set,
                               names=names,
                               lda=lda)
             rt = rater.rate(datasets=self)[0]
-            self._rating = (curhash, method, ts_label, names, lda, rt)
+            self._rating = (curhash, regressor, training_set, names, lda, rt)
         else:
             # Use cached rating
             rt = self._rating[-1]

@@ -93,7 +93,8 @@ def test_feat_rating():
                        y_axis="force",
                        segment="approach",
                        weight_cp=2e-6)
-        idnt.rate_quality(method="Extra Trees", ts_label="zef18")
+        idnt.rate_quality(training_set="zef18",
+                          regressor="Extra Trees")
 
     qd = qm.get_qmap("meta rating", qmap_only=True)
     vals = qd.flat[~np.isnan(qd.flat)]
