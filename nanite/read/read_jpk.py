@@ -106,7 +106,7 @@ def load_jpk(path, callback=None):
                     raise ReadJPKError(msg)
                 segment["height (measured)"] = height
 
-                mm.append([segment, mdi])
+                mm.append([segment, mdi, path])
             if callback:
                 # Callback with a float between 0 and 1 to update
                 # a progress dialog or somesuch.

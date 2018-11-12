@@ -56,14 +56,14 @@ def load_data(path, callback=None):
     """Load data and return list of Indentation"""
     measurements = load_raw_data(path, callback=callback)
     data = []
-    for enum, m in enumerate(measurements):
-        app, ret = m
+    for enum, mm in enumerate(measurements):
+        app, ret = mm
         metadata = app[1]
         if metadata["curve type"] in type_indentation:
             data.append(IndentationData(approach=app[0],
                                         retract=ret[0],
                                         metadata=metadata,
-                                        path=path,
+                                        path=app[2],
                                         enum=enum
                                         ))
     return data
@@ -89,14 +89,23 @@ def load_raw_data(path, callback=None):
     data: list
         A measurements list that contains the data.
     """
-    path = pathlib.Path(path)
-    for reader in readers:
-        load, exts = reader
-        if path.suffix in exts:
-            return load(path, callback=callback)
-    else:
-        raise NotImplementedError("Unknown file format: {}".
-                                  format(path.name))
+    paths = get_data_paths(path)
+    data = []
+    for ii, pp in enumerate(paths):
+        for reader in readers:
+            load, exts = reader
+            if pp.suffix in exts:
+                if callback is None:
+                    cbck = None
+                else:
+                    # modified callback for multiple files
+                    cbck = lambda x: (callback(x) + ii)/len(paths)
+                data += load(pp, callback=cbck)
+                break
+        else:
+            raise NotImplementedError("Unknown file format: {}".
+                                      format(pp.name))
+    return data
 
 
 #: All supported file extensions

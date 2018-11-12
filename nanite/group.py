@@ -23,6 +23,7 @@ def load_group(path, callback=None):
     grp = IndentationGroup()
     for dd in data:
         grp.append(Indentation(dd))
+    grp.path = path
     return grp
 
 
@@ -45,13 +46,16 @@ class IndentationGroup(object):
         if path is not None:
             self += load_group(path, callback=callback)
 
-    def __add__(self, ds):
+        self.path = path
+
+    def __add__(self, grp):
         out = IndentationGroup()
-        out._mmlist = self._mmlist + ds._mmlist
+        out._mmlist = self._mmlist + grp._mmlist
         return out
 
-    def __iadd__(self, ds):
-        self._mmlist += ds._mmlist
+    def __iadd__(self, grp):
+        self._mmlist += grp._mmlist
+        self.path = None
         return self
 
     def __iter__(self):
@@ -64,7 +68,10 @@ class IndentationGroup(object):
         return len(self._mmlist)
 
     def __repr__(self):
-        return "IndentationGroup: {} ".format(self._mmlist.__repr__())
+        rep = ["IndentationGroup: '{}'".format(self.path)]
+        for idnt in self._mmlist:
+            rep.append("- {}".format(idnt))
+        return "\n".join(rep)
 
     def append(self, item):
         self._mmlist.append(item)
@@ -78,4 +85,5 @@ class IndentationGroup(object):
         for idnt in self:
             if pathlib.Path(idnt.path) == pathlib.Path(path):
                 subgroup.append(idnt)
+        subgroup.path = path
         return subgroup
