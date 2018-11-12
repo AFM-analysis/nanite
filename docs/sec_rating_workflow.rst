@@ -74,7 +74,7 @@ Generating the training set
 ===========================
 The training set consists only of the samples (features of each
 force-indentation curve) and the manual ratings. It is stored as
-a set of text files on disk. As described earlier, nanite comes with
+a set of small text files on disk. As described earlier, nanite comes with
 the predefined *zef18* training set. In this step, a user-defined
 training set will be generated for use with nanite.
 

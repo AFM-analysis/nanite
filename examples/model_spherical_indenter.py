@@ -31,10 +31,13 @@ using the Hertz model for a parabolic indenter as a starting point:
          \right)
 
 This example illustrates the error made with this approach. In nanite, the
-model for a spherical indenter has the identifier "sneddon_spher" and the
-approximate model has the identifier "sneddon_spher_approx".
+model for a spherical indenter has the identifier
+:ref:`"sneddon_spher" <sec_ref_model_sneddon_spher>` and the
+approximate model has the identifier
+:ref:`"sneddon_spher_approx" <sec_ref_model_sneddon_spher_approx>`.
 
-The plot shows the error for the parabolic indenter model and for the
+The plot shows the error for the parabolic indenter model
+:ref:`"hertz_para" <sec_ref_model_hertz_para>` and for the
 approximation to the spherical indenter model.
 The maximum indentation depth is set to :math:`R`.
 The error made by the approximation of the spherical indenter is more than
