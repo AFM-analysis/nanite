@@ -293,10 +293,10 @@ class Indentation(object):
         Parameters
         ----------
         regressor: str
-            Regressor used for rating.
+            The regressor name used for rating.
         training_set: str
-            A string label representing a training set shipped with
-            nanite or a path to a training set.
+            A label for a training set shipped with nanite or a
+            path to a training set.
 
         Returns
         -------

@@ -118,7 +118,7 @@ look like this:
 
     Done. You may edit all parameters in '/home/user/.config/nanite/cli_profile.cfg'.
 
-If you would like to employ a user-defined training set in a Pythin script,
+If you would like to employ a user-defined training set in a Python script,
 you may do so by specifying the training set path as an argument to
 :func:`nanite.Indentation.rate_quality <nanite.indent.Indentation.rate_quality>`.
  
