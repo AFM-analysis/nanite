@@ -31,16 +31,14 @@ class QMap(object):
         #: Indentation data (instance of :class:`nanite.IndentationGroup`)
         self.group = group
 
-        # Feature functions
-        self._feature_funcs = {
-            "data min height": self.feat_data_min_height_measured_um,
-            "meta rating": self.feat_meta_rating,
-            "meta scan order": self.feat_meta_scan_order,
-            "fit young's modulus": self.feat_fit_youngs_modulus,
-            }
+        # Register feature functions
+        self._feature_funcs = {}
+        for key in feature_mapping:
+            self._feature_funcs[key] = getattr(self,
+                                               feature_mapping[key].__name__)
 
-        #: Available features
-        self.features = sorted(self._feature_funcs.keys())
+        #: Available features (see :data:`nanite.qmap.available_features`)
+        self.features = available_features
 
     def _map_grid(self, coords, map_data):
         """Create a 2D map from 1D coordinates and data
@@ -183,7 +181,7 @@ class QMap(object):
         Parameters
         ----------
         feature: str
-            Feature to compute map for (see `QMap.features`)
+            Feature to compute map for (see :data:`QMap.features`)
         qmap_only:
             Only return the quantitative map data,
             not the coordinates
@@ -209,6 +207,18 @@ class QMap(object):
             return qmap
         else:
             return x, y, qmap
+
+
+# Maps feature names to functions in QMap
+feature_mapping = {
+    "data min height": QMap.feat_data_min_height_measured_um,
+    "meta rating": QMap.feat_meta_rating,
+    "meta scan order": QMap.feat_meta_scan_order,
+    "fit young's modulus": QMap.feat_fit_youngs_modulus,
+    }
+
+#: Available features for quantitative maps
+available_features = sorted(feature_mapping.keys())
 
 
 unit_scales = {}
