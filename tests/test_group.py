@@ -38,9 +38,6 @@ def test_subgroup():
     grp = load_group(tmp)
     exp = pathlib.Path(tmp) / "map2x2_extracted.jpk-force-map"
     subgrp = grp.subgroup_with_path(path=exp)
-    for item in grp:
-        import warnings
-        warnings.warn("idnt {}".format(item))
     assert len(grp) == 8
     assert len(subgrp) == 4
     assert subgrp[0].path == exp
