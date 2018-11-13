@@ -34,7 +34,7 @@ def load_jpk(path, callback=None):
         A method that accepts a float between 0 and 1
         to externally track the process of loading the data.
     """
-    path = pathlib.Path(path).resolve()
+    path = pathlib.Path(path)
     if callback:
         callback(0)
     # First, only extract the properties

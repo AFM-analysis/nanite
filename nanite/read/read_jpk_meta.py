@@ -85,7 +85,7 @@ def get_meta_data(jpk_file):
         Dictionary containing meta-data.
 
     """
-    jpk_file = pathlib.Path(jpk_file).resolve()
+    jpk_file = pathlib.Path(jpk_file)
     tdir = extract_jpk(jpk_file, props_only=True)
     segs = []
     # global search for "segments" and approach (0) / retract (1)

@@ -19,6 +19,7 @@ def load_group(path, callback=None):
     group: nanite.IndetationGroup
         Indentation group with force-indentation data
     """
+    path = pathlib.Path(path)
     data = load_data(path, callback=callback)
     grp = IndentationGroup()
     for dd in data:
@@ -81,10 +82,10 @@ class IndentationGroup(object):
 
     def subgroup_with_path(self, path):
         """Return a subgroup with measurements matching `path`"""
-        path = pathlib.Path(path).resolve()
+        path = pathlib.Path(path)
         subgroup = IndentationGroup()
         for idnt in self:
-            if pathlib.Path(idnt.path).resolve() == path:
+            if pathlib.Path(idnt.path).resolve() == path.resolve():
                 subgroup.append(idnt)
         subgroup.path = path
         return subgroup
