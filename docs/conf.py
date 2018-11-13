@@ -30,7 +30,9 @@ pdir = op.dirname(op.dirname(op.abspath(__file__)))
 # include extenstions
 sys.path.append(op.abspath('extensions'))
 
-sys.modules["tkinter"] = mock.Mock()
+for mod in ["tkinter",
+            "matplotlib.backends.backend_tkagg"]:
+    sys.modules[mod] = mock.Mock()
 
 # http://www.sphinx-doc.org/en/stable/ext/autodoc.html#confval-autodoc_member_order
 # Order class attributes and functions in separate blocks
