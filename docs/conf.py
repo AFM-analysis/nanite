@@ -22,12 +22,15 @@
 # sys.path.insert(0, os.path.abspath('.'))
 
 # Get version number from nanite._version file
+import mock
 import os.path as op
 import sys
 # parent directory
 pdir = op.dirname(op.dirname(op.abspath(__file__)))
 # include extenstions
 sys.path.append(op.abspath('extensions'))
+
+sys.modules["tkinter"] = mock.Mock()
 
 # http://www.sphinx-doc.org/en/stable/ext/autodoc.html#confval-autodoc_member_order
 # Order class attributes and functions in separate blocks

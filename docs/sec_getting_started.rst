@@ -13,9 +13,9 @@ To install nanite, use one of the following methods
 * from `sources <https://github.com/AFM-Analysus/nanite>`_:
     ``pip install -e .[CLI]``
 
-The appendix ``[CLI]`` makes sure that all dependencies for the command
-line interface are installed. If you are only using nanite as a Python
-module, you may safely omit it.
+The appendix ``[CLI]`` makes sure that all dependencies for the
+:ref:`command line interface <sec_cli>` are installed. If you are
+only using nanite as a Python module, you may safely omit it.
 
 Note that if you are installing from source or if no binary wheel is
 available for your platform and Python version, `Cython <http://cython.org/>`_
@@ -34,7 +34,7 @@ complexities that have to be dealt with when measuring biological samples.
 To address this problem, nanite makes use of machine-learning (á la
 `scikit-learn <http://scikit-learn.org/>`_), which allows to automatically
 determine the quality of a force-indentation curve based on a user-defined
-rating scheme (You may go straight to :ref:`sec_rating` for more information).
+rating scheme (see :ref:`sec_rating` for more information).
 But nanite is much more than just that. It comes with an extensive set of
 tools for AFM force-indentation data analysis.
 
@@ -42,9 +42,9 @@ tools for AFM force-indentation data analysis.
 Use cases
 =========
 If you are a frequent AFM user, you might have run into several problems
-involving data analysis, ranging from simple data fitting to elaborate
-quantitative force-indentation maps. Here are a few examples where
-nanite could be used in AFM force-indentation data analysis:
+involving data analysis, ranging from simple data fitting to the visualization
+of quantitative force-indentation maps. Here are a few usage examples
+of nanite:
 
 - You would like to automate your data analysis pipeline from loading
   force-indentation data to displaying a fit to the approach part with
