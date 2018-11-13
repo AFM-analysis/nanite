@@ -20,6 +20,11 @@ nanite-fit
    :func: fit_parser
    :prog: nanite-fit
 
+.. argparse::
+   :module: nanite.cli.rating
+   :func: fit_parser
+   :prog: nanite-fit
+
 
 nanite-rate
 ===========
