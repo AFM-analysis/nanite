@@ -241,7 +241,7 @@ def setup_profile():
 
 
 def setup_profile_parser():
-    descr = "Setup a profile for fitting and rating."
+    descr = "Set up a profile for fitting and rating."
     parser = argparse.ArgumentParser(description=descr)
     return parser
 
