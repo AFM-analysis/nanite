@@ -90,45 +90,42 @@ class RateManager():
         ir = rater.get_rater(regressor)
 
         if training_set:
-            X, Y = training_set
+            X, y = training_set
         else:
             # remove binary features and nans otherwise cross-validation
             # will not work
-            X, Y = self.get_training_set(prefilter_binary=True,
+            X, y = self.get_training_set(prefilter_binary=True,
                                          remove_nans=True)
 
         # The score is maximized, therefore it is "neg_"
         scoring = 'neg_mean_squared_error'
         loo = model_selection.KFold(n_splits=n_splits, shuffle=True,
                                     random_state=random_state)
-        scores = model_selection.cross_val_score(ir.pipeline, X, Y,
+        scores = model_selection.cross_val_score(ir.pipeline, X, y,
                                                  scoring=scoring, cv=loo)
         return -scores
 
-    def get_rates(self, which="user", ts_label="mixed"):
+    def get_rates(self, which="user", training_set="zef18"):
         """
         which: str
-            Which rating to return: "user", registered regressor
+            Which rating to return: "user" or a regressor name
         """
         if which == "user":
             rtngs = np.array([ri["rating"]
                               for ri in load(self.path, meta_only=True)])
         else:
-            rt = rater.get_rater(regressor=which, training_set=ts_label)
+            rt = rater.get_rater(regressor=which, training_set=training_set)
             rtngs = rt.rate(self.samples)
         return rtngs
 
-    def get_training_set(self, prefilter_binary=False, remove_nans=False,
-                         which_type="all", transform=False):
-        """return (X, Y) training set.
-
-        If split is selected, return (X_train, Y_train, X_test, Y_test)
-        """
+    def get_training_set(self, which_type="all", prefilter_binary=False,
+                         remove_nans=False, transform=False):
+        """Return (X, y) training set"""
         X = self.samples
-        Y = self.get_rates(which="user")
+        y = self.get_rates(which="user")
 
         if prefilter_binary:
-            # remove binary excluded stuff
+            # remove samples with `False` in a binary feature
             ir = rater.IndentationRater(regressor=None)
             bnames, bind = ir.get_feature_names(which_type="binary",
                                                 ret_indices=True)
@@ -136,50 +133,38 @@ class RateManager():
                 X_bool = X[:, bind]
 
                 X_f = []
-                Y_f = []
-                for ii in range(len(Y)):
+                y_f = []
+                for ii in range(len(y)):
                     if ir._pre_rate(X_bool[ii]):
                         X_f.append(X[ii])
-                        Y_f.append(Y[ii])
-                X, Y = np.array(X_f), np.array(Y_f)
+                        y_f.append(y[ii])
+                X, y = np.array(X_f), np.array(y_f)
 
         # must come after prefilter_binary
-        _unames, indices = rater.IndentationRater.get_feature_names(
-            which_type=which_type,
-            ret_indices=True)
         if which_type != "all":
+            _unames, indices = rater.IndentationRater.get_feature_names(
+                which_type=which_type,
+                ret_indices=True)
             # remove unwanted features
-            X = X[:, indices]
+            if X.size:
+                X = X[:, list(indices)]
 
         if remove_nans:
             X_n = []
-            Y_n = []
-            for ii in range(len(Y)):
+            y_n = []
+            for ii in range(len(y)):
                 if not np.sum(np.isnan(X[ii])):
                     X_n.append(X[ii])
-                    Y_n.append(Y[ii])
-            X, Y = np.array(X_n), np.array(Y_n)
+                    y_n.append(y[ii])
+            X, y = np.array(X_n), np.array(y_n)
 
         if transform:
             # Transform data
             ir = rater.IndentationRater(regressor=None,
-                                        training_set=(X, Y)
+                                        training_set=(X, y)
                                         )
             X = ir.pipeline.transform(X)
-        return X, Y
-
-    @property
-    @lru_cache(maxsize=32)
-    def get_ratings_per_user(self):
-        """Return ratings per-user as dict"""
-        users = list(set([r["name"].lower() for r in self.ratings]))
-        users.sort()
-
-        user_data = {}
-        for u in users:
-            user_data[u] = [r for r in self.ratings if r["name"].lower() == u]
-
-        return user_data
+        return X, y
 
 
 @lru_cache(maxsize=100)
@@ -312,9 +297,7 @@ def save_hdf5(h5path, indent, user_rate, user_name, user_comment, h5mode="a"):
            "compression_opts": 9}
     with h5py.File(h5path, mode=h5mode) as h5:
         # store raw experimental data as binary array
-        if "data" not in h5:
-            h5.create_group("data")
-        data = h5["data"]
+        data = h5.require_group("data")
         dhash = hash_file(indent.path)
         if dhash not in data:
             meas = data.create_dataset(
@@ -324,9 +307,7 @@ def save_hdf5(h5path, indent, user_rate, user_name, user_comment, h5mode="a"):
             )
             meas.attrs["path"] = str(indent.path)
         # store indentation data along with the user rate
-        if "analysis" not in h5:
-            h5.create_group("analysis")
-        ana = h5["analysis"]
+        ana = h5.require_group("analysis")
         idd = "{}_{}".format(dhash, indent.enum)
         if idd in ana:
             # Only allow overriding of user data if fit matches.

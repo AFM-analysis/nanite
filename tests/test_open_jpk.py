@@ -22,8 +22,8 @@ def test_open_jpk_simple():
     shutil.rmtree(tdir, ignore_errors=True)
 
 
-def test_open_jpk_callibration():
-    cf = dp / "callibration_force-save-2015.02.04-11.25.21.294.jpk-force"
+def test_open_jpk_calibration():
+    cf = dp / "calibration_force-save-2015.02.04-11.25.21.294.jpk-force"
     try:
         read_jpk.load_jpk(cf)
     except read_jpk_meta.ReadJPKMetaKeyError:
