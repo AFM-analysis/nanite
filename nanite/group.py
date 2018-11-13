@@ -81,9 +81,10 @@ class IndentationGroup(object):
 
     def subgroup_with_path(self, path):
         """Return a subgroup with measurements matching `path`"""
+        path = pathlib.Path(path).resolve()
         subgroup = IndentationGroup()
         for idnt in self:
-            if pathlib.Path(idnt.path) == pathlib.Path(path):
+            if pathlib.Path(idnt.path).resolve() == path:
                 subgroup.append(idnt)
         subgroup.path = path
         return subgroup
