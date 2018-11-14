@@ -13,15 +13,15 @@ jpkfile = datadir / "spot3-0192.jpk-force"
 
 
 def test_app_ret():
-    ds = IndentationGroup(jpkfile)
-    ar = ds[0]
-    ar.apply_preprocessing(["compute_tip_position",
-                            "correct_force_offset"])
-    idp = ar.estimate_contact_point_index()
+    grp = IndentationGroup(jpkfile)
+    idnt = grp[0]
+    idnt.apply_preprocessing(["compute_tip_position",
+                              "correct_force_offset"])
+    idp = idnt.estimate_contact_point_index()
 
-    aprid = ~ar["segment"].values
-    x = ar["tip position"][aprid].values
-    y = ar["force"][aprid].values
+    aprid = ~idnt["segment"].values
+    x = idnt["tip position"][aprid].values
+    y = idnt["force"][aprid].values
     contact_point = x[idp]
 
     # crop x and y around contact_point
@@ -72,22 +72,22 @@ def test_app_ret():
 
 
 def test_fit_apret():
-    ds = IndentationGroup(jpkfile)
-    ar = ds[0]
-    ar.apply_preprocessing(["compute_tip_position",
-                            "correct_force_offset"])
-    ar.fit_model(model_key="hertz_para",
-                 params_initial=None,
-                 x_axis="tip position",
-                 y_axis="force",
-                 weight_cp=False,
-                 segment="retract")
+    grp = IndentationGroup(jpkfile)
+    idnt = grp[0]
+    idnt.apply_preprocessing(["compute_tip_position",
+                              "correct_force_offset"])
+    idnt.fit_model(model_key="hertz_para",
+                   params_initial=None,
+                   x_axis="tip position",
+                   y_axis="force",
+                   weight_cp=False,
+                   segment="retract")
 
     if __name__ == "__main__":
         import matplotlib.pylab as plt
         _fig, axes = plt.subplots(2, 1)
-        axes[0].plot(ar["tip position"], ar["force"], label="data")
-        axes[0].plot(ar["tip position"], ar["fit"], label="fit")
+        axes[0].plot(idnt["tip position"], idnt["force"], label="data")
+        axes[0].plot(idnt["tip position"], idnt["fit"], label="fit")
         axes[0].legend()
         axes[0].grid()
         plt.show()
