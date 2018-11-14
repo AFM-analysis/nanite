@@ -16,8 +16,8 @@ def get_parameter_defaults():
     return params
 
 
-def hertz_parabolic(E, delta, R, nu, contact_point=0, baseline=0):
-    """Hertz model for a parabolic indenter
+def hertz_paraboloidal(E, delta, R, nu, contact_point=0, baseline=0):
+    """Hertz model for a paraboloidal indenter
 
     .. math::
 
@@ -51,6 +51,21 @@ def hertz_parabolic(E, delta, R, nu, contact_point=0, baseline=0):
 
     Notes
     -----
+    The original model reads
+
+    .. math::
+
+        F = \\frac{4}{3}
+            \\frac{E}{1-\\nu^2}
+            \\sqrt{2k}
+            \\delta^{3/2},
+
+    where :math:`k` is defined by the paraboloid equation
+
+    .. math::
+
+        \\rho^2 = 4kz.
+
     These approximations are made by the Hertz model:
 
     - The sample is isotropic.
@@ -58,6 +73,14 @@ def hertz_parabolic(E, delta, R, nu, contact_point=0, baseline=0):
     - The sample is extended infinitely in one half space.
     - The indenter is not deformable.
     - There are no additional interactions between sample and indenter.
+
+    Additional assumptions:
+
+    - radius of spherical cell is larger than the indentation
+
+    References
+    ----------
+    Sneddon (1965) :cite:`Sneddon1965`
     """
     aa = 4/3 * E/(1-nu**2)*np.sqrt(R)
     root = contact_point-delta
@@ -74,12 +97,12 @@ def model(params, x):
         revert = False
     if revert:
         x = x[::-1]
-    mf = hertz_parabolic(E=params["E"].value,
-                         delta=x,
-                         R=params["R"].value,
-                         nu=params["nu"].value,
-                         contact_point=params["contact_point"].value,
-                         baseline=params["baseline"].value)
+    mf = hertz_paraboloidal(E=params["E"].value,
+                            delta=x,
+                            R=params["R"].value,
+                            nu=params["nu"].value,
+                            contact_point=params["contact_point"].value,
+                            baseline=params["baseline"].value)
     if revert:
         return mf[::-1]
     return mf
@@ -114,7 +137,7 @@ def residual(params, delta, force, weight_cp=5e-7):
     return resid
 
 
-model_doc = hertz_parabolic.__doc__
+model_doc = hertz_paraboloidal.__doc__
 model_key = "hertz_para"
 model_name = "parabolic indenter (Hertz)"
 parameter_keys = ["E", "R", "nu", "contact_point", "baseline"]

@@ -53,9 +53,23 @@ def hertz_spherical(double E, delta, double R, double nu, double contact_point=0
     F: float
         Force [N]
 
+    Notes
+    -----
+    These approximations are made by the Hertz model:
+
+    - The sample is isotropic.
+    - The sample is a linear elastic solid.
+    - The sample is extended infinitely in one half space.
+    - The indenter is not deformable.
+    - There are no additional interactions between sample and indenter.
+
+    Additional assumptions:
+
+    - no surface forces
+
     References
     ----------
-    Sneddon 1965 :cite:`Sneddon1965`
+    Sneddon (1965) :cite:`Sneddon1965`
     """
     cdef double a
     cdef int ii

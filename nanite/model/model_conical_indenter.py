@@ -58,6 +58,14 @@ def hertz_conical(E, delta, alpha, nu, contact_point=0, baseline=0):
     - The sample is extended infinitely in one half space.
     - The indenter is not deformable.
     - There are no additional interactions between sample and indenter.
+
+    Additional assumptions:
+
+    - infinitely sharp probe
+
+    References
+    ==========
+    Love (1939) :cite:`Love1939`
     """
     aa = 2*np.tan(alpha*pi/180)/pi * E/(1-nu**2)
     root = contact_point-delta
