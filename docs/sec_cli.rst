@@ -4,7 +4,7 @@
 Command-line interface
 ======================
 The nanite command-line interface (CLI) simplifies several functionalities
-of nanite, making fitting, rating, and the generation of training sets easily
+of nanite, making fitting, rating, and the generation of training sets
 accessible to the user. 
 
 
