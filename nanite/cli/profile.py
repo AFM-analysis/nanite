@@ -241,7 +241,10 @@ def setup_profile():
 
 
 def setup_profile_parser():
-    descr = "Set up a profile for fitting and rating."
+    descr = "Set up a profile for fitting and rating. The profile is stored " \
+            + "in the user's default configuration directory. Setting up a " \
+            + "profile is required prior to running `nanite-fit` and " \
+            + "`nanite-rate`."
     parser = argparse.ArgumentParser(description=descr)
     return parser
 
