@@ -46,5 +46,9 @@ source .env/bin/activate
 pip install certifi
 /Applications/Python\ ${MPV::3}/Install\ Certificates.command
 
+# Use TkAgg to avoid
+# "ImportError: Python is not installed as a framework"
+echo "backend: TkAgg" >> ~/.matplotlib/matplotlibrc
+
 # go back
 cd $OLD
