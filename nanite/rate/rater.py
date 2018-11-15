@@ -110,7 +110,7 @@ class IndentationRater(IndentationFeatures):
 
     @staticmethod
     def compute_sample_weight(X, y):
-        """Weight samples according to occurence in y"""
+        """Weight samples according to occurrence in y"""
         if not np.all(np.array(y, dtype=int) == y):
             msg = "Only integer ratings allowed."
             raise NotImplementedError(msg)
@@ -141,10 +141,12 @@ class IndentationRater(IndentationFeatures):
     @classmethod
     def load_training_set(cls, path=None, names=None,
                           which_type=["continuous"],
-                          remove_nan=True, ret_names=False,
-                          ret_sample_weights=False):
-        """
-        currently, only "float" features are used for sklearn stuff
+                          remove_nan=True, ret_names=False):
+        """Load a training set from a directory
+
+        By default, only the "continuous" features are imported. The
+        "binary" features are not needed for training; they are used
+        to sort out new force-indentation data.
         """
         fnames = cls.get_feature_names(which_type=which_type, names=names)
         sample_paths = []
