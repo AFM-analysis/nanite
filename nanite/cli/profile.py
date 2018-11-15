@@ -59,6 +59,9 @@ class Profile(object):
 
     def __setitem__(self, key, value):
         if key.startswith("fit param"):
+            if not (key.endswith("value")
+                    or key.endswith("vary")):
+                raise ValueError("Invalid key: '{}'".format(key))
             default = None
         else:
             default = DEFAULTS[key]

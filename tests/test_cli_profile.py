@@ -5,7 +5,6 @@ from nanite.cli import profile
 
 
 def test_profile_getter():
-    # use temporary file
     _, name = tempfile.mkstemp(suffix=".cfg", prefix="test_nanite_profile_")
     name = pathlib.Path(name)
     pf = profile.Profile(path=name)
@@ -32,7 +31,6 @@ def test_profile_getter():
 
 
 def test_profile_fitparams():
-    # use temporary file
     _, name = tempfile.mkstemp(suffix=".cfg", prefix="test_nanite_profile_")
     name = pathlib.Path(name)
     pf = profile.Profile(path=name)
@@ -43,6 +41,23 @@ def test_profile_fitparams():
     assert params == params2
     assert len(params) == 5
     assert "E" in params.keys()
+
+    try:
+        name.unlink()
+    except OSError:
+        pass
+
+
+def test_single_fitparam():
+    _, name = tempfile.mkstemp(suffix=".cfg", prefix="test_nanite_profile_")
+    name = pathlib.Path(name)
+    pf = profile.Profile(path=name)
+    # sanity checks (run twice to trigger loading and saving)
+    pf["fit param E value"] = 50
+    pf["fit param R value"] = 16e-6
+    params = pf.get_fit_params()
+    assert params["E"].value == 50
+    assert params["R"].value == 16e-6
 
     try:
         name.unlink()

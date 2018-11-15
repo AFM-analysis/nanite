@@ -164,10 +164,15 @@ def fit():
     path = pathlib.Path(args.data_path).resolve()
     pout = pathlib.Path(args.out_dir).resolve()
     pout.mkdir(exist_ok=True, parents=True)
-    ptsv = pout / "statistics.tsv"
-    ptif = pout / "plots.tif"
+    fit_perform(path, path_results=pout)
+
+
+def fit_perform(path, path_results, profile_path=PROFILE_PATH):
+    path_results = pathlib.Path(path_results)
+    ptsv = path_results / "statistics.tsv"
+    ptif = path_results / "plots.tif"
     # exported data columns
-    pf = Profile(create=False)
+    pf = Profile(path=profile_path, create=False)
     dlist = [["path", lambda x: x.path],
              ["enum", lambda x: x.enum],
              ["E", lambda x: x.fit_properties["params_fitted"]["E"].value],
@@ -188,7 +193,7 @@ def fit():
             print("Processing: {}".format(pp))
             grp = IndentationGroup(pp)
             for idnt in grp:
-                fit_data(idnt)
+                fit_data(idnt, profile_path=profile_path)
                 # save statistics
                 stats = [str(dd[1](idnt)) for dd in dlist]
                 ts.write("\t".join(stats) + "\n")
