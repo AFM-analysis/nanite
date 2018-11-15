@@ -253,6 +253,8 @@ class Indentation(object):
             indentation depth and determining a plateau in the
             resulting Young's modulus (fitting parameter "E").
         """
+        if "preprocessing" in kwargs:
+            self.apply_preprocessing(kwargs["preprocessing"])
         # self.fit_properties is an instance of FitProperties that
         # stores previous fit kwargs. If the given kwargs are
         # different than in the previous fit, the following two
