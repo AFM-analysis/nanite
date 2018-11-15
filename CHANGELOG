@@ -1,6 +1,6 @@
 0.9.1
  - fix: `preprocessing` keyword not working in `Indentation.fit_model`
- - docs: minor improvements
+ - docs: add another scripting example and minor improvements
  - tests: increase coverage
 0.9.0
  - ref: remove legacy "discrete" feature type
