@@ -10,5 +10,5 @@ Scripting examples
 
 .. fancy_include:: model_spherical_indenter.py
 
-
+.. fancy_include:: fit_and_rate.py
 
