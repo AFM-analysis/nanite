@@ -39,6 +39,13 @@ But nanite is much more than just that. It comes with an extensive set of
 tools for AFM force-indentation data analysis.
 
 
+Supported file formats
+======================
+Currently, nanite only supports the file formats *.jpk-force* and
+*.jpk-force-map*. If you are interested in other file formats, please
+`create a new issue <https://github.com/AFM-analysis/nanite/issues/new>`_.
+
+
 Use cases
 =========
 If you are a frequent AFM user, you might have run into several problems
