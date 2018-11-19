@@ -94,7 +94,13 @@ class Indentation(object):
             self.fit_properties = fp
 
     def compute_emodulus_mindelta(self, callback=None):
-        """Compute elastic modulus vs. mindelta
+        """Elastic modulus in dependency of maximum indentation
+
+        The fitting interval is varied such that the maximum
+        indentation depth ranges from the lowest tip position
+        to the estimated contact point. For each interval, the
+        current model is fitted and the elastic modulus is
+        extracted.
 
         Parameters
         ----------
@@ -106,7 +112,7 @@ class Indentation(object):
         Returns
         -------
         emoduli, indentations: 1d ndarrays
-            The fitted elastic moduli and at the corresponding
+            The fitted elastic moduli at the corresponding
             maximal indentation depths.
 
         Notes

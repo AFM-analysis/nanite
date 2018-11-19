@@ -154,7 +154,31 @@ Fitting
 Rating
 ======
 
-.. automodule:: nanite.rate
+Features
+--------
+
+.. automodule:: nanite.rate.features
+   :members:
+   :undoc-members:
+
+
+Rater
+-----
+.. automodule:: nanite.rate.rater
+   :members:
+   :undoc-members:
+
+
+Regressors
+----------
+.. automodule:: nanite.rate.regressors
+   :members:
+   :undoc-members:
+
+
+Manager
+-------
+.. automodule:: nanite.rate.io
    :members:
    :undoc-members:
 

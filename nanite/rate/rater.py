@@ -24,28 +24,37 @@ class IndentationRater(IndentationFeatures):
         regressor: sciki-learn RegressorMixin
             The regressor used for rating
         scale: bool
-            If True, apply StandardScaler (important for non-tree
-            based regressors).
+            If True, apply a Standard Scaler. If a regressor based on
+            decision trees is used, the Standard Scaler is not used
+            by default, otherwise it is.
         lda: bool
-            If True, apply LinearDiscriminantAnalysis. See notes for defaults.
+            If True, apply a Linear Discriminant Analysis (LDA). If a
+            regressor based on a decision tree is used, LDA is not
+            used by default, otherwise it is.
         training_set: tuple of (X, y)
             The training set (samples, response)
         names: list of str
             Feature names to use
         weight: bool
-            Weight the input samples by the number of occurences
+            Weight the input samples by the number of occurrences
             or with `sample_weight`. For tree-based classifiers, set this
             to True to avoid bias.
         sample_weight: list-like
             The sample weights. If set to `None` sample weights
             are computed from the training set.
-        *args, **kwargs:
-            Arguments for the :class:`IndentationFeatures` base class.
+        *args: list
+            Positional arguments for :class:`IndentationFeatures`
+        **kwargs:
+            Keyword arguments for :class:`IndentationFeatures`
 
-        Notes
-        -----
-        The default value for lda is different
-        depending on the regressor (see source code below).
+        See Also
+        --------
+        sklearn.preprocessing.StandardScaler:
+            Standard scaler
+        sklearn.discriminant_analysis.LinearDiscriminantAnalysis:
+            Linear discriminant analysis
+        nanite.rate.regressors.reg_trees:
+            List of regressors that are identified as tree-based
         """
         if regressor is not None:
             _name = regressor.__class__.__name__
@@ -132,7 +141,7 @@ class IndentationRater(IndentationFeatures):
         """Return the path to a training set shipped with nanite
 
         Training sets are stored in the `nanite.rate`
-        module path with "ts_" prepended to `label`.
+        module path with ``ts_`` prepended to `label`.
         """
         data_loc = "nanite.rate"
         resp_path = resource_filename(data_loc, "ts_{}".format(label))
@@ -275,7 +284,7 @@ def get_rater(regressor, training_set="zef18", names=None,
 
     Returns
     -------
-    irater: IndentationRater
+    irater: nanite.IndentationRater
         The rating instance.
     """
     avr = get_available_training_sets()

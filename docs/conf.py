@@ -203,4 +203,6 @@ texinfo_documents = [
 intersphinx_mapping = {"python": ('https://docs.python.org/', None),
                        "numpy": ('http://docs.scipy.org/doc/numpy', None),
                        "scipy": ('https://docs.scipy.org/doc/scipy/reference/', None),
+                       "scipy": ('https://docs.scipy.org/doc/scipy/reference/', None),
+                       "sklearn": ('https://scikit-learn.org/stable/', None),
                        }

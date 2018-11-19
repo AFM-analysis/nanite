@@ -8,3 +8,8 @@ To compile the documentation, run
 
     sphinx-build . _build
 
+Notes
+=====
+To view the sphinx inventory of DryMass, run
+
+   python -m sphinx.ext.intersphinx 'http://nanite.readthedocs.io/en/latest/objects.inv'
