@@ -15,7 +15,7 @@ def test_hash_time():
     apret = ds1[0]
     apret.apply_preprocessing(["compute_tip_position"])
 
-    inparams = nanite.model.model_hertz_parabolic.get_parameter_defaults()
+    inparams = nanite.model.model_hertz_paraboloidal.get_parameter_defaults()
     inparams["baseline"].vary = True
     inparams["contact_point"].set(1.8321e-5)
 

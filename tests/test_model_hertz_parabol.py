@@ -5,7 +5,7 @@ import lmfit
 import numpy as np
 
 from nanite import IndentationGroup
-from nanite.model import model_hertz_parabolic as hertz
+from nanite.model import model_hertz_paraboloidal as hertz
 
 
 datadir = pathlib.Path(__file__).resolve().parent / "data"

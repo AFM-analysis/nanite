@@ -31,7 +31,7 @@ def test_apply_preprocessing_remember_fit_properties():
     idnt = ds1[0]
     idnt.apply_preprocessing(["compute_tip_position"])
 
-    inparams = nanite.model.model_hertz_parabolic.get_parameter_defaults()
+    inparams = nanite.model.model_hertz_paraboloidal.get_parameter_defaults()
     inparams["baseline"].vary = True
     cp1 = 1.8029310065572342e-05
     inparams["contact_point"].set(cp1)
@@ -98,7 +98,7 @@ def test_fitting():
     idnt = ds1[0]
     idnt.apply_preprocessing(["compute_tip_position"])
 
-    inparams = nanite.model.model_hertz_parabolic.get_parameter_defaults()
+    inparams = nanite.model.model_hertz_paraboloidal.get_parameter_defaults()
     inparams["baseline"].vary = True
     inparams["contact_point"].set(1.8e-5)
 
@@ -173,7 +173,7 @@ def test_get_initial_fit_parameters():
 
 
 def test_get_model():
-    md = nanite.model.model_hertz_parabolic
+    md = nanite.model.model_hertz_paraboloidal
     model_name = "parabolic indenter (Hertz)"
     md2 = nanite.model.get_model_by_name(model_name)
     assert md2 is md
@@ -184,7 +184,7 @@ def test_rate_quality_cache():
     idnt = ds1[0]
     idnt.apply_preprocessing(["compute_tip_position"])
 
-    inparams = nanite.model.model_hertz_parabolic.get_parameter_defaults()
+    inparams = nanite.model.model_hertz_paraboloidal.get_parameter_defaults()
     inparams["baseline"].vary = True
     inparams["contact_point"].set(1.8e-5)
 
@@ -210,7 +210,7 @@ def test_rate_quality_disabled():
     idnt = ds1[0]
     idnt.apply_preprocessing(["compute_tip_position"])
 
-    inparams = nanite.model.model_hertz_parabolic.get_parameter_defaults()
+    inparams = nanite.model.model_hertz_paraboloidal.get_parameter_defaults()
     inparams["baseline"].vary = True
     inparams["contact_point"].set(1.8e-5)
 
