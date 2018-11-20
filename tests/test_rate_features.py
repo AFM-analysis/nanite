@@ -14,7 +14,7 @@ jpkfile = datadir / "spot3-0192.jpk-force"
 def setup_indent():
     idnt = IndentationGroup(jpkfile)[0]
     idnt.apply_preprocessing(["compute_tip_position"])
-    inparams = model.model_hertz_parabolic.get_parameter_defaults()
+    inparams = model.model_hertz_paraboloidal.get_parameter_defaults()
     inparams["baseline"].vary = True
     inparams["contact_point"].set(1.8e-5)
 

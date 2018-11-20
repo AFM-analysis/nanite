@@ -23,7 +23,7 @@ def setuph5(ret_idnt=False, path=jpkfile):
     for idnt in grp:
         idnt.apply_preprocessing(["compute_tip_position"])
 
-        inparams = model.model_hertz_parabolic.get_parameter_defaults()
+        inparams = model.model_hertz_paraboloidal.get_parameter_defaults()
         inparams["baseline"].vary = True
         inparams["contact_point"].set(1.8e-5)
 
