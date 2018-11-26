@@ -14,10 +14,12 @@ when he rated the training dataset.
 
 Nanite already comes with a default training set that is based on AFM
 data recorded for zebrafish spinal cord sections, called `zef18`.
-The original zef18 dataset is available on figshare :cite:`zef18`.
-Download links [1]_:
+The original zef18 dataset is available online :cite:`zef18`.
+Download links: [1]_
 
 - https://ndownloader.figshare.com/files/13481393
+- https://zenodo.org/record/1551200/files/zef18.h5
+- https://b2share.eudat.eu/api/files/bf481c9b-14ff-47b1-baf5-e569d0199be6/zef18.h5
 
 With nanite, you can also create your own training set. The required steps
 to do so are described in the following.
