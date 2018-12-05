@@ -28,7 +28,7 @@ else:
     extensions = [Extension("nanite.model.model_sneddon_spherical",
                             sources=["nanite/model/model_sneddon_spherical.pyx"],
                             include_dirs=[np.get_include()],
-                            directives={"language_level": 3},
+                            cython_directives={"language_level": 3},
                             )
                  ]
 
