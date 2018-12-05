@@ -1,3 +1,4 @@
+#cython: language_level=3
 import lmfit
 import numpy as np
 from . import weight
