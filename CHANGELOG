@@ -1,6 +1,7 @@
 0.9.2
  - ref: renamed the mode `model_hertz_parabolic` to
    `model_hertz_paraboloidal` to be consistent
+ - docs: updat code reference and other minor improvements
 0.9.1
  - fix: `preprocessing` keyword not working in `Indentation.fit_model`
  - docs: add another scripting example and minor improvements
