@@ -64,10 +64,10 @@ setup(
     python_requires='>=3.6, <4',
     entry_points={
        "console_scripts": [
-           "nanite-setup-profile = nanite.cli:setup_profile",
-           "nanite-rate = nanite.cli:rate",
-           "nanite-fit = nanite.cli:fit",
-           "nanite-generate-training-set = nanite.cli:generate_training_set",
+           "nanite-setup-profile = nanite.cli:setup_profile [CLI]",
+           "nanite-rate = nanite.cli:rate [CLI]",
+           "nanite-fit = nanite.cli:fit [CLI]",
+           "nanite-generate-training-set = nanite.cli:generate_training_set [CLI]",
             ],
        },
 
