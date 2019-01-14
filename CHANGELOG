@@ -1,4 +1,5 @@
 0.9.3
+ - enh: store nanite and h5py library versions in rating container
  - enh: update hyperparameters of rating regressors
  - ref: deprecation in h5py: replace dataset.value by dataset[...]
 0.9.2

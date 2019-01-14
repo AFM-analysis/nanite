@@ -11,6 +11,7 @@ import lmfit
 import numpy as np
 from sklearn import model_selection
 
+from .._version import version as nanite_version
 from ..group import IndentationGroup
 from . import rater
 
@@ -284,7 +285,7 @@ def save_hdf5(h5path, indent, user_rate, user_name, user_comment, h5mode="a"):
     Parameters
     ----------
     h5path: str
-        Path to HDF5 file where data will be stored
+        Path to HDF5 rating container where data will be stored
     indent: nanite.Indentation
         The experimental data processed and fitted with nanite
     user_rate: float
@@ -354,6 +355,9 @@ def save_hdf5(h5path, indent, user_rate, user_name, user_comment, h5mode="a"):
         out.attrs["user rate"] = user_rate
         out.attrs["user time"] = time.time()
         out.attrs["user time str"] = time.ctime()
+        # add library versions for debugging
+        out.attrs["nanite version"] = nanite_version
+        out.attrs["h5py version"] = h5py.__version__
 
 
 def hdf5_rated(h5path, indent):
