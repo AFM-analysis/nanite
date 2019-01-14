@@ -12,7 +12,7 @@ class CannotSplitWarning(UserWarning):
 class IndentationPreprocessor(object):
     @staticmethod
     def apply(apret, preproc_names):
-        """Perform force-indentation preprocessing steps
+        """Perform force-distance preprocessing steps
 
         Parameters
         ----------

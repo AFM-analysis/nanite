@@ -1,6 +1,6 @@
 """Fitting and rating
 
-This example uses a force-indentation curve of a zebrafish spinal cord
+This example uses a force-distance curve of a zebrafish spinal cord
 section to illustrate basic data fitting and rating with nanite.
 The dataset is part of a study on spinal cord stiffness in zebrafish
 [manuscript in preparation].
@@ -42,7 +42,7 @@ ax2 = plt.subplot(gs[1])
 # only plot the approach part (`1` would be retract)
 where_approach = idnt["segment"] == 0
 
-# plot force-indentation data (nanite uses SI units)
+# plot force-distance data (nanite uses SI units)
 ax1.plot(idnt["tip position"][where_approach] * 1e6,
          idnt["force"][where_approach] * 1e9,
          label="data")

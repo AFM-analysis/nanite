@@ -5,7 +5,7 @@ import sys
 
 author = "Paul Müller"
 authors = [author, "Shada Abuhattum"]
-description = 'Loading, fitting, and rating AFM nanoindentation data'
+description = 'Loading, fitting, and rating AFM force-distance data'
 name = 'nanite'
 year = "2018"
 

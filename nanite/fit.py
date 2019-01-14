@@ -113,7 +113,7 @@ class FitProperties(dict):
 
 class IndentationFitter(object):
     def __init__(self, data_set, **kwargs):
-        """Fit force-indentation curves
+        """Fit force-distance curves
 
         Parameters
         ----------

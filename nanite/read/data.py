@@ -36,5 +36,5 @@ class IndentationData(object):
         self.data = app.append(ret)
 
 
-#: metadata identifiers for force-indentation data
+#: metadata identifiers for force-distance data
 type_indentation = ["extend", "retract"]

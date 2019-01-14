@@ -3,7 +3,7 @@ nanite
 
 |PyPI Version| |Build Status Unix| |Build Status Win| |Coverage Status| |Docs Status|
 
-Loading, fitting, and rating AFM force-indentation data
+Loading, fitting, and rating AFM force-distance data
 
 Documentation
 -------------

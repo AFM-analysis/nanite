@@ -33,7 +33,7 @@ class RatingGUI():
         tk.Grid.rowconfigure(root, 0, weight=1)
         tk.Grid.columnconfigure(root, 0, weight=1)
 
-        root.title("nanite force-indentation rater")
+        root.title("nanite force-distance rater")
 
         master = tk.Frame(root)
         master.grid(row=0, column=0, sticky=tk.N+tk.S+tk.E+tk.W)
@@ -234,12 +234,12 @@ def fit_data(path, enum=0, profile_path=PROFILE_PATH):
 
 
 def fit_parser():
-    descr = "Fit AFM force-indentation data. Statistics (.tsv file) and " \
+    descr = "Fit AFM force-distance data. Statistics (.tsv file) and " \
             + "visualizations of the fits (multi-page .tif file) are stored " \
             + "in the results directory."
     parser = argparse.ArgumentParser(description=descr)
     parser.add_argument('data_path', type=str,
-                        help='input folder containing AFM force-indentation '
+                        help='input folder containing AFM force-distance '
                              + 'data')
     parser.add_argument('out_dir', type=str,
                         help='results directory')
@@ -291,14 +291,14 @@ def rate():
 
 
 def rate_parser():
-    descr = "Manually rate (the fit to) AFM force-indentation data. " \
+    descr = "Manually rate (the fit to) AFM force-distance data. " \
             + "A graphical user interface allows to rate and comment on " \
-            + "each data set. The fits and all data are stored in a rating " \
-            + "container that can then be passed to " \
+            + "each force-distance curve. The fits and the raw data are " \
+            + "stored in a rating container that can then be passed to " \
             + "`nanite-generate-training-set`."
     parser = argparse.ArgumentParser(description=descr)
     parser.add_argument('data_path', type=str,
-                        help='input folder containing AFM force-indentation '
+                        help='input folder containing AFM force-distance '
                              + 'data')
     parser.add_argument('rating_path', type=str,
                         help='path to the output rating container (will '

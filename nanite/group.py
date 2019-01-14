@@ -17,7 +17,7 @@ def load_group(path, callback=None):
     Returns
     -------
     group: nanite.IndetationGroup
-        Indentation group with force-indentation data
+        Indentation group with force-distance data
     """
     path = pathlib.Path(path)
     data = load_data(path, callback=callback)

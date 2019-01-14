@@ -155,7 +155,7 @@ class IndentationRater(IndentationFeatures):
 
         By default, only the "continuous" features are imported. The
         "binary" features are not needed for training; they are used
-        to sort out new force-indentation data.
+        to sort out new force-distance data.
         """
         fnames = cls.get_feature_names(which_type=which_type, names=names)
         sample_paths = []

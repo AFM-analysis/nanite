@@ -5,12 +5,12 @@ Fitting guide
 =============
 
 This is a summary of the methods used by nanite for fitting
-force-indentation data. Examples are given below.
+force-distance data. Examples are given below.
 
 
 Preprocessors
 =============
-Prior to data analysis, force-indentation data has to be preprocessed.
+Prior to data analysis, a force-distance curve has to be preprocessed.
 One of the most important preprocessing steps is to perform a
 tip-sample separation which computes the correct tip position from the
 recorded piezo height and the cantilever deflection. Other preprocessing
@@ -27,7 +27,7 @@ via their model keys.
 
 .. nanite_model_table::
 
-These model functions can be used to fit experimental force-indentation
+These model functions can be used to fit experimental force-distance
 data that have been preprocessed as described above.
 
 
@@ -56,7 +56,7 @@ are described in more detail in :class:`nanite.fit.IndentationFitter`.
 
 Workflow
 ========
-There are two ways to fit force-indentation curves with nanite: via the
+There are two ways to fit force-distance curves with nanite: via the
 :ref:`command line interface (CLI) <sec_cli>` or via Python scripting. The
 CLI does not require programming knowledge while Python-scripting allows
 fine-tuning and straight-forward automation.

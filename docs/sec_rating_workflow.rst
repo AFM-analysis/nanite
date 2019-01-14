@@ -38,7 +38,7 @@ the command ``nanite-setup-profile`` again to verify that all settings
 are correct.
 
 To start manual rating, use the command :ref:`nanite-rate <sec_cli_rate>`.
-The first argument is a folder containing experimental force-indentation
+The first argument is a folder containing experimental force-distance
 curves and the second argument is a path to a rating container (``nameXY.h5``).
 If the rating container already exists, new data will be appended (nothing is
 overridden).
@@ -73,7 +73,7 @@ place.
 Generating the training set
 ===========================
 The training set consists only of the samples (features of each
-force-indentation curve) and the manual ratings. It is stored as
+force-distance curve) and the manual ratings. It is stored as
 a set of small text files on disk. As described earlier, nanite comes with
 the predefined *zef18* training set. In this step, a user-defined
 training set will be generated for use with nanite.
