@@ -229,7 +229,7 @@ def load_hdf5(path, meta_only=False):
             dataset_dict = {}
             for dkey in h5["data"]:
                 dset = h5["data"][dkey]
-                dbin = dset.value
+                dbin = dset[...]
                 name = dkey + "_" + pathlib.Path(dset.attrs["path"]).name
                 dpath = pathlib.Path(tdir) / name
                 dbin.tofile(str(dpath))
@@ -240,12 +240,12 @@ def load_hdf5(path, meta_only=False):
             attrs = h5gr.attrs
             if not meta_only:
                 indent = dataset_dict[attrs["data hash"]][attrs["data enum"]]
-                indent["fit"] = h5gr["fit"].value
-                indent["fit range"] = h5gr["fit range"].value
-                indent["force"] = h5gr["force"].value
-                indent["fit residuals"] = h5gr["fit residuals"].value
-                indent["tip position"] = h5gr["tip position"].value
-                indent["segment"] = h5gr["segment"].value
+                indent["fit"] = h5gr["fit"][...]
+                indent["fit range"] = h5gr["fit range"][...]
+                indent["force"] = h5gr["force"][...]
+                indent["fit residuals"] = h5gr["fit residuals"][...]
+                indent["tip position"] = h5gr["tip position"][...]
+                indent["segment"] = h5gr["segment"][...]
             fit_properties = {}
             fkeys = [key for key in attrs if key.startswith("fit ")]
             for fkey in fkeys:
@@ -331,22 +331,22 @@ def save_hdf5(h5path, indent, user_rate, user_name, user_comment, h5mode="a"):
                 out.attrs["fit {}".format(key)] = val
 
             out.create_dataset("fit",
-                               data=indent["fit"].values,
+                               data=indent["fit"][...],
                                **dkw)
             out.create_dataset("fit range",
-                               data=indent["fit range"].values,
+                               data=indent["fit range"][...],
                                **dkw)
             out.create_dataset("force",
-                               data=indent["force"].values,
+                               data=indent["force"][...],
                                **dkw)
             out.create_dataset("fit residuals",
-                               data=indent["fit residuals"].values,
+                               data=indent["fit residuals"][...],
                                **dkw)
             out.create_dataset("tip position",
-                               data=indent["tip position"].values,
+                               data=indent["tip position"][...],
                                **dkw)
             out.create_dataset("segment",
-                               data=indent["segment"].values,
+                               data=indent["segment"][...],
                                **dkw)
         # update user data in any case
         out.attrs["user comment"] = user_comment

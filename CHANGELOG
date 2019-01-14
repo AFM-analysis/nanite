@@ -1,5 +1,6 @@
 0.9.3
  - enh: update hyperparameters of rating regressors
+ - ref: deprecation in h5py: replace dataset.value by dataset[...]
 0.9.2
  - ref: renamed the mode `model_hertz_parabolic` to
    `model_hertz_paraboloidal` to be consistent
