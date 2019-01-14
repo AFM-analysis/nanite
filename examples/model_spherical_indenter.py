@@ -3,7 +3,7 @@
 There is no closed form for the Hertzian model with a spherical indenter.
 The force :math:`F` does not directly depend on the indentation depth
 :math:`\delta`, but has an indirect dependency via the radius of the circular
-contact area between indenter and sample :math:`a`:
+contact area between indenter and sample :math:`a` :cite:`Sneddon1965`:
 
 .. math::
 
@@ -18,7 +18,8 @@ indenter, and :math:`\nu` is the Poisson's ratio of the probed material.
 Because of this indirect dependency, fitting this model to experimental
 data can be time-consuming. Therefore, it is beneficial to approximate this
 model with a polynomial function around small values of :math:`\delta/R`
-using the Hertz model for a parabolic indenter as a starting point:
+using the Hertz model for a parabolic indenter as a starting point
+:cite:`Dobler`:
 
 .. math::
 

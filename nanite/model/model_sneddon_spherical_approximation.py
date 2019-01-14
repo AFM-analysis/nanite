@@ -68,7 +68,8 @@ def hertz_sneddon_spherical_approx(E, delta, R, nu, contact_point=0,
 
     References
     ----------
-    Sneddon (1965) :cite:`Sneddon1965`, TODO
+    Sneddon (1965) :cite:`Sneddon1965`,
+    Dobler (personal communication, 2018) :cite:`Dobler`
     """
     aa = 4/3 * E/(1-nu**2)*np.sqrt(R)
     root = contact_point-delta

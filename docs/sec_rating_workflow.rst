@@ -29,7 +29,7 @@ Rating experimental data manually
 =================================
 In the rating step, experimental data are fitted and manually rated by the
 user. The raw data, the preprocessed data, the fit, all parameters, and
-the manual rating are then stored in an HDF5 (.h5) file.
+the manual rating are then stored in a rating container (an HDF5 file).
 
 First, set up a fitting profile using
 :ref:`nanite-setup-profile <sec_cli_setup_profile>` if you have not already
@@ -98,8 +98,6 @@ have to update the profile using ``nanite-setup-profile`` again (see
 look like this:
 
 .. code::
-
-    cmd>~: nanite-setup-profile
 
     [...]
 

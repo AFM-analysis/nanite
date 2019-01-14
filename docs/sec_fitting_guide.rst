@@ -21,7 +21,7 @@ steps correct for offsets or smoothen the data:
 
 Models
 ======
-Nanite comes with a predefined set of model functions, that are
+Nanite comes with a predefined set of model functions that are
 identified (in scripting as well as in the command line interface)
 via their model keys.
 
@@ -156,7 +156,7 @@ or the Windows Photo Viewer) to the directory ``output_path``.
 .. figure:: img/nanite-fit-example.png
 
     Example image generated with ``nanite-fit``. Note that the dataset
-    is already rated with the default method "Extra Tree" and the
+    is already rated with the default method "Extra Trees" and the
     default training set label "zef18". See :ref:`sec_rating` for more
     information on rating.
 
