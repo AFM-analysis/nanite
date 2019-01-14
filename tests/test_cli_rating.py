@@ -82,7 +82,7 @@ def test_fit_data_with_zef18():
     assert np.all(stats[:, 0] == range(3))
     assert stats[0, 2] == 9.5
     assert stats[1, 2] == 2.6
-    assert stats[2, 2] == 4.8
+    assert stats[2, 2] == 4.9
 
     try:
         name.unlink()

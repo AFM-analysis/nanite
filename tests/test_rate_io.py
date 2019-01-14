@@ -79,7 +79,7 @@ def test_rate_manager_basic():
     # or when new features are added.
     assert np.allclose(
         np.asscalar(rmg.get_rates(which="Extra Trees", training_set="zef18")),
-        3.5047426991014046)
+        3.6538889425505854)
     shutil.rmtree(tdir, ignore_errors=True)
 
 

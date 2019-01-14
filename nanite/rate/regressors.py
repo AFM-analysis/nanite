@@ -5,7 +5,7 @@ from sklearn import ensemble, svm, tree
 reg_dict = {
     "AdaBoost": [
         ensemble.AdaBoostRegressor,
-        {"learning_rate": .5,
+        {"learning_rate": .18,
          "n_estimators": 100,
          "random_state": 42,
          },
@@ -13,23 +13,23 @@ reg_dict = {
     "Decision Tree": [
         tree.DecisionTreeRegressor,
         {"max_depth": 6,
-         "min_samples_leaf": 4,
-         "min_samples_split": 4,
+         "min_samples_leaf": 14,
+         "min_samples_split": 3,
          "random_state": 42,
          }
     ],
     "Extra Trees": [
         ensemble.ExtraTreesRegressor,
         {"max_depth": 15,
-         "min_samples_leaf": 2,
-         "min_samples_split": 5,
+         "min_samples_leaf": 1,
+         "min_samples_split": 10,
          "n_estimators": 100,
          "random_state": 42,
          }
     ],
     "Gradient Tree Boosting": [
         ensemble.GradientBoostingRegressor,
-        {"max_depth": 5,
+        {"max_depth": 4,
          "min_samples_leaf": 4,
          "min_samples_split": 7,
          "n_estimators": 100,
@@ -40,7 +40,7 @@ reg_dict = {
         ensemble.RandomForestRegressor,
         {"max_depth": 15,
          "min_samples_leaf": 2,
-         "min_samples_split": 7,
+         "min_samples_split": 6,
          "n_estimators": 100,
          "random_state": 42,
          }
@@ -48,7 +48,7 @@ reg_dict = {
     "SVR (linear kernel)": [
         svm.LinearSVR,
         {"C": 2,
-         "epsilon": 1.0,
+         "epsilon": .75,
          "random_state": 42,
          },
     ],
@@ -56,7 +56,7 @@ reg_dict = {
         svm.SVR,
         {"kernel": "rbf",
          "C": 25,
-         "epsilon": 0.7,
+         "epsilon": 0.75,
          },
     ],
 }
