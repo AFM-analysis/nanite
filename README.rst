@@ -3,7 +3,7 @@ nanite
 
 |PyPI Version| |Build Status Unix| |Build Status Win| |Coverage Status| |Docs Status|
 
-Loading, fitting, and rating AFM force-distance data
+Loading, fitting, and rating AFM force-distance data.
 
 Documentation
 -------------
@@ -14,7 +14,7 @@ The documentation, including the code reference and examples, is available at
 
 Installation
 ------------
-To install the latest release, simply run
+To install the latest release, simply run:
 
 ::
 
