@@ -3,7 +3,7 @@
 This example uses a force-distance curve of a zebrafish spinal cord
 section to illustrate basic data fitting and rating with nanite.
 The dataset is part of a study on spinal cord stiffness in zebrafish
-:cite:`Moellmert2018`.
+:cite:`Moellmert2019`.
 """
 import matplotlib.gridspec as gridspec
 import matplotlib.pylab as plt
