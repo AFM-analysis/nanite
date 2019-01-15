@@ -21,9 +21,9 @@ To install the latest release, simply run:
     pip install nanite[CLI]
 
 
-.. |PyPI Version| image:: http://img.shields.io/pypi/v/nanite.svg
+.. |PyPI Version| image:: https://img.shields.io/pypi/v/nanite.svg
    :target: https://pypi.python.org/pypi/nanite
-.. |Build Status Unix| image:: http://img.shields.io/travis/AFM-analysis/nanite.svg?label=build_linux_osx
+.. |Build Status Unix| image:: https://img.shields.io/travis/AFM-analysis/nanite.svg?label=build_linux_osx
    :target: https://travis-ci.org/AFM-analysis/nanite
 .. |Build Status Win| image:: https://img.shields.io/appveyor/ci/paulmueller/nanite/master.svg?label=build_win
    :target: https://ci.appveyor.com/project/paulmueller/nanite
