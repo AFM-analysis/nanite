@@ -1,3 +1,5 @@
+1.0.2
+ - fix: avoid two invalid operations when computing features 
 1.0.1
  - fix: invalid operation when loading data with a callback function
 1.0.0

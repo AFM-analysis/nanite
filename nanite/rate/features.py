@@ -438,27 +438,30 @@ class IndentationFeatures(object):
             id000 = np.argmin(np.abs(xin - cp))
             id025 = int(id000 + .25 * (id100 - id000))
             idmin, idmax = min(id025, id100), max(id025, id100)
-            # find zeros
-            idcen = idmin + (idmax - idmin) // 2
-            smooth = spfilt.gaussian_filter1d(yin-fit, sigma=11)
-            idzero1 = idmin + np.argmin(np.abs(smooth[idmin:idcen]))
-            idzero2 = idcen + np.argmin(np.abs(smooth[idcen:idmax]))
-            # change of sign in 1st, 2nd, and 3rd part of indentation
-            ydiffs = []
-            if idmin != idzero1:
-                y1 = np.max(np.abs((yin - fit)[idmin:idzero1]))
-                ydiffs.append(y1)
-            if idzero1 != idzero2:
-                y2 = np.max(np.abs((yin - fit)[idzero1:idzero2]))
-                ydiffs.append(y2)
-            if idzero2 != idmax:
-                y3 = np.max(np.abs((yin - fit)[idzero2:idmax]))
-                ydiffs.append(y3)
-            if ydiffs:
-                # combine the changes (ydiff2 has different sign)
-                ydiff = np.sum(ydiffs)
-                ydiff /= yin.max()
-                value = np.log(1 + ydiff) * 2
+            if idmin != idmax:
+                # find zeros
+                idcen = idmin + (idmax - idmin) // 2
+                smooth = spfilt.gaussian_filter1d(yin-fit, sigma=11)
+                idzero1 = idmin + np.argmin(np.abs(smooth[idmin:idcen]))
+                idzero2 = idcen + np.argmin(np.abs(smooth[idcen:idmax]))
+                # change of sign in 1st, 2nd, and 3rd part of indentation
+                ydiffs = []
+                if idmin != idzero1:
+                    y1 = np.max(np.abs((yin - fit)[idmin:idzero1]))
+                    ydiffs.append(y1)
+                if idzero1 != idzero2:
+                    y2 = np.max(np.abs((yin - fit)[idzero1:idzero2]))
+                    ydiffs.append(y2)
+                if idzero2 != idmax:
+                    y3 = np.max(np.abs((yin - fit)[idzero2:idmax]))
+                    ydiffs.append(y3)
+                if ydiffs:
+                    # combine the changes (ydiff2 has different sign)
+                    ydiff = np.sum(ydiffs)
+                    ydiff /= yin.max()
+                    value = np.log(1 + ydiff) * 2
+                else:
+                    value = np.nan
             else:
                 value = np.nan
         else:
@@ -502,13 +505,16 @@ class IndentationFeatures(object):
             f = self.datafit_apr
             idind = x < cp
             diff = (y - f)[idind]
-            area = np.nansum(np.abs(diff))/diff.shape[0]
-            norm = np.abs(y.max() - y.min())/2
-            value = area/norm
-            value = np.log(1 + value) * 5
-            return value
+            if diff.size:
+                area = np.nansum(np.abs(diff))/diff.size
+                norm = np.abs(y.max() - y.min())/2
+                value = area/norm
+                value = np.log(1 + value) * 5
+            else:
+                value = np.nan
         else:
-            return np.nan
+            value = np.nan
+        return value
 
     def feat_con_idt_sum_75perc(self):
         """residuals in 75% IDT
