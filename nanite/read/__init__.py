@@ -99,7 +99,7 @@ def load_raw_data(path, callback=None):
                     cbck = None
                 else:
                     # modified callback for multiple files
-                    cbck = lambda x: (callback(x) + ii)/len(paths)
+                    cbck = lambda x: callback(x + ii/len(paths))
                 data += load(pp, callback=cbck)
                 break
         else:

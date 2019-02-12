@@ -1,3 +1,7 @@
+1.0.1
+ - fix: invalid operation when loading data with a callback function
+1.0.0
+ - docs: minor update
 0.9.3
  - enh: store nanite and h5py library versions in rating container
  - enh: update hyperparameters of rating regressors
