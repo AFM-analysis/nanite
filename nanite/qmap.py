@@ -123,6 +123,18 @@ class QMap(object):
         value = height / unit_scales["µ"]
         return value
 
+    def feat_fit_contact_point(self, idnt):
+        if (idnt.fit_properties and idnt.fit_properties["success"]):
+            # use cached rating
+            value = idnt.fit_properties["params_fitted"]["contact_point"].value
+        else:
+            msg = "The experimental data has not been fitted. Please call " \
+                  + "`idnt.fit_model` manually for {}!".format(idnt)
+            warnings.warn(msg, DataMissingWarning)
+            value = np.nan
+
+        return value
+
     def feat_fit_youngs_modulus(self, idnt):
         if (idnt.fit_properties and idnt.fit_properties["success"]):
             # use cached rating
@@ -212,9 +224,10 @@ class QMap(object):
 # Maps feature names to functions in QMap
 feature_mapping = {
     "data min height": QMap.feat_data_min_height_measured_um,
+    "fit contact point": QMap.feat_fit_contact_point,
+    "fit young's modulus": QMap.feat_fit_youngs_modulus,
     "meta rating": QMap.feat_meta_rating,
     "meta scan order": QMap.feat_meta_scan_order,
-    "fit young's modulus": QMap.feat_fit_youngs_modulus,
     }
 
 #: Available features for quantitative maps

@@ -1,4 +1,5 @@
-1.0.2
+1.1.0
+ - feat: add contact point to available features in qmap visualization
  - fix: avoid two invalid operations when computing features 
 1.0.1
  - fix: invalid operation when loading data with a callback function

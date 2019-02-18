@@ -31,6 +31,36 @@ def test_feat_min_height():
     assert np.allclose(qd[-1, 0], 89.95170867840217)
 
 
+def test_feat_cp():
+    qm = qmap.QMap(jpkfile2)
+    # fit data
+    for idnt in qm.group:
+        idnt.apply_preprocessing(["compute_tip_position",
+                                  "correct_force_offset",
+                                  "correct_tip_offset",
+                                  ])
+        inparams = model.model_sneddon_spherical_approximation \
+            .get_parameter_defaults()
+        inparams["E"].value = 50
+        inparams["R"].value = 37.28e-6 / 2
+
+        # Fit with absolute full range
+        idnt.fit_model(model_key="sneddon_spher_approx",
+                       params_initial=inparams,
+                       range_x=(0, 0),
+                       range_type="absolute",
+                       x_axis="tip position",
+                       y_axis="force",
+                       segment="approach",
+                       weight_cp=2e-6)
+
+    qd = qm.get_qmap("fit contact point", qmap_only=True)
+    vals = qd.flat[~np.isnan(qd.flat)]
+    assert np.allclose(vals[0], -1.8204313275340384e-06), "gray matter"
+    assert np.allclose(vals[2], -3.581010097797692e-06), "white matter"
+    assert np.allclose(vals[1], -2.1069835958708937e-06), "background"
+
+
 def test_feat_emod_nofit():
     qm = qmap.QMap(jpkfile)
     with warnings.catch_warnings(record=True) as w:

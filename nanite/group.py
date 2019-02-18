@@ -75,6 +75,15 @@ class IndentationGroup(object):
         return "\n".join(rep)
 
     def append(self, item):
+        """Append an indentation dataset
+
+        Parameters
+        ----------
+        item: Indentation
+            Force-indentation dataset
+        """
+        if not isinstance(item, Indentation):
+            raise ValueError("`item` must be an instance of `Indentation`!")
         self._mmlist.append(item)
 
     def index(self, item):
