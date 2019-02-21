@@ -314,8 +314,8 @@ def save_hdf5(h5path, indent, user_rate, user_name, user_comment, h5mode="a"):
             # Only allow overriding of user data if fit matches.
             # Otherwise, the rating might be wrong.
             if not np.allclose(indent["fit"], ana[idd]["fit"], equal_nan=True):
-                raise ValueError(
-                    "Cannot store rating for different fit in hdf5 file!")
+                raise ValueError("Cannot store rating for different fit in "
+                                 "same rating container!")
             out = ana[idd]
         else:
             out = ana.create_group(idd)
