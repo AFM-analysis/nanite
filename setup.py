@@ -70,7 +70,6 @@ setup(
            "nanite-generate-training-set = nanite.cli:generate_training_set [CLI]",
             ],
        },
-
     keywords=["atomic force microscopy",
               "mechanical phenotyping",
               "tissue analysis"],
