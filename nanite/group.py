@@ -79,7 +79,7 @@ class IndentationGroup(object):
 
         Parameters
         ----------
-        item: Indentation
+        item: nanite.indent.Indentation
             Force-indentation dataset
         """
         if not isinstance(item, Indentation):
