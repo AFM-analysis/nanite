@@ -1,3 +1,5 @@
+1.1.1
+ - setup: migrate to PEP 517 (pyproject.toml)
 1.1.0
  - feat: add contact point to available features in qmap visualization
  - fix: avoid two invalid operations when computing features 

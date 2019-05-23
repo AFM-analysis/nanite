@@ -1,0 +1,3 @@
+[build-system]
+# Defined by PEP 518:
+requires = ["cython", "numpy", "setuptools", "wheel"]
