@@ -17,14 +17,14 @@ def get_parameter_defaults():
 
 
 def hertz_paraboloidal(E, delta, R, nu, contact_point=0, baseline=0):
-    """Hertz model for a paraboloidal indenter
+    r"""Hertz model for a paraboloidal indenter
 
     .. math::
 
-        F = \\frac{4}{3}
-            \\frac{E}{1-\\nu^2}
-            \\sqrt{R}
-            \\delta^{3/2}
+        F = \frac{4}{3}
+            \frac{E}{1-\nu^2}
+            \sqrt{R}
+            \delta^{3/2}
 
     Parameters
     ----------
@@ -55,16 +55,16 @@ def hertz_paraboloidal(E, delta, R, nu, contact_point=0, baseline=0):
 
     .. math::
 
-        F = \\frac{4}{3}
-            \\frac{E}{1-\\nu^2}
-            \\sqrt{2k}
-            \\delta^{3/2},
+        F = \frac{4}{3}
+            \frac{E}{1-\nu^2}
+            \sqrt{2k}
+            \delta^{3/2},
 
     where :math:`k` is defined by the paraboloid equation
 
     .. math::
 
-        \\rho^2 = 4kz.
+        \rho^2 = 4kz.
 
     These approximations are made by the Hertz model:
 

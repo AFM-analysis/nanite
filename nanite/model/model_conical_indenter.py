@@ -18,13 +18,13 @@ def get_parameter_defaults():
 
 
 def hertz_conical(E, delta, alpha, nu, contact_point=0, baseline=0):
-    """Hertz model for a conical indenter
+    r"""Hertz model for a conical indenter
 
     .. math::
 
-        F = \\frac{2\\tan\\alpha}{\\pi}
-            \\frac{E}{1-\\nu^2}
-            \\delta^2
+        F = \frac{2\tan\alpha}{\pi}
+            \frac{E}{1-\nu^2}
+            \delta^2
 
     Parameters
     ----------

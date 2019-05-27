@@ -17,17 +17,17 @@ def get_parameter_defaults():
 
 def hertz_sneddon_spherical_approx(E, delta, R, nu, contact_point=0,
                                    baseline=0):
-    """Hertz model for Spherical indenter - approximation
+    r"""Hertz model for Spherical indenter - approximation
 
     .. math::
 
-        F = \\frac{4}{3} \\frac{E}{1-\\nu^2} \\sqrt{R} \\delta^{3/2}
-            \\left(1
-             - \\frac{1}{10} \\frac{\\delta}{R}
-             - \\frac{1}{840} \\left(\\frac{\\delta}{R}\\right)^2
-             + \\frac{11}{15120} \\left(\\frac{\\delta}{R}\\right)^3
-             + \\frac{1357}{6652800} \\left(\\frac{\\delta}{R}\\right)^4
-             \\right)
+        F = \frac{4}{3} \frac{E}{1-\nu^2} \sqrt{R} \delta^{3/2}
+            \left(1
+             - \frac{1}{10} \frac{\delta}{R}
+             - \frac{1}{840} \left(\frac{\delta}{R}\right)^2
+             + \frac{11}{15120} \left(\frac{\delta}{R}\right)^3
+             + \frac{1357}{6652800} \left(\frac{\delta}{R}\right)^4
+             \right)
 
     Parameters
     ----------

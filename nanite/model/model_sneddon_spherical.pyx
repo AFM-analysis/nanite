@@ -18,15 +18,15 @@ def get_parameter_defaults():
 
 
 def hertz_spherical(double E, delta, double R, double nu, double contact_point=0, double baseline=0):
-    """Hertz model for Spherical indenter - modified by Sneddon
+    r"""Hertz model for Spherical indenter - modified by Sneddon
 
 
     .. math::
 
-        F &= \\frac{E}{1-\\nu^2} \\left( \\frac{R^2+a^2}{2} \\ln \\! \\left(
-             \\frac{R+a}{R-a}\\right) -aR  \\right)\\\\
-        \\delta &= \\frac{a}{2} \\ln
-             \\! \\left(\\frac{R+a}{R-a}\\right)
+        F &= \frac{E}{1-\nu^2} \left( \frac{R^2+a^2}{2} \ln \! \left(
+             \frac{R+a}{R-a}\right) -aR  \right)\\
+        \delta &= \frac{a}{2} \ln
+             \! \left(\frac{R+a}{R-a}\right)
 
     (:math:`a` is the radius of the circular contact area between bead
     and sample.)

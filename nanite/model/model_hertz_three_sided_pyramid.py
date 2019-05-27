@@ -19,13 +19,13 @@ def get_parameter_defaults():
 
 def hertz_three_sided_pyramid(E, delta, alpha, nu, contact_point=0,
                               baseline=0):
-    """Hertz model for three sided pyramidal indenter
+    r"""Hertz model for three sided pyramidal indenter
 
     .. math::
 
-        F = 0.887 \\tan\\alpha
-            \\cdot \\frac{E}{1-\\nu^2}
-            \\delta^2
+        F = 0.887 \tan\alpha
+            \cdot \frac{E}{1-\nu^2}
+            \delta^2
 
     Parameters
     ----------
