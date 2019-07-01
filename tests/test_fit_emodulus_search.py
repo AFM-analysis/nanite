@@ -70,7 +70,7 @@ def test_cache_emodulus():
     ar.apply_preprocessing(["compute_tip_position",
                             "correct_force_offset",
                             "correct_tip_offset"])
-    t01 = time.time()
+    t01 = time.perf_counter()
     ar.fit_model(model_key="hertz_cone",
                  params_initial=None,
                  x_axis="tip position",
@@ -79,18 +79,18 @@ def test_cache_emodulus():
                  segment="approach",
                  optimal_fit_edelta=True,
                  )
-    t02 = time.time()
+    t02 = time.perf_counter()
 
-    t11 = time.time()
+    t11 = time.perf_counter()
     ar.fit_model()
-    t12 = time.time()
+    t12 = time.perf_counter()
     assert (t02-t01)*1e-4 > t12 - \
         t11, "Second computation should yield cached value (faster)!"
 
     # Make sure that changing the fit model is longer again
-    t21 = time.time()
+    t21 = time.perf_counter()
     ar.fit_model(model_key="hertz_para")
-    t22 = time.time()
+    t22 = time.perf_counter()
 
     assert ((t22-t21)*1e-4
             > (t12 - t11)), "Changing model_key should slow down computation!"
