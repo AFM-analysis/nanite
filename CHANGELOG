@@ -1,3 +1,7 @@
+1.1.2
+ - fix: add ``__version__`` property
+ - tests: use time.perf_counter for timing tests
+ - docs: improved LaTeX rendering
 1.1.1
  - setup: migrate to PEP 517 (pyproject.toml)
  - docs: minor update
