@@ -74,11 +74,11 @@ def test_rate_manager_basic():
     ss = rmg.samples[0]
     assert np.allclose(ss, idr.compute_features(idnt))
     # rates
-    assert np.asscalar(rmg.get_rates(which="user")) == 5
+    assert np.ndarray.item(rmg.get_rates(which="user")) == 5
     # This will fail when the hyper-parameters for "Extra Trees" change
     # or when new features are added.
     assert np.allclose(
-        np.asscalar(rmg.get_rates(which="Extra Trees", training_set="zef18")),
+        np.ndarray.item(rmg.get_rates(which="Extra Trees", training_set="zef18")),
         3.6538889425505854)
     shutil.rmtree(tdir, ignore_errors=True)
 
@@ -106,7 +106,7 @@ def test_rate_manager_export():
     for ff, si in zip(feats, ss):
         fi = np.loadtxt(tdir / "train_{}.txt".format(ff))
         # :.2e, because features are not stored with high accuracy
-        assert np.asscalar(fi) == float("{:.2e}".format(si))
+        assert np.ndarray.item(fi) == float("{:.2e}".format(si))
 
     shutil.rmtree(tdir, ignore_errors=True)
 
