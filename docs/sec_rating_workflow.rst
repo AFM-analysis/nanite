@@ -10,7 +10,8 @@ based on `scikit-learn <http://scikit-learn.org/>`_.
 In short, an estimator is trained with a sample dataset that was manually
 rated by a user. This estimator is then applied to new data and, in an
 optimal scenario, reproduces the rating scheme that the user intended
-when he rated the training dataset.
+when he rated the training dataset. For a more detailed analysis, please
+refer to :cite:`Mueller19nanite`.
 
 Nanite already comes with a default training set that is based on AFM
 data recorded for zebrafish spinal cord sections, called `zef18`.
