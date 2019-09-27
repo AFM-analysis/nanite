@@ -78,7 +78,8 @@ def test_rate_manager_basic():
     # This will fail when the hyper-parameters for "Extra Trees" change
     # or when new features are added.
     assert np.allclose(
-        np.ndarray.item(rmg.get_rates(which="Extra Trees", training_set="zef18")),
+        np.ndarray.item(rmg.get_rates(which="Extra Trees",
+                                      training_set="zef18")),
         3.6538889425505854)
     shutil.rmtree(tdir, ignore_errors=True)
 

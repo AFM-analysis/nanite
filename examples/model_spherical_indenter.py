@@ -1,4 +1,4 @@
-"""Approximating the Hertzian model with a spherical indenter
+r"""Approximating the Hertzian model with a spherical indenter
 
 There is no closed form for the Hertzian model with a spherical indenter.
 The force :math:`F` does not directly depend on the indentation depth
@@ -82,7 +82,7 @@ for ii, rad in enumerate(radii):
             color=mpl.cm.get_cmap("viridis")(ii/radii.size),
             zorder=1)
 
-ax.set_xlabel("indentation depth $\delta$ [µm]")
+ax.set_xlabel(r"indentation depth $\delta$ [µm]")
 ax.set_ylabel("error in force relative to maximum $F/F_{max}$")
 ax.set_yscale("log")
 ax.grid()
@@ -99,12 +99,11 @@ cax = divider.append_axes("right", size="3%", pad=0.05)
 
 norm = mpl.colors.Normalize(vmin=radii[0]*1e6, vmax=radii[-1]*1e6)
 mpl.colorbar.ColorbarBase(ax=cax,
-                          cmap="viridis",
+                          cmap=mpl.cm.viridis,
                           norm=norm,
                           orientation='vertical',
                           label="indenter radius [µm]"
                           )
 
 plt.tight_layout()
-plt.savefig("model_spherical_indenter.jpg", dpi=120)
 plt.show()
