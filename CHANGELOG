@@ -1,5 +1,6 @@
 1.1.3
  - tests: np.asscalar is deprecated
+ - ref: migrate to afmformats (#1)
 1.1.2
  - fix: add ``__version__`` property
  - tests: use time.perf_counter for timing tests

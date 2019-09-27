@@ -42,7 +42,7 @@ def test_correct_app_ret():
     idnt = grp[0]
     idnt.apply_preprocessing(["compute_tip_position",
                               "correct_split_approach_retract"])
-    a = idnt.data.loc[~(idnt.data["segment"].values)]
+    a = idnt.data["segment"][~(idnt.data["segment"])]
     assert len(a) == 2006
 
 

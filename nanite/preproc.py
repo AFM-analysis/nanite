@@ -116,10 +116,9 @@ class IndentationPreprocessor(object):
 
             idmin = np.argmax(x**2+y**2)
 
-            # approach
-            apret.data.loc[apret.data.index < idmin, "segment"] = False
-            # retract
-            apret.data.loc[apret.data.index >= idmin, "segment"] = True
+            segment = np.zeros(len(apret.data), dtype=bool)
+            segment[idmin:] = True
+            apret["segment"] = segment
         else:
             msg = "Cannot correct splitting of approach and retract curve " +\
                   "because the contact point position could not be estimated."
@@ -142,10 +141,10 @@ class IndentationPreprocessor(object):
             if o not in apret.data.columns:
                 continue
             # Get approach and retract data
-            app_idx = ~apret.data["segment"].values
-            app = np.array(apret.data[o].loc[app_idx])
-            ret_idx = apret.data["segment"].values
-            ret = np.array(apret.data[o].loc[ret_idx])
+            app_idx = ~apret.data["segment"]
+            app = np.array(apret.data[o][app_idx])
+            ret_idx = apret.data["segment"]
+            ret = np.array(apret.data[o][ret_idx])
             # Apply smoothing
             sm_app = smooth_axis_monotone(app)
             sm_ret = smooth_axis_monotone(ret)

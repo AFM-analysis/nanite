@@ -177,13 +177,13 @@ class IndentationFitter(object):
 
         # Set arrays
         self.segment = (data_set["segment"] ==
-                        self.fp["segment_bool"]).values
+                        self.fp["segment_bool"])
         self.segment.setflags(write=False)
 
-        self.x_axis = data_set[self.fp["x_axis"]].values
+        self.x_axis = data_set[self.fp["x_axis"]]
         self.x_axis.setflags(write=False)
 
-        self.y_axis = data_set[self.fp["y_axis"]].values
+        self.y_axis = data_set[self.fp["y_axis"]]
         self.y_axis.setflags(write=False)
 
         self.fit_range = np.zeros_like(self.segment)

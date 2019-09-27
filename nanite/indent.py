@@ -1,6 +1,5 @@
 import copy
 import inspect
-import pathlib
 
 import numpy as np
 import scipy.signal as spsig
@@ -23,8 +22,8 @@ class Indentation(object):
         self.path = idnt_data.path
         self.enum = idnt_data.enum
 
-        #: All data in a Pandas DataFrame
-        self.data = idnt_data.data
+        #: All data as afmformats.AFMForceDistance
+        self.data = idnt_data
         #: Default preprocessing steps steps,
         #: see :func:`Indentation.apply_preprocessing`.
         self.preprocessing = []
@@ -214,13 +213,7 @@ class Indentation(object):
 
     def export(self, path):
         """Saves the current data as tab separated values"""
-        path = pathlib.Path(path)
-        with path.open("w") as fd:
-            self.data.to_csv(path_or_buf=fd,
-                             sep="\t",
-                             encoding="utf-8",
-                             na_rep="nan",
-                             index=False)
+        self.data.export(path)
 
     def fit_model(self, **kwargs):
         """Fit the approach-retract data to a model function
