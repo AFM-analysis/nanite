@@ -60,10 +60,18 @@ class IndentationPreprocessor(object):
         JPK analysis software with the checked option
         "Use Unsmoothed Height".
         """
-        k = apret.metadata["spring constant [N/m]"]
-        force = apret.data["force"]
-        zcant = apret.data["height (measured)"]
-        apret.data["tip position"] = zcant + force/k
+        if ("height (measured)" in apret
+            and "force" in apret
+                and "spring constant [N/m]" in apret.metadata):
+            k = apret.metadata["spring constant [N/m]"]
+            force = apret["force"]
+            zcant = apret["height (measured)"]
+            apret.data["tip position"] = zcant + force/k
+        elif "tip position" in apret:
+            # nothing to do
+            pass
+        else:
+            raise ValueError("Cannot compute tip position!")
 
     @staticmethod
     def correct_force_offset(apret):

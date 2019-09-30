@@ -43,7 +43,7 @@ def get_data_paths_enum(path, skip_errors=False):
             else:
                 raise
         for dd in data:
-            enumpaths.append([pp, dd.index])
+            enumpaths.append([pp, dd.enum])
     return enumpaths
 
 
