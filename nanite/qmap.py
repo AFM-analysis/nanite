@@ -98,10 +98,10 @@ class QMap(object):
         """extent (x1, x2, y1, y2) [µm]"""
         idnt0 = self.group[0]
         # get extent of the map
-        sx = idnt0.metadata["grid size x [µm]"]
-        sy = idnt0.metadata["grid size y [µm]"]
-        cx = idnt0.metadata["grid center x [µm]"]
-        cy = idnt0.metadata["grid center y [µm]"]
+        sx = idnt0.metadata["grid size x"] * 1e6
+        sy = idnt0.metadata["grid size y"] * 1e6
+        cx = idnt0.metadata["grid center x"] * 1e6
+        cy = idnt0.metadata["grid center y"] * 1e6
         extent = (cx - sx/2, cx + sx/2,
                   cy - sy/2, cy + sy/2,
                   )
@@ -113,8 +113,8 @@ class QMap(object):
         """shape of the map [px]"""
         idnt0 = self.group[0]
         # get shape of the map
-        shape = (idnt0.metadata["grid size x [px]"],
-                 idnt0.metadata["grid size y [px]"]
+        shape = (idnt0.metadata["grid shape x"],
+                 idnt0.metadata["grid shape y"]
                  )
         return shape
 
@@ -174,16 +174,18 @@ class QMap(object):
             raise ValueError("`which` must be 'px' or 'um'!")
 
         if which == "px":
-            kx = "position x [px]"
-            ky = "position y [px]"
+            kx = "grid index x"
+            ky = "grid index y"
+            mult = 1
         else:
-            kx = "position x [µm]"
-            ky = "position y [µm]"
+            kx = "position x"
+            ky = "position y"
+            mult = 1e6
         coords = []
         for idnt in self.group:
             # We assume that kx and ky are given. This has to be
             # ensured by the file format reader for qmaps.
-            cc = [idnt.metadata[kx], idnt.metadata[ky]]
+            cc = [idnt.metadata[kx] * mult, idnt.metadata[ky] * mult]
             coords.append(cc)
         return np.array(coords)
 

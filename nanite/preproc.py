@@ -62,8 +62,8 @@ class IndentationPreprocessor(object):
         """
         if ("height (measured)" in apret
             and "force" in apret
-                and "spring constant [N/m]" in apret.metadata):
-            k = apret.metadata["spring constant [N/m]"]
+                and "spring constant" in apret.metadata):
+            k = apret.metadata["spring constant"]
             force = apret["force"]
             zcant = apret["height (measured)"]
             apret.data["tip position"] = zcant + force/k
