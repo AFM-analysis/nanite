@@ -31,7 +31,7 @@ setup(
     license="GPL v3",
     description=description,
     long_description=open('README.rst').read() if exists('README.rst') else '',
-    install_requires=["afmformats>=0.2.0",
+    install_requires=["afmformats>=0.3.0",
                       "h5py>=2.8.0",
                       "lmfit==0.9.5",
                       "numpy>=1.14.0",
