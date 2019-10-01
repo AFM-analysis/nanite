@@ -1,5 +1,5 @@
 1.2.2
- - setup: bump afmformats version from 0.3.0 to 0.4.0
+ - setup: bump afmformats version from 0.3.0 to 0.4.1
 1.2.1
  - enh: skip computation of tip position if it is already in the
    dataset and cannot be computed e.g. due to missing spring constant
