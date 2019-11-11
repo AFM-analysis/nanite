@@ -27,8 +27,8 @@ class Indentation(object):
         #: Default preprocessing steps steps,
         #: see :func:`Indentation.apply_preprocessing`.
         self.preprocessing = []
-        #: Fitting results, see :func:`Indentation.fit_model`)
-        self.fit_properties = FitProperties()
+        # protected fit properties
+        self._fit_properties = FitProperties()
 
         # Curve rating (see `self.rate_quality`)
         self._rating = None
@@ -55,6 +55,15 @@ class Indentation(object):
             self.enum,
             self.path
         )
+
+    @property
+    def fit_properties(self):
+        """Fitting results, see :func:`Indentation.fit_model`)"""
+        return self._fit_properties
+
+    @fit_properties.setter
+    def fit_properties(self, fp):
+        self._fit_properties.update(fp)
 
     def apply_preprocessing(self, preprocessing=None):
         """Perform curve preprocessing steps

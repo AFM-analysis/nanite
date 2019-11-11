@@ -79,8 +79,19 @@ class FitProperties(dict):
 
     def __setitem__(self, key, value):
         if key in FP_DEFAULT:
-            if (key in self and
-                    self[key] == value):
+            if (key in self
+                and key == "params_initial"
+                    and self["params_initial"] is not None
+                    and value is not None):
+                # check for changed initial parameters
+                for pp in self["params_initial"]:
+                    s1 = self["params_initial"][pp].__getstate__()
+                    s2 = value[pp].__getstate__()
+                    if s1 != s2:
+                        self.reset()
+                        break
+            elif key in self and self[key] == value:
+                # nothing to do, parameters match
                 pass
             else:
                 if key == "model_key":

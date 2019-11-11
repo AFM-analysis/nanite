@@ -1,3 +1,5 @@
+1.2.3
+ - fix: FitProperties did not detect changes in "params_initial"
 1.2.2
  - setup: bump afmformats version from 0.3.0 to 0.4.1
 1.2.1

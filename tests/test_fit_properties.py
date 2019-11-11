@@ -1,5 +1,6 @@
 """ Test of data set functionalities
 """
+import copy
 import pathlib
 
 from nanite.fit import FitProperties, FP_DEFAULT, FitKeyError
@@ -9,6 +10,26 @@ from nanite import model
 
 datapath = pathlib.Path(__file__).parent / "data"
 jpkfile = datapath / "spot3-0192.jpk-force"
+
+
+def test_changed_fit_properties():
+    ar = IndentationGroup(jpkfile)[0]
+    # Initially, fit properties are not set
+    assert not ar.fit_properties
+    assert isinstance(ar.fit_properties, dict)
+    # Prepprocessing
+    ar.apply_preprocessing(["compute_tip_position",
+                            "correct_tip_offset",
+                            "correct_force_offset"])
+    ar.fit_model()
+    hash1 = ar.fit_properties["hash"]
+    pinit = copy.deepcopy(ar.fit_properties["params_initial"])
+    pinit["E"].vary = False
+    assert "hash" in ar.fit_properties, "make sure we didn't change anything"
+    ar.fit_properties["params_initial"] = pinit
+    assert "hash" not in ar.fit_properties
+    ar.fit_model()
+    assert hash1 != ar.fit_properties["hash"]
 
 
 def test_fp_reset():
