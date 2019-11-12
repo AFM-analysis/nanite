@@ -1,3 +1,5 @@
+1.2.4
+ - enh: update boundaries and default values for model parameters
 1.2.3
  - fix: FitProperties did not detect changes in "params_initial"
 1.2.2

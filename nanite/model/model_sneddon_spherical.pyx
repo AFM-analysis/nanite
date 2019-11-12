@@ -10,8 +10,8 @@ def get_parameter_defaults():
     # of ´parameter_names´ and ´parameter_keys´.
     params = lmfit.Parameters()
     params.add("E", value=3e3, min=0)
-    params.add("R", value=10e-6, vary=False)
-    params.add("nu", value=.5, vary=False)
+    params.add("R", value=10e-6, min=0, vary=False)
+    params.add("nu", value=.5, min=0, max=0.5, vary=False)
     params.add("contact_point", value=0)
     params.add("baseline", value=0, vary=False)
     return params

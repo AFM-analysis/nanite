@@ -10,8 +10,8 @@ def get_parameter_defaults():
     # of ´parameter_names´ and ´parameter_keys´.
     params = lmfit.Parameters()
     params.add("E", value=3e3, min=0)
-    params.add("alpha", value=25, vary=False)
-    params.add("nu", value=.5, vary=False)
+    params.add("alpha", value=5, min=0, max=30, vary=False)
+    params.add("nu", value=.5, min=0, max=0.5, vary=False)
     params.add("contact_point", value=0)
     params.add("baseline", value=0, vary=False)
     return params
@@ -34,7 +34,7 @@ def hertz_three_sided_pyramid(E, delta, alpha, nu, contact_point=0,
     delta: 1d ndarray
         Indentation [m]
     alpha: float
-        Face angle of the pyramid [degrees]
+        Inclination angle of the pyramidal face [degrees]
     nu: float
         Poisson's ratio
     contact_point: float
@@ -59,6 +59,8 @@ def hertz_three_sided_pyramid(E, delta, alpha, nu, contact_point=0,
     - The sample is extended infinitely in one half space.
     - The indenter is not deformable.
     - There are no additional interactions between sample and indenter.
+    - The inclination angle of the pyramidal face (in radians)
+      must be close to zero.
 
     References
     ----------
