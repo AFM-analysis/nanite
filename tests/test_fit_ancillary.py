@@ -37,6 +37,7 @@ def test_simple_ancillary_override():
         compute_ancillaries=lambda x: {"E": 1580},
         parameter_anc_keys=["E"],
         parameter_anc_names=["ancillary E guess"],
+        parameter_anc_units=["Pa"],
             model_key="test1"):
         idnt.fit_model(preprocessing=["compute_tip_position"],
                        model_key="test1")
@@ -56,6 +57,7 @@ def test_simple_ancillary_override_nan():
         compute_ancillaries=lambda x: {"E": np.nan},
         parameter_anc_keys=["E"],
         parameter_anc_names=["ancillary E guess"],
+        parameter_anc_units=["Pa"],
             model_key="test2"):
         idnt.fit_model(preprocessing=["compute_tip_position"],
                        model_key="test2")

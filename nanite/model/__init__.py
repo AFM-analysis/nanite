@@ -127,6 +127,7 @@ def register_model(module, module_name):
         missing_anc = []
         for attr in ["parameter_anc_keys",
                      "parameter_anc_names",
+                     "parameter_anc_units",
                      ]:
             if not hasattr(module, attr):
                 missing_anc.append(attr)
