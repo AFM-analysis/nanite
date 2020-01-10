@@ -4,7 +4,9 @@ import inspect
 import numpy as np
 import scipy.signal as spsig
 
-from .fit import IndentationFitter, FitProperties
+from .fit import IndentationFitter, FitProperties, guess_initial_parameters, \
+    FP_DEFAULT
+from . import model
 from .preproc import IndentationPreprocessor
 from .rate import get_rater
 
@@ -271,6 +273,21 @@ class Indentation(object):
         for arg in kwargs:
             self.fit_properties[arg] = kwargs[arg]
 
+        # set a default model (needed for self.get_initial_fit_parameters)
+        if "model_key" not in self.fit_properties:
+            self.fit_properties["model_key"] = FP_DEFAULT["model_key"]
+
+        # set default initial parameters
+        if ("params_initial" not in self.fit_properties
+                or self.fit_properties["params_initial"] is None):
+            # We need the initial parameters (to modify them).
+            # Guesses common parameters like the contact point that
+            # would have otherwise been done in `IndentationFitter`:
+            fp_guess = self.get_initial_fit_parameters(
+                common_ancillaries=True,
+                model_ancillaries=True)
+            self.fit_properties["params_initial"] = fp_guess
+
         if "hash" in self.fit_properties:
             # There is nothing to do, because the initial fit
             # properties are the same.
@@ -286,12 +303,50 @@ class Indentation(object):
             self["fit range"] = fitter.fit_range
             self.fit_properties = fitter.fp
 
-    def get_initial_fit_parameters(self):
+    def get_ancillary_parameters(self):
+        """Compute ancillary parameters for the current model"""
+        if "model_key" in self.fit_properties:
+            model_key = self.fit_properties["model_key"]
+        else:
+            model_key = FP_DEFAULT["model_key"]
+        return model.get_anc_parms(idnt=self,
+                                   model_key=model_key)
+
+    def get_initial_fit_parameters(self, common_ancillaries=True,
+                                   model_ancillaries=True):
+        """Return the initial fit parameters
+
+        If there are not initial fit parameters set in
+        `self.fit_properties`, then they are computed.
+
+        Parameters
+        ----------
+        global_ancillaries: bool
+            Guess global ancillaries such as the contact point.
+        model_ancillaries: bool
+            Guess model-related ancillaries
+
+        Notes
+        -----
+        `global_ancillaries` and `model_ancillaries` only have an
+        effect if self.fit_properties["params_initial"] is set.
+        """
         if ("params_initial" in self.fit_properties and
                 self.fit_properties["params_initial"] is not None):
             parms = self.fit_properties["params_initial"]
+        elif "model_key" in self.fit_properties:
+            parms = guess_initial_parameters(
+                self,
+                model_key=self.fit_properties["model_key"],
+                model_ancillaries=model_ancillaries,
+                common_ancillaries=common_ancillaries)
         else:
-            parms = IndentationFitter(self).fp["params_initial"]
+            # for user convenience (with default model)
+            parms = guess_initial_parameters(
+                self,
+                model_key=FP_DEFAULT["model_key"],
+                model_ancillaries=model_ancillaries,
+                common_ancillaries=common_ancillaries)
         return parms
 
     def rate_quality(self, regressor="Extra Trees", training_set="zef18",

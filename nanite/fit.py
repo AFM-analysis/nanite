@@ -123,11 +123,13 @@ class FitProperties(dict):
 
 
 class IndentationFitter(object):
-    def __init__(self, data_set, **kwargs):
+    def __init__(self, idnt, **kwargs):
         """Fit force-distance curves
 
         Parameters
         ----------
+        idnt: nanite.indent.Indentation
+            The dataset to fit
         model_key: str
             A key referring to a model in
             `nanite.model.models_available`
@@ -168,10 +170,10 @@ class IndentationFitter(object):
         # make sure to take these into account in `FP_DEFAULT`.
         self.fp = FitProperties(**FP_DEFAULT)
 
-        # Get parameters from data set
-        for key in data_set.fit_properties:
+        # Get parameters from dataset
+        for key in idnt.fit_properties:
             if key in FP_DEFAULT:
-                self.fp[key] = data_set.fit_properties[key]
+                self.fp[key] = idnt.fit_properties[key]
         # Get parameters from kwargs
         for key in self.fp:
             if key in kwargs:
@@ -182,19 +184,19 @@ class IndentationFitter(object):
         # Set initial fitting parameters
         if self.fp["params_initial"] is None:
             self.fp["params_initial"] = self.get_initial_parameters(
-                data_set=data_set,
+                idnt=idnt,
                 model_key=self.fp["model_key"]
             )
 
         # Set arrays
-        self.segment = (data_set["segment"] ==
+        self.segment = (idnt["segment"] ==
                         self.fp["segment_bool"])
         self.segment.setflags(write=False)
 
-        self.x_axis = data_set[self.fp["x_axis"]]
+        self.x_axis = idnt[self.fp["x_axis"]]
         self.x_axis.setflags(write=False)
 
-        self.y_axis = data_set[self.fp["y_axis"]]
+        self.y_axis = idnt[self.fp["y_axis"]]
         self.y_axis.setflags(write=False)
 
         self.fit_range = np.zeros_like(self.segment)
@@ -476,7 +478,8 @@ class IndentationFitter(object):
         self.range_type = range_type
         self.range_x = range_x
 
-    def get_initial_parameters(self, data_set=None, model_key="hertz_para"):
+    def get_initial_parameters(self, idnt=None,
+                               model_key=FP_DEFAULT["model_key"]):
         """Get initial fit parameters for a specific model
 
         Parameters
@@ -487,25 +490,7 @@ class IndentationFitter(object):
                 self.fp["params_initial"] is not None):
             params = self.fp["params_initial"]
         else:
-            md = model.models_available[model_key]
-            params = md.get_parameter_defaults()
-            # Guess initial contact point from actual tip position
-            # (see `self.compute_tip_position`)
-            # Depending on how the current data set was pre-processed,
-            # the column "tip position" might already be corrected by
-            # an estimated contact point offset.
-            # (see `self.compute_tip_offset`)
-            if data_set is None:
-                msg = "Need `data_set` to get initial parameters!"
-                raise ValueError(msg)
-            if "tip position" in data_set:
-                cpid = data_set.estimate_contact_point_index()
-                cp = data_set["tip position"][cpid]
-                params["contact_point"].set(cp)
-            else:
-                msg = "Cannot estimate contact point, because of missing "\
-                      + "column 'tip position'"
-                warnings.warn(msg, FitWarning)
+            params = guess_initial_parameters(idnt=idnt, model_key=model_key)
         return params
 
     def _hash(self):
@@ -535,6 +520,51 @@ class IndentationFitter(object):
         # join and hash
         myhash = hashlib.md5(obj2str(hashlist)).hexdigest()
         return myhash
+
+
+def guess_initial_parameters(idnt=None,
+                             model_key=FP_DEFAULT["model_key"],
+                             common_ancillaries=True,
+                             model_ancillaries=True):
+    """Guess initial fitting parameters
+
+    Parameters
+    ----------
+    idnt: nanite.indent.Indentation
+        The dataset to use for guessing initial fitting parameters
+        using ancillary parameters
+    model_key: str
+        The model key
+    common_ancillaries: bool
+        Guess global ancillary parameters (such as contact point)
+    model_ancillaries: bool
+        Use model-related ancillary parameters
+    """
+    md = model.models_available[model_key]
+    params = md.get_parameter_defaults()
+    if common_ancillaries and idnt is not None:
+        # Guess initial contact point from actual tip position
+        # (see `self.compute_tip_position`)
+        # Depending on how the current dataset was pre-processed,
+        # the column "tip position" might already be corrected by
+        # an estimated contact point offset.
+        # (see `self.compute_tip_offset`)
+        if "tip position" in idnt:
+            cpid = idnt.estimate_contact_point_index()
+            cp = idnt["tip position"][cpid]
+            params["contact_point"].set(cp)
+        else:
+            msg = "Cannot estimate contact point, because of missing "\
+                  + "column 'tip position'"
+            warnings.warn(msg, FitWarning)
+    if model_ancillaries and idnt is not None:
+        anc_dict = idnt.get_ancillary_parameters()
+        # set the parameter values
+        for anckey in anc_dict:
+            if anckey in params:
+                if not np.isnan(anc_dict[anckey]):  # ignore nans
+                    params[anckey].set(value=anc_dict[anckey])
+    return params
 
 
 def obj2str(obj):

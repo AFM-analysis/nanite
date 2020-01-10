@@ -150,12 +150,8 @@ def test_get_initial_fit_parameters():
     ds1 = nanite.IndentationGroup(jpkfile)
     idnt = ds1[0]
     # A: sanity check
-    try:
-        idnt.get_initial_fit_parameters()
-    except KeyError:
-        pass
-    else:
-        assert False, "need to get tip position first"
+    fp = idnt.get_initial_fit_parameters()
+    assert fp["contact_point"].value == 0, "need to get tip position first"
     # B: get default fit parameters (hertz_para)
     idnt.apply_preprocessing(["compute_tip_position"])
     fp = idnt.get_initial_fit_parameters()

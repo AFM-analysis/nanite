@@ -25,7 +25,7 @@ def test_app_ret():
     np.array(idnt.data["tip position (smoothed)"])
 
 
-def test_tip_sample_sepidntation():
+def test_tip_sample_separation():
     grp = IndentationGroup(jpkfile)
     idnt = grp[0]
     # This computation correctly reproduces the column

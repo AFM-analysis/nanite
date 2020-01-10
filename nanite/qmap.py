@@ -230,7 +230,7 @@ feature_mapping = {
     "fit young's modulus": QMap.feat_fit_youngs_modulus,
     "meta rating": QMap.feat_meta_rating,
     "meta scan order": QMap.feat_meta_scan_order,
-    }
+}
 
 #: Available features for quantitative maps
 available_features = sorted(feature_mapping.keys())

@@ -9,7 +9,7 @@ NAME_MAPPING = {
     "E": ["Young's Modulus"],
     "nu": ["Poisson's Ratio"],
     "R": "Tip Radius",
-    }
+}
 
 UNIT_MAPPING = {
     "alpha": "°",
@@ -18,7 +18,7 @@ UNIT_MAPPING = {
     "E": "Pa",
     "nu": "",
     "R": "m",
-    }
+}
 
 
 def test_model_parameter_name_order():
