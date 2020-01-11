@@ -60,6 +60,7 @@ def test_basic():
     idnt = ds1[0]
     # tip-sample separation
     idnt.apply_preprocessing(["compute_tip_position"])
+    assert idnt.preprocessing == ["compute_tip_position"]
     assert idnt["tip position"][0] == 2.2803841798545836e-05
     # correct for an offset in the tip
     idnt.apply_preprocessing(["compute_tip_position",

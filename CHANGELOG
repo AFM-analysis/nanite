@@ -6,6 +6,7 @@
    initial parameters are present
  - enh: allow to set the `model_key` in more functions of `Indentation`
  - ref: use `idnt` to represent Indentation instances
+ - fix: preprocessing steps not stored in `Indentation.preprocessing`
 1.2.4
  - enh: update boundaries and default values for model parameters
 1.2.3

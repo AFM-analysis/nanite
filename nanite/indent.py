@@ -102,6 +102,8 @@ class Indentation(object):
                     fp.pop(ax)
             # Set new fit properties
             self.fit_properties = fp
+        # remember preprocessing
+        self.preprocessing = preprocessing
 
     def compute_emodulus_mindelta(self, callback=None):
         """Elastic modulus in dependency of maximum indentation
