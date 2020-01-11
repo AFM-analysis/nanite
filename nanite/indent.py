@@ -324,7 +324,8 @@ class Indentation(object):
         Parameters
         ----------
         model_key: str
-            Optionally set a model key if the fit model is not set.
+            Optionally set a model key. This will override the
+            "model_key" key in `self.fit_properties`.
         global_ancillaries: bool
             Guess global ancillaries such as the contact point.
         model_ancillaries: bool
@@ -335,6 +336,8 @@ class Indentation(object):
         `global_ancillaries` and `model_ancillaries` only have an
         effect if self.fit_properties["params_initial"] is set.
         """
+        if model_key is not None:
+            self.fit_properties["model_key"] = model_key
         if self.fit_properties.get("params_initial", False):
             parms = self.fit_properties["params_initial"]
         elif "model_key" in self.fit_properties:

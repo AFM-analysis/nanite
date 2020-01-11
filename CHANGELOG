@@ -4,6 +4,7 @@
  - feat: `Indentation.get_initial_fit_parameters` now automatically
    computes common and model-related ancillary parameters if no
    initial parameters are present
+ - enh: allow to set the `model_key` in more functions of `Indentation`
  - ref: use `idnt` to represent Indentation instances
 1.2.4
  - enh: update boundaries and default values for model parameters
