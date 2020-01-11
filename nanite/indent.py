@@ -303,16 +303,18 @@ class Indentation(object):
             self["fit range"] = fitter.fit_range
             self.fit_properties = fitter.fp
 
-    def get_ancillary_parameters(self):
+    def get_ancillary_parameters(self, model_key=None):
         """Compute ancillary parameters for the current model"""
-        if "model_key" in self.fit_properties:
-            model_key = self.fit_properties["model_key"]
-        else:
-            model_key = FP_DEFAULT["model_key"]
+        if model_key is None:
+            if "model_key" in self.fit_properties:
+                model_key = self.fit_properties["model_key"]
+            else:
+                model_key = FP_DEFAULT["model_key"]
         return model.get_anc_parms(idnt=self,
                                    model_key=model_key)
 
-    def get_initial_fit_parameters(self, common_ancillaries=True,
+    def get_initial_fit_parameters(self, model_key=None,
+                                   common_ancillaries=True,
                                    model_ancillaries=True):
         """Return the initial fit parameters
 
@@ -321,6 +323,8 @@ class Indentation(object):
 
         Parameters
         ----------
+        model_key: str
+            Optionally set a model key if the fit model is not set.
         global_ancillaries: bool
             Guess global ancillaries such as the contact point.
         model_ancillaries: bool
@@ -331,8 +335,7 @@ class Indentation(object):
         `global_ancillaries` and `model_ancillaries` only have an
         effect if self.fit_properties["params_initial"] is set.
         """
-        if ("params_initial" in self.fit_properties and
-                self.fit_properties["params_initial"] is not None):
+        if self.fit_properties.get("params_initial", False):
             parms = self.fit_properties["params_initial"]
         elif "model_key" in self.fit_properties:
             parms = guess_initial_parameters(

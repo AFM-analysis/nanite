@@ -1,3 +1,5 @@
+from collections import OrderedDict
+
 from . import model_conical_indenter  # noqa: F401
 from . import model_hertz_paraboloidal  # noqa: F401
 from . import model_hertz_three_sided_pyramid  # noqa: F401
@@ -43,13 +45,17 @@ def get_anc_parms(idnt, model_key):
 
     Returns
     -------
-    ancillaries: dict
+    ancillaries: collections.OrderedDict
         key-value dictionary of ancillary parameters
     """
     # TODO: ancillaries are not cached yet
     md = models_available[model_key]
     if hasattr(md, "compute_ancillaries"):
-        return md.compute_ancillaries(idnt)
+        anc_par = md.compute_ancillaries(idnt)
+        anc_ord = OrderedDict()
+        for kk in md.parameter_anc_keys:
+            anc_ord[kk] = anc_par[kk]
+        return anc_ord
     else:
         return {}
 
