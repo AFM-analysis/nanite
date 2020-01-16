@@ -54,7 +54,9 @@ def get_anc_parms(idnt, model_key):
     ancillaries: collections.OrderedDict
         key-value dictionary of ancillary parameters
     """
-    # TODO: ancillaries are not cached yet
+    # TODO:
+    # - ancillaries are not cached yet
+    # - "max_indent" actually belongs to "common_ancillaries" (see fit.py)
     anc_ord = OrderedDict()
     # compute maximal indentation
     if ("tip position" in idnt
