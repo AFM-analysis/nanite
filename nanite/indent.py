@@ -1,3 +1,4 @@
+from collections import OrderedDict
 import copy
 import inspect
 
@@ -356,6 +357,21 @@ class Indentation(object):
                 model_ancillaries=model_ancillaries,
                 common_ancillaries=common_ancillaries)
         return parms
+
+    def get_rating_parameters(self):
+        """Return current rating parameters"""
+        rdict = OrderedDict()
+        if self._rating is None:
+            rt = [np.nan] * 6
+        else:
+            rt = self._rating
+        rdict["Hash"] = rt[0]
+        rdict["Regressor"] = rt[1]
+        rdict["Training set"] = rt[2]
+        rdict["Feature names"] = rt[3]
+        rdict["Linear discriminant analysis"] = rt[4]
+        rdict["Rating"] = rt[5]
+        return rdict
 
     def rate_quality(self, regressor="Extra Trees", training_set="zef18",
                      names=None, lda=None):

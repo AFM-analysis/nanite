@@ -1,10 +1,16 @@
 from collections import OrderedDict
 
+import numpy as np
+
 from . import model_conical_indenter  # noqa: F401
 from . import model_hertz_paraboloidal  # noqa: F401
 from . import model_hertz_three_sided_pyramid  # noqa: F401
 from . import model_sneddon_spherical  # noqa: F401
 from . import model_sneddon_spherical_approximation  # noqa: F401
+
+#: Common ancillary parameters
+ANCILLARY_COMMON = OrderedDict()
+ANCILLARY_COMMON["max_indent"] = ("Maximum indentation", "m")
 
 
 class ModelIncompleteError(BaseException):
@@ -49,24 +55,34 @@ def get_anc_parms(idnt, model_key):
         key-value dictionary of ancillary parameters
     """
     # TODO: ancillaries are not cached yet
+    anc_ord = OrderedDict()
+    # compute maximal indentation
+    if ("tip position" in idnt
+        and "params_fitted" in idnt.fit_properties
+            and "contact_point" in idnt.fit_properties["params_fitted"]):
+        cp = idnt.fit_properties["params_fitted"]["contact_point"].value
+        idmax = idnt.data.appr["fit"].argmax()
+        mi = idnt.data.appr["tip position"][idmax]
+        mival = (cp-mi)
+    else:
+        mival = np.nan
+    anc_ord["max_indent"] = mival
+    # Model ancillaries
     md = models_available[model_key]
     if hasattr(md, "compute_ancillaries"):
         anc_par = md.compute_ancillaries(idnt)
-        anc_ord = OrderedDict()
         for kk in md.parameter_anc_keys:
             anc_ord[kk] = anc_par[kk]
-        return anc_ord
-    else:
-        return {}
+    return anc_ord
 
 
 def get_anc_parm_keys(model_key):
     """Return the key names of a model's ancillary parameters"""
+    akeys = list(ANCILLARY_COMMON.keys())
     md = models_available[model_key]
     if hasattr(md, "parameter_anc_keys"):
-        return md.parameter_anc_keys
-    else:
-        return []
+        akeys += md.parameter_anc_keys
+    return akeys
 
 
 def get_init_parms(model_key):
@@ -86,7 +102,7 @@ def get_model_by_name(name):
 
 
 def get_parm_name(model_key, parm_key):
-    """Get human readable parameter label
+    """Return parameter label
 
     Parameters
     ----------
@@ -98,11 +114,45 @@ def get_parm_name(model_key, parm_key):
     Returns
     -------
     parm_name: str
-        The parameter name (e.g. "Young's Modulus")
+        The parameter label (e.g. "Young's Modulus")
     """
     md = models_available[model_key]
-    idx = md.parameter_keys.index(parm_key)
-    return md.parameter_names[idx]
+    if parm_key in md.parameter_keys:
+        idx = md.parameter_keys.index(parm_key)
+        return md.parameter_names[idx]
+    elif (hasattr(md, "compute_ancillaries")
+          and parm_key in md.parameter_anc_keys):
+        idx = md.parameter_anc_keys.index(parm_key)
+        return md.parameter_anc_names[idx]
+    elif parm_key in ANCILLARY_COMMON:
+        return ANCILLARY_COMMON[parm_key][0]
+
+
+def get_parm_unit(model_key, parm_key):
+    """Return parameter unit
+
+    Parameters
+    ----------
+    model_key: str
+        The model key (e.g. "hertz_cone")
+    parm_key: str
+        The parameter key (e.g. "E")
+
+    Returns
+    -------
+    parm_unit: str
+        The parameter unit (e.g. "Pa")
+    """
+    md = models_available[model_key]
+    if parm_key in md.parameter_keys:
+        idx = md.parameter_keys.index(parm_key)
+        return md.parameter_units[idx]
+    elif (hasattr(md, "compute_ancillaries")
+          and parm_key in md.parameter_anc_keys):
+        idx = md.parameter_anc_keys.index(parm_key)
+        return md.parameter_anc_units[idx]
+    elif parm_key in ANCILLARY_COMMON:
+        return ANCILLARY_COMMON[parm_key][1]
 
 
 def register_model(module, module_name):
