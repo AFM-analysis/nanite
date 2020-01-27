@@ -11,14 +11,17 @@ def test_process_flipsign():
     # This is a curve extracted from a map file. When loading it
     # with nanite, the sign of the force curve was flipped.
     flipped = datadir / "flipsign_2015.05.22-15.31.49.352.jpk-force"
-    apret = IndentationGroup(flipped)[0]
-    apret.apply_preprocessing(["compute_tip_position",
-                               "correct_force_offset",
-                               "correct_tip_offset",
-                               "correct_split_approach_retract"])
-
-    apret.fit_model(model_key="hertz_para", weight_cp=False)
-    assert np.allclose(apret.fit_properties["params_fitted"]["E"].value,
+    idnt = IndentationGroup(flipped)[0]
+    idnt.apply_preprocessing(["compute_tip_position",
+                              "correct_force_offset",
+                              "correct_tip_offset",
+                              "correct_split_approach_retract"])
+    # We set the baseline fixed, because this test was written so)
+    params_initial = idnt.get_initial_fit_parameters(model_key="hertz_para")
+    params_initial["baseline"].set(vary=False)
+    idnt.fit_model(model_key="hertz_para", weight_cp=False,
+                   params_initial=params_initial)
+    assert np.allclose(idnt.fit_properties["params_fitted"]["E"].value,
                        5230.0087777251456)
 
 

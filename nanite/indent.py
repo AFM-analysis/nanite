@@ -92,7 +92,6 @@ class Indentation(object):
             fp = self.fit_properties
             fp["preprocessing"] = preprocessing
             # Reset all data
-            fp.reset()  # TODO: this is redundant (check FitProperties)
             self.reset()
             # Apply preprocessing
             IndentationPreprocessor.apply(self, preprocessing)
@@ -273,7 +272,8 @@ class Indentation(object):
         # different than in the previous fit, the following two
         # lines will reset the "hash" in the fit properties, triggering
         # a new fit.
-        for arg in kwargs:
+        # (sorted, such that `model_key` is set before `params_initial`)
+        for arg in sorted(kwargs.keys()):
             self.fit_properties[arg] = kwargs[arg]
 
         # set a default model (needed for self.get_initial_fit_parameters)
@@ -296,7 +296,7 @@ class Indentation(object):
             # properties are the same.
             pass
         else:
-            fitter = IndentationFitter(self, **kwargs)
+            fitter = IndentationFitter(self)
             # Perform fitting
             # Note: if `fitter.fp["success"]` is `False`, then
             # the `fit_residuals` and `fit_curve` are `nan`.

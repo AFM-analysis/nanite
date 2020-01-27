@@ -171,11 +171,13 @@ class IndentationFitter(object):
         self.fp = FitProperties(**FP_DEFAULT)
 
         # Get parameters from dataset
-        for key in idnt.fit_properties:
+        # (sorted, such that `model_key` is set before `params_initial`)
+        for key in sorted(idnt.fit_properties.keys()):
             if key in FP_DEFAULT:
                 self.fp[key] = idnt.fit_properties[key]
         # Get parameters from kwargs
-        for key in self.fp:
+        # (sorted, such that `model_key` is set before `params_initial`)
+        for key in sorted(self.fp.keys()):
             if key in kwargs:
                 if key not in FP_DEFAULT:
                     msg = "Key '{}' not in FP_DEFAULT".format(key)
@@ -189,8 +191,7 @@ class IndentationFitter(object):
             )
 
         # Set arrays
-        self.segment = (idnt["segment"] ==
-                        self.fp["segment_bool"])
+        self.segment = (idnt["segment"] == self.fp["segment_bool"])
         self.segment.setflags(write=False)
 
         self.x_axis = idnt[self.fp["x_axis"]]

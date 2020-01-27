@@ -43,6 +43,7 @@ def test_feat_cp():
             .get_parameter_defaults()
         inparams["E"].value = 50
         inparams["R"].value = 37.28e-6 / 2
+        inparams["baseline"].vary = False
 
         # Fit with absolute full range
         idnt.fit_model(model_key="sneddon_spher_approx",
@@ -83,6 +84,7 @@ def test_feat_emod_withfit():
             .get_parameter_defaults()
         inparams["E"].value = 50
         inparams["R"].value = 37.28e-6 / 2
+        inparams["baseline"].vary = False
 
         # Fit with absolute full range
         idnt.fit_model(model_key="sneddon_spher_approx",
@@ -113,6 +115,7 @@ def test_feat_rating():
             .get_parameter_defaults()
         inparams["E"].value = 50
         inparams["R"].value = 37.28e-6 / 2
+        inparams["baseline"].vary = False
 
         # Fit with absolute full range
         idnt.fit_model(model_key="sneddon_spher_approx",

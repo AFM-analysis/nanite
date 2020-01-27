@@ -11,7 +11,7 @@ def get_parameter_defaults():
     params.add("R", value=10e-6, min=0, vary=False)
     params.add("nu", value=.5, min=0, max=0.5, vary=False)
     params.add("contact_point", value=0)
-    params.add("baseline", value=0, vary=False)
+    params.add("baseline", value=0)
     return params
 
 

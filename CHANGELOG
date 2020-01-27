@@ -1,3 +1,7 @@
+1.4.1
+ - enh: set parameter `baseline` to "vary" for all models
+ - fix: make sure that `model_key` is set before `params_initial`
+   when fitting with kwargs (otherwise, `params_initial` might reset)
 1.4.0
  - feat: add function `Indentation.get_rating_parameters`
  - feat: compute additional ancillary parameter "Maximum indentation"
