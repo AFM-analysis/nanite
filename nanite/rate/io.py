@@ -240,7 +240,8 @@ def load_hdf5(path, meta_only=False):
             h5gr = h5["analysis"][akey]
             attrs = h5gr.attrs
             if not meta_only:
-                indent = dataset_dict[attrs["data hash"]][attrs["data enum"]]
+                indent = dataset_dict[attrs["data hash"]].get_enum(
+                    attrs["data enum"])
                 indent["fit"] = h5gr["fit"][...]
                 indent["fit range"] = h5gr["fit range"][...]
                 indent["force"] = h5gr["force"][...]

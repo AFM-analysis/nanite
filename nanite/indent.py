@@ -224,9 +224,9 @@ class Indentation(object):
 
         return min(idp1, idp2)
 
-    def export(self, path):
+    def export(self, path, fmt="tab"):
         """Saves the current data as tab separated values"""
-        self.data.export(path)
+        self.data.export(path, fmt=fmt)
 
     def fit_model(self, **kwargs):
         """Fit the approach-retract data to a model function

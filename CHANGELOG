@@ -1,3 +1,7 @@
+1.5.0
+ - feat: IndentationGroup.get_enum returns a curve from an enum value
+ - setup: bump afmformats from 0.5.0 to 0.6.0 (hdf5 export, improved tab
+   export)
 1.4.1
  - enh: set parameter `baseline` to "vary" for all models
  - fix: make sure that `model_key` is set before `params_initial`

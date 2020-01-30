@@ -74,6 +74,25 @@ class IndentationGroup(object):
             rep.append("- {}".format(idnt))
         return "\n".join(rep)
 
+    def get_enum(self, enum):
+        """Return the indentation curve with this enum value
+
+        Raises
+        ------
+        ValueError if multiple curves with the same enum value exist.
+        KeyErrir if the enum value is not found
+        """
+        curves = []
+        for item in self._mmlist:
+            if item.enum == enum:
+                curves.append(item)
+        if len(curves) == 0:
+            raise KeyError("Could not find dataset with enum {}".format(enum))
+        elif len(curves) == 1:
+            return curves[0]
+        else:
+            raise ValueError("Multiple curves with the same enum value exist!")
+
     def append(self, item):
         """Append an indentation dataset
 

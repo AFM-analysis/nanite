@@ -5,6 +5,7 @@ import tempfile
 import numpy as np
 import pytest
 
+import afmformats
 import nanite
 import nanite.model
 
@@ -76,17 +77,18 @@ def test_export():
     # tip-sample separation
     idnt.apply_preprocessing(["compute_tip_position"])
     # create temporary file
-    _, path = tempfile.mkstemp(suffix=".tsv", prefix="nanite_idnt_export")
+    _, path = tempfile.mkstemp(suffix=".tab", prefix="nanite_idnt_export")
     idnt.export(path)
-    converters = {3: lambda x: x.decode() == "True"}  # segment
-    data = np.loadtxt(path, skiprows=1, converters=converters)
-    assert data.shape == (4000, 6)
-    assert np.allclose(data[100, 0], -4.853736717639109e-10)
-    assert np.allclose(data[100, 1], 2.256791903750211e-05, atol=1e-10, rtol=0)
-    assert data[100, 3] == 0
-    assert np.allclose(data[100, 4], 0.04999999999999999)
-    assert np.allclose(data[100, 5], 2.255675939721752e-05, atol=1e-10, rtol=0)
-    assert data[3000, 3] == 1
+    data = afmformats.load_data(path)[0]
+    assert len(data) == 4000
+    assert np.allclose(data["force"][100], -4.853736717639109e-10)
+    assert np.allclose(data["height (measured)"][100], 2.256791903750211e-05,
+                       atol=1e-10, rtol=0)
+    assert data["segment"][100] == 0
+    assert np.allclose(data["time"][100], 0.04999999999999999)
+    assert np.allclose(data["tip position"][100], 2.255675939721752e-05,
+                       atol=1e-10, rtol=0)
+    assert data["segment"][3000] == 1
 
     try:
         pathlib.Path(path).unlink()
