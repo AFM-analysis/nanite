@@ -56,7 +56,7 @@ def test_basic_withfit():
     # changes.
     assert np.allclose(cp, 1.8029310201193193e-05)
     # Simple check for meta
-    assert feat.meta["point count"] == 2000
+    assert feat.meta["point count"] == 4000
 
 
 def test_get_features():
