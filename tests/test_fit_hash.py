@@ -28,16 +28,16 @@ def test_hash_time():
                   y_axis="force",
                   segment="approach",
                   weight_cp=False)
-    t0 = time.time()
+    t0 = time.perf_counter()
     apret.fit_model(**kwargs)
-    t1 = time.time()
+    t1 = time.perf_counter()
     apret.fit_model()
-    t2 = time.time()
+    t2 = time.perf_counter()
     kwargs["weight_cp"] = 1e-5
     apret.fit_model(**kwargs)
-    t3 = time.time()
+    t3 = time.perf_counter()
     apret.fit_model()
-    t4 = time.time()
+    t4 = time.perf_counter()
 
     assert t1-t0 >= 100 * \
         (t2-t1), "Consecutive fits with same parameters should be instant"
