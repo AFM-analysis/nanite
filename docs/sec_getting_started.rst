@@ -41,9 +41,9 @@ tools for AFM force-distance data analysis.
 
 Supported file formats
 ======================
-Currently, nanite only supports the file formats *.jpk-force* and
-*.jpk-force-map*. If you are interested in other file formats, please
-`create a new issue <https://github.com/AFM-analysis/nanite/issues/new>`_.
+Nanite relies on the :ref:`afmformats <afmformats:index>` package.
+A list of supported file formats can be found
+:ref:`here <afmformats:supported_formats>`.
 
 
 Use cases
