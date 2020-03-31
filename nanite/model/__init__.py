@@ -27,7 +27,8 @@ def get_anc_parms(idnt, model_key):
     - require the entire dataset: They cannot be extracted during
       fitting, because they require more than just the approach xor
       retract curve to compute (e.g. hysteresis, jump of retract curve
-      at maximum indentation).
+      at maximum indentation). They may, additionally, depend on
+      initial fit parameters set by the user.
     - require a fit: They are dependent on fitting parameters but
       are not required during fitting.
 
@@ -55,7 +56,8 @@ def get_anc_parms(idnt, model_key):
         key-value dictionary of ancillary parameters
     """
     # TODO:
-    # - ancillaries are not cached yet
+    # - ancillaries are not cached yet (some ancillaries might depend on
+    #   fitting interval or other initial parameters - take that into account)
     # - "max_indent" actually belongs to "common_ancillaries" (see fit.py)
     anc_ord = OrderedDict()
     # compute maximal indentation
