@@ -1,7 +1,12 @@
 #!/bin/bash
 
 if [ -z $1 ]; then
-    echo "Please specify Python version as command line argument!"
+    echo "Please specify Python version as first command line argument!"
+    exit 1
+fi
+
+if [ -z $2 ]; then
+    echo "Please specify Python OSx version as second command line argument!"
     exit 1
 fi
 
@@ -12,18 +17,18 @@ OLD="$(pwd)"
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 cd $DIR
 
-# setup MacPython version management
-source osx_utils.sh
-
 # get MacPython version
-MPV="$(fill_pyver $1)"
+MPV=$1
+
+# get the Python OSx version (e.g. 10.6 or 10.9)
+OSXPV=$2
 
 # create download directory
 DLD=${DIR}/dl_cache
 mkdir -p $DLD
 
 # download MacPython
-PKG="python-${MPV}-macosx10.6.pkg"
+PKG="python-${MPV}-macosx${OSXPV}.pkg"
 curl https://www.python.org/ftp/python/${MPV}/${PKG} > ${DLD}/${PKG}
 
 # install MacPython

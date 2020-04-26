@@ -3,18 +3,34 @@ notifications:
 sudo: required
 matrix:
  include:
+ # see https://www.python.org/downloads/mac-osx/ for valid versions
  - os: osx
    language: generic
-   env: MAC_PYTHON_VERSION=3.6
+   env:
+    - MAC_PYTHON_VERSION=3.6.8
+    - MAC_PYTHON_OSX_VERSION=10.6
  - os: osx
    language: generic
-   env: MAC_PYTHON_VERSION=3.7
+   env:
+    - MAC_PYTHON_VERSION=3.7.7
+    - MAC_PYTHON_OSX_VERSION=10.9
+ - os: osx
+   language: generic
+   env:
+    - MAC_PYTHON_VERSION=3.8.2
+    - MAC_PYTHON_OSX_VERSION=10.9
  - os: linux
    language: python
    python: 3.6
+ - os: linux
+   language: python
+   python: 3.7
+ - os: linux
+   language: python
+   python: 3.8
 before_install:
 # install other dependencies
-- source ./.travis/${TRAVIS_OS_NAME}_setup_python.sh $MAC_PYTHON_VERSION
+- source ./.travis/${TRAVIS_OS_NAME}_setup_python.sh $MAC_PYTHON_VERSION MAC_PYTHON_OSX_VERSION
 install:
 # install binary packages
 - travis_retry pip install --upgrade pip setuptools wheel
