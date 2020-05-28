@@ -44,7 +44,7 @@ script:
 - coverage run --source=nanite ./setup.py test
 - coverage report -m
 - flake8 tests
-- flake8 afmformats
+- flake8 nanite
 - flake8 examples
 after_success:
 - codecov
