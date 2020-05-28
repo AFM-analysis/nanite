@@ -2,6 +2,7 @@
  - setup: bump scikit-learn from 0.18.0 to 0.23.0 (different
    model results due to bugfixes, enhancements, or random
    sampling procedures; the tests have been updated accordingly)
+ - setup: bump afmformats from 0.10.0 to 0.10.2
 1.5.3
  - setup: new builds for Python 3.8
 1.5.2
