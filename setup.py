@@ -35,7 +35,7 @@ setup(
                       "h5py>=2.8.0",
                       "lmfit==0.9.5",
                       "numpy>=1.16.0",  # cython build
-                      "scikit-learn>=0.18.0",
+                      "scikit-learn>=0.23.0",  # rating tests
                       "scipy",
                       ],
     ext_modules = [Extension("nanite.model.model_sneddon_spherical",

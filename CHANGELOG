@@ -1,3 +1,7 @@
+1.5.4:
+ - setup: bump scikit-learn from 0.18.0 to 0.23.0 (different
+   model results due to bugfixes, enhancements, or random
+   sampling procedures; the tests have been updated accordingly)
 1.5.3
  - setup: new builds for Python 3.8
 1.5.2
