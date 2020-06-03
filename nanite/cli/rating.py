@@ -9,11 +9,11 @@ try:
 except (ImportError, FileNotFoundError):
     TK_AVAILABLE = False
 else:
+    from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
     TK_AVAILABLE = True
 
 import types
 
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 import matplotlib.image as mpimg
 import tifffile
