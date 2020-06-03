@@ -4,7 +4,13 @@ from functools import lru_cache
 import getpass
 from os import fspath
 import pathlib
-import tkinter as tk
+try:
+    import tkinter as tk
+except (ImportError, FileNotFoundError):
+    TK_AVAILABLE = False
+else:
+    TK_AVAILABLE = True
+
 import types
 
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
@@ -284,10 +290,13 @@ def rate():
     enumpaths = get_data_paths_enum(path, skip_errors=True)
     # for now, only compare single curves
     enumpaths = [ee for ee in enumpaths if ee[0].suffix == ".jpk-force"]
-    # start GUI
-    root = tk.Tk()
-    RatingGUI(root, data_paths=enumpaths, h5path=h5)
-    root.mainloop()
+    if TK_AVAILABLE:
+        # start GUI
+        root = tk.Tk()
+        RatingGUI(root, data_paths=enumpaths, h5path=h5)
+        root.mainloop()
+    else:
+        raise ValueError("tkinter is not available! (frozen application?)")
 
 
 def rate_parser():
