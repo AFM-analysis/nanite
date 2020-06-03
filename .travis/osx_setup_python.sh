@@ -46,10 +46,10 @@ pip install --upgrade pip
 pip install certifi
 /Applications/Python\ ${MPV::3}/Install\ Certificates.command
 
-# Use TkAgg to avoid
+# Use Agg to avoid
 # "ImportError: Python is not installed as a framework"
 mkdir ~/.matplotlib
-echo "backend: TkAgg" >> ~/.matplotlib/matplotlibrc
+echo "backend: Agg" >> ~/.matplotlib/matplotlibrc
 
 # go back
 cd $OLD
