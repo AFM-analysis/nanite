@@ -68,7 +68,7 @@ def test_basic():
                               "correct_tip_offset"])
     # This value is subject to change if a better way to estimate the
     # contact point is found:
-    assert idnt["tip position"][0] == 4.765854684370548e-06
+    assert idnt["tip position"][0] == 4.507445225784438e-06
 
 
 def test_export():

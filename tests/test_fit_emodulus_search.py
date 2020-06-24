@@ -33,7 +33,7 @@ def test_emodulus_search():
 
     # This assertion might fail when the preprocessing changes
     # or when the search algorithm for the optimal fit changes.
-    dopt = -1.1087800477075595e-07
+    dopt = -2.07633035802137e-07
     assert np.allclose(ar.fit_properties["optimal_fit_delta"], dopt)
 
     if __name__ == "__main__":

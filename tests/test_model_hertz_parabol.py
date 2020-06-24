@@ -43,10 +43,9 @@ def test_app_ret():
     # with "Vertical Tip Position", "Switchable Baseline Operation",
     # and a parabolic indenter with the "Hertz/Sneddon" "Model type".
     # Set tip radius to 40nm.
-
     E_jpk = 233.1e3
     cp_jpk = 18.03e-6
-    assert np.allclose(fit_n.params["E"].value, E_jpk, rtol=4e-4, atol=0)
+    assert np.allclose(fit_n.params["E"].value, E_jpk, rtol=2e-3, atol=0)
     assert np.allclose(
         fit_n.params["contact_point"].value, cp_jpk, rtol=4e-5, atol=0)
 

@@ -57,9 +57,11 @@ def test_feat_cp():
 
     qd = qm.get_qmap("fit contact point", qmap_only=True)
     vals = qd.flat[~np.isnan(qd.flat)]
-    assert np.allclose(vals[0], -1.8204313275340384e-06), "gray matter"
-    assert np.allclose(vals[2], -3.581010097797692e-06), "white matter"
-    assert np.allclose(vals[1], -2.1069835958708937e-06), "background"
+    # These are subject to change when contact point preprocessing
+    # changes.
+    assert np.allclose(vals[0], -9.59128590161483e-07), "gray matter"
+    assert np.allclose(vals[2], -3.995012408063929e-06), "white matter"
+    assert np.allclose(vals[1], -9.470884627033841e-07), "background"
 
 
 def test_feat_emod_nofit():
@@ -98,9 +100,9 @@ def test_feat_emod_withfit():
 
     qd = qm.get_qmap("fit young's modulus", qmap_only=True)
     vals = qd.flat[~np.isnan(qd.flat)]
-    assert np.allclose(vals[0], 57.629464729399096), "gray matter"
-    assert np.allclose(vals[2], 46.614068655067435), "white matter"
-    assert np.allclose(vals[1], 17605.034108797558), "background"
+    assert np.allclose(vals[0], 57.64803584609825), "gray matter"
+    assert np.allclose(vals[2], 46.607331352457955), "white matter"
+    assert np.allclose(vals[1], 17906.22914200053), "background"
 
 
 def test_feat_rating():
@@ -131,7 +133,7 @@ def test_feat_rating():
 
     qd = qm.get_qmap("meta rating", qmap_only=True)
     vals = qd.flat[~np.isnan(qd.flat)]
-    assert np.allclose(vals[0], 9.370435813605962), "gray matter"
+    assert np.allclose(vals[0], 9.353890485442905), "gray matter"
     assert np.allclose(vals[2], 4.942804081687071), "white matter"
     assert np.allclose(vals[1], 2.432396277782555), "background"
 

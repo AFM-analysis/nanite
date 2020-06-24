@@ -1,6 +1,11 @@
-1.5.5:
+1.6.0
+ - enh: improve contact point estimation by computing the gradient
+   first; resolves issues with tilted baselines (#6)
+   (This may affect fitting results slightly, hence the new minor
+   release)
+1.5.5
  - setup: make tkinter optional for frozen applications
-1.5.4:
+1.5.4
  - setup: bump scikit-learn from 0.18.0 to 0.23.0 (different
    model results due to bugfixes, enhancements, or random
    sampling procedures; the tests have been updated accordingly)

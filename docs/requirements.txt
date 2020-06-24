@@ -3,3 +3,4 @@ sphinx>=1.6.4
 sphinxcontrib.bibtex
 matplotlib
 ipython
+sphinx_rtd_theme

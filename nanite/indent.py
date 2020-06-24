@@ -161,54 +161,27 @@ class Indentation(object):
         )
         return dopt
 
-    def estimate_contact_point_index(self):
-        """Estimate the contact point
-
-        Contact point (CP) estimation is performed with two methods and
-        that one which returns the smallest index is returned.
-
-        Method 1: baseline deviation
-
-        1. Obtain the baseline (initial 10% of the approach curve)
-        2. Compute average and maximum deviation of the baseline
-        3. The CP is the index of the approach curve where it exceeds
-           twice of the maximum deviation
-
-        Method 2: sign of gradient
-
-        1. Perform a median filter on the approach curve
-        2. Compute the gradient
-        3. Cut off trailing 10 points from the gradient (noise)
-        4. The CP is the index of the gradient curve when the
-           sign changes, measured from the point of maximal
-           indentation.
-
-        If one of the methods fail, the index 0 is returned.
-
-        """
-        # initial assumptions
+    @classmethod
+    def _estimate_contact_point_index_from_baseline(cls, force):
         idp1 = 0
-        idp2 = 0
-        # get data
-        y0 = np.array(self.data["force"], copy=True)
-        # Only use the (initial) approach part of the curve.
-        idmax = np.argmax(y0)
-        y = y0[:idmax]
-
         # Method 1: base line deviation
         # Crop the slow approach trace (10% of the curve)
-        baseline = y[:int(y.size*.1)]
+        baseline = force[:int(force.size*.1)]
         if baseline.size:
             bl_avg = np.average(baseline)
             bl_rng = np.max(np.abs(baseline-bl_avg))*2
-            bl_dev = (y-bl_avg) > bl_rng
+            bl_dev = (force-bl_avg) > bl_rng
             if np.sum(bl_dev):
                 idp1 = np.where(bl_dev)[0][0]
+        return idp1
 
+    @classmethod
+    def _estimate_contact_point_index_from_sign_gradient(cls, force):
+        idp2 = 0
         # Method 2: gradient change
         # Perform a median filter to smooth the array
         filtsize = 15
-        y = spsig.medfilt(y, filtsize)
+        y = spsig.medfilt(force, filtsize)
         # Cut off the trailing 10 points (noise)
         cutoff = 10
         if y.size > cutoff+1:
@@ -221,6 +194,82 @@ class Indentation(object):
                 # Flip `gradpos`, because we want the first value from the
                 # end of the array.
                 idp2 = y.size - np.where(gradpos[::-1])[0][0] - cutoff - 1
+        return idp2
+
+    @classmethod
+    def _estimate_contact_point_index_preprocess_gradient(cls, force):
+        # Preprocessing (remove tilt from curve)
+        # apply rolling average filter to force
+        p1_fs = min(47, force.size//2//2*2 + 1)
+        assert p1_fs % 2 == 1, "must be odd"
+        p1_cumsum_vec = np.cumsum(np.insert(np.copy(force), 0, 0))
+        p1 = (p1_cumsum_vec[p1_fs:] - p1_cumsum_vec[:-p1_fs]) / p1_fs
+        # take the gradient
+        if p1.size > 1:
+            p1g = np.gradient(p1)
+            # apply rolling average filter to the gradient
+            p1g_cumsum_vec = np.cumsum(np.insert(np.copy(p1g), 0, 0))
+            p1gm = (p1g_cumsum_vec[p1_fs:] - p1g_cumsum_vec[:-p1_fs]) / p1_fs
+        else:
+            # fallback for bad data (array with very few elements)
+            p1gm = p1
+        return p1gm
+
+    def estimate_contact_point_index(self):
+        """Estimate the contact point
+
+        Contact point (CP) estimation involves a preprocessing step
+        where the force data are transformed into gradient space
+        (to account for a slope in the approach curve) and a
+        subsequent analysis with two different methods to determine
+        when the gradient changes significantly enough to qualify for
+        a CP. Of those two methods, the one which yields the smallest
+        index (measured from the beginning of the approach curve)
+        is returned.
+
+        Preprocessing:
+
+        1. Compute the rolling average of the force
+           (Otherwise the gradient would be too wild)
+        2. Compute the gradient
+           (Converting to gradient space gets rid of linear
+           contributions in the approach part)
+        3. Compute the rolling average of the gradient
+           (Makes the curve to analyze more smooth so that the
+           methods below don't hit the alarm too early)
+
+        Method 1: baseline deviation
+
+        1. Obtain the baseline (initial 10% of the gradient curve)
+        2. Compute average and maximum deviation of the baseline
+        3. The CP is the index of the curve where it exceeds
+           twice of the maximum deviation
+
+        Method 2: sign of gradient
+
+        1. Apply a median filter to the approach curve
+        2. Compute the gradient
+        3. Cut off trailing 10 points from the gradient (noise)
+        4. The CP is the index of the gradient curve when the
+           sign changes, measured from the point of maximal
+           indentation.
+
+        If one of the methods fail, the index 0 is returned.
+
+        .. versionchanged:: 1.6.0
+            Add the gradient preprocessing step to circumvent issues
+            with tilted baselines. This feature does not significantly
+            affect fitting results.
+        """
+        # get data
+        y0 = np.array(self.data["force"], copy=True)
+        # Only use the (initial) approach part of the curve.
+        idmax = np.argmax(y0)
+        y = y0[:idmax]
+
+        yg = self._estimate_contact_point_index_preprocess_gradient(y)
+        idp1 = self._estimate_contact_point_index_from_baseline(yg)
+        idp2 = self._estimate_contact_point_index_from_sign_gradient(yg)
 
         return min(idp1, idp2)
 
