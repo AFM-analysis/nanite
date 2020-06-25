@@ -2,6 +2,7 @@ from collections import OrderedDict
 import copy
 import inspect
 
+import lmfit
 import numpy as np
 import scipy.signal as spsig
 
@@ -162,26 +163,57 @@ class Indentation(object):
         return dopt
 
     @classmethod
-    def _estimate_contact_point_index_from_baseline(cls, force):
-        idp1 = 0
+    def _estimate_contact_point_index_from_baseline(cls, fg):
+        idp1 = np.nan
         # Method 1: base line deviation
         # Crop the slow approach trace (10% of the curve)
-        baseline = force[:int(force.size*.1)]
+        baseline = fg[:int(fg.size*.1)]
         if baseline.size:
             bl_avg = np.average(baseline)
             bl_rng = np.max(np.abs(baseline-bl_avg))*2
-            bl_dev = (force-bl_avg) > bl_rng
+            bl_dev = (fg-bl_avg) > bl_rng
             if np.sum(bl_dev):
                 idp1 = np.where(bl_dev)[0][0]
         return idp1
 
     @classmethod
-    def _estimate_contact_point_index_from_sign_gradient(cls, force):
-        idp2 = 0
+    def _estimate_contact_point_index_from_cl_fit(cls, fg):
+        """This is probably the most robust version"""
+        # TODO:
+        # - test whether this is really slower than the other methods
+        def residual(params, x, data):
+            off = params["off"]
+            x0 = params["x0"]
+            m = params["m"]
+            one = off
+            two = m*(x-x0) + off
+            return data - np.maximum(one, two)
+
+        if fg.size > 4:
+            x = np.arange(fg.size)
+
+            params = lmfit.Parameters()
+            params.add('off', value=np.mean(fg[:10]))
+            params.add('x0', value=fg.size//2)
+            params.add('m', value=(fg.max() - fg.min()) / fg.size)
+
+            out = lmfit.minimize(residual, params, args=(x, fg))
+            if out.success:
+                idp = int(out.params["x0"])
+            else:
+                idp = fg.size // 2
+        else:
+            # approach part too short to be reasonable
+            idp = 0
+        return idp
+
+    @classmethod
+    def _estimate_contact_point_index_from_sign_gradient(cls, fg):
+        idp2 = np.nan
         # Method 2: gradient change
         # Perform a median filter to smooth the array
         filtsize = 15
-        y = spsig.medfilt(force, filtsize)
+        y = spsig.medfilt(fg, filtsize)
         # Cut off the trailing 10 points (noise)
         cutoff = 10
         if y.size > cutoff+1:
@@ -225,7 +257,8 @@ class Indentation(object):
         when the gradient changes significantly enough to qualify for
         a CP. Of those two methods, the one which yields the smallest
         index (measured from the beginning of the approach curve)
-        is returned.
+        is returned. If one of the methods fail, then a fit function
+        with a constant and linear part is used to determine the CP.
 
         Preprocessing:
 
@@ -254,12 +287,19 @@ class Indentation(object):
            sign changes, measured from the point of maximal
            indentation.
 
-        If one of the methods fail, the index 0 is returned.
+        If one of the methods fail, then a combined constant+linear
+        function (max(constant, linear) is fitted to the gradient to
+        determine the contact point. If that fails as well, then
+        the CP defaults to the center of the entire approach curve.
 
         .. versionchanged:: 1.6.0
             Add the gradient preprocessing step to circumvent issues
             with tilted baselines. This feature does not significantly
             affect fitting results.
+
+        .. versionchanged:: 1.6.1
+            Added max(constant, linear) fit when the other methods
+            fail.
         """
         # get data
         y0 = np.array(self.data["force"], copy=True)
@@ -267,11 +307,16 @@ class Indentation(object):
         idmax = np.argmax(y0)
         y = y0[:idmax]
 
-        yg = self._estimate_contact_point_index_preprocess_gradient(y)
-        idp1 = self._estimate_contact_point_index_from_baseline(yg)
-        idp2 = self._estimate_contact_point_index_from_sign_gradient(yg)
+        fg = self._estimate_contact_point_index_preprocess_gradient(y)
+        idp1 = self._estimate_contact_point_index_from_baseline(fg)
+        idp2 = self._estimate_contact_point_index_from_sign_gradient(fg)
 
-        return min(idp1, idp2)
+        if np.isnan(idp1) or np.isnan(idp2):
+            idp = self._estimate_contact_point_index_from_cl_fit(fg)
+        else:
+            idp = min(idp1, idp2)
+
+        return idp
 
     def export(self, path, fmt="tab"):
         """Saves the current data as tab separated values"""
