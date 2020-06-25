@@ -17,7 +17,7 @@ def get_parameter_defaults():
     return params
 
 
-def hertz_three_sided_pyramid(E, delta, alpha, nu, contact_point=0,
+def hertz_three_sided_pyramid(delta, E, alpha, nu, contact_point=0,
                               baseline=0):
     r"""Hertz model for three sided pyramidal indenter
 
@@ -122,6 +122,7 @@ def residual(params, delta, force, weight_cp=5e-7):
 
 
 model_doc = hertz_three_sided_pyramid.__doc__
+model_func = hertz_three_sided_pyramid
 model_key = "hertz_pyr3s"
 model_name = "pyramidal indenter, three-sided (Hertz)"
 parameter_keys = ["E", "alpha", "nu", "contact_point", "baseline"]

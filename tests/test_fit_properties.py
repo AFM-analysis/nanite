@@ -1,5 +1,4 @@
-""" Test of data set functionalities
-"""
+"""Test of data set functionalities"""
 import copy
 import pathlib
 

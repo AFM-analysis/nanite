@@ -16,7 +16,7 @@ def get_parameter_defaults():
     return params
 
 
-def hertz_paraboloidal(E, delta, R, nu, contact_point=0, baseline=0):
+def hertz_paraboloidal(delta, E, R, nu, contact_point=0, baseline=0):
     r"""Hertz model for a paraboloidal indenter
 
     .. math::
@@ -138,6 +138,7 @@ def residual(params, delta, force, weight_cp=5e-7):
 
 
 model_doc = hertz_paraboloidal.__doc__
+model_func = hertz_paraboloidal
 model_key = "hertz_para"
 model_name = "parabolic indenter (Hertz)"
 parameter_keys = ["E", "R", "nu", "contact_point", "baseline"]

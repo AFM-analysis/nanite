@@ -17,7 +17,7 @@ def get_parameter_defaults():
     return params
 
 
-def hertz_conical(E, delta, alpha, nu, contact_point=0, baseline=0):
+def hertz_conical(delta, E, alpha, nu, contact_point=0, baseline=0):
     r"""Hertz model for a conical indenter
 
     .. math::
@@ -123,6 +123,7 @@ def residual(params, delta, force, weight_cp=5e-7):
 
 
 model_doc = hertz_conical.__doc__
+model_func = hertz_conical
 model_key = "hertz_cone"
 model_name = "conical indenter (Hertz)"
 parameter_keys = ["E", "alpha", "nu", "contact_point", "baseline"]

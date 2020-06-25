@@ -1,4 +1,6 @@
 from collections import OrderedDict
+import inspect
+import warnings
 
 import numpy as np
 
@@ -14,6 +16,14 @@ ANCILLARY_COMMON["max_indent"] = ("Maximum indentation", "m")
 
 
 class ModelIncompleteError(BaseException):
+    pass
+
+
+class ModelImplementationError(BaseException):
+    pass
+
+
+class ModelImplementationWarning(UserWarning):
     pass
 
 
@@ -195,6 +205,33 @@ def register_model(module, module_name):
             raise ModelIncompleteError(
                 "Model `{}` is missing the following ".format(module_name)
                 + "attributes: {}".format(", ".join(missing_anc)))
+    # check length of modeling lists
+    if len(module.parameter_keys) != len(module.parameter_names):
+        raise ModelImplementationError(
+            "'parameter_keys' and 'parameter_names' have different lengths "
+            + "for model '{}'!".format(module.model_key))
+    if len(module.parameter_keys) != len(module.parameter_units):
+        raise ModelImplementationError(
+            "'parameter_keys' and 'parameter_units' have different lengths "
+            + "for model '{}'!".format(module.model_key))
+    # checks for model parameters
+    p_def = list(module.get_parameter_defaults().keys())
+    p_arg = list(inspect.signature(module.model_func).parameters.keys())
+    for ii, key in enumerate(module.parameter_keys):
+        if key != p_def[ii]:
+            raise ModelImplementationError(
+                "Please check 'parameter_keys' and 'get_parameter_defaults' "
+                + "of the model '{}'.".format(module.model_key)
+                + "Keys {} and {} are not in order!".format(key, p_def[ii]))
+        if key != p_arg[ii+1]:
+            warnings.warn(
+                "Please make sure that the parameters of the model "
+                + "function are in the same order as in 'parameter_keys' "
+                + "for the model '{}'! ".format(module.model_key)
+                + "The abscissa (usually `delta`) should come first. "
+                + "This warning may become an Exception in the future!",
+                ModelImplementationWarning)
+
     # add model
     models_available[module.model_key] = module
 

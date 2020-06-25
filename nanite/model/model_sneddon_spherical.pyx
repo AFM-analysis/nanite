@@ -1,4 +1,5 @@
-#cython: language_level=3
+# cython: language_level=3
+# cython: binding=True
 import lmfit
 import numpy as np
 from . import weight
@@ -17,7 +18,8 @@ def get_parameter_defaults():
     return params
 
 
-def hertz_spherical(double E, delta, double R, double nu, double contact_point=0, double baseline=0):
+def hertz_spherical(delta, double E, double R, double nu,
+                    double contact_point=0, double baseline=0):
     r"""Hertz model for Spherical indenter - modified by Sneddon
 
 
@@ -170,6 +172,7 @@ def residual(params, delta, force, weight_cp=5e-7):
     return resid
 
 model_doc = hertz_spherical.__doc__
+model_func = hertz_spherical
 model_key = "sneddon_spher"
 model_name = "spherical indenter (Sneddon)"
 parameter_keys = ["E", "R", "nu", "contact_point", "baseline"]

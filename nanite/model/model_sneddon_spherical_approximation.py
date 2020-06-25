@@ -15,7 +15,7 @@ def get_parameter_defaults():
     return params
 
 
-def hertz_sneddon_spherical_approx(E, delta, R, nu, contact_point=0,
+def hertz_sneddon_spherical_approx(delta, E, R, nu, contact_point=0,
                                    baseline=0):
     r"""Hertz model for Spherical indenter - approximation
 
@@ -133,6 +133,7 @@ def residual(params, delta, force, weight_cp=5e-7):
 
 
 model_doc = hertz_sneddon_spherical_approx.__doc__
+model_func = hertz_sneddon_spherical_approx
 model_key = "sneddon_spher_approx"
 model_name = "spherical indenter (Sneddon, approximative)"
 parameter_keys = ["E", "R", "nu", "contact_point", "baseline"]
