@@ -7,6 +7,7 @@ import numpy as np
 import nanite
 from nanite import IndentationGroup
 import nanite.model
+from nanite.model import weight
 
 
 datadir = pathlib.Path(__file__).resolve().parent / "data"
@@ -101,7 +102,7 @@ class MockModelExpr():
         if weight_cp:
             # weight the curve so that the data around the contact_point do
             # not affect the fit so much.
-            weights = MockModelExpr.weight.weight_cp(
+            weights = weight.weight_cp(
                 cp=params["contact_point"].value,
                 delta=delta,
                 weight_dist=weight_cp)
