@@ -116,7 +116,7 @@ class MockModelExpr():
         nanite.model.models_available.pop(self.model_key)
 
 
-def sstest_expr_model():
+def test_expr_model():
     """Make sure that a model with an expression is fitted correctly"""
     # Reference fit
     rgrp = IndentationGroup(jpkfile)
