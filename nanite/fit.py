@@ -519,7 +519,7 @@ class IndentationFitter(object):
             else:
                 hashlist.append(self.fp[key])
         # join and hash
-        myhash = hashlib.md5(obj2str(hashlist)).hexdigest()
+        myhash = hashlib.md5(obj2bytes(hashlist)).hexdigest()
         return myhash
 
 
@@ -568,8 +568,8 @@ def guess_initial_parameters(idnt=None,
     return params
 
 
-def obj2str(obj):
-    """String representation of an object for hashing"""
+def obj2bytes(obj):
+    """Bytes representation of an object for hashing"""
     if isinstance(obj, str):
         return obj.encode("utf-8")
     elif isinstance(obj, (bool, int, float)):
@@ -577,16 +577,16 @@ def obj2str(obj):
     elif obj is None:
         return b"none"
     elif isinstance(obj, np.ndarray):
-        return obj.tostring()
+        return obj.tobytes()
     elif isinstance(obj, tuple):
-        return obj2str(list(obj))
+        return obj2bytes(list(obj))
     elif isinstance(obj, list):
-        return b"".join(obj2str(o) for o in obj)
+        return b"".join(obj2bytes(o) for o in obj)
     elif isinstance(obj, dict):
-        return obj2str(list(obj.items()))
+        return obj2bytes(list(obj.items()))
     elif isinstance(obj, lmfit.parameter.Parameter):
-        return obj2str([obj.value, obj.max, obj.min, obj.vary,
-                        obj.expr, obj.name])
+        return obj2bytes([obj.value, obj.max, obj.min, obj.vary,
+                          obj.expr, obj.name])
     else:
         raise ValueError("No rule to convert object '{}' to string.".
                          format(obj.__class__))
