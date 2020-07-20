@@ -1,4 +1,5 @@
 1.6.2
+ - tests: improve coverage
  - enh: add sanity checks for models during registration (#5)
 1.6.1
  - enh: if the contact point estimate is not possible, use a fit
