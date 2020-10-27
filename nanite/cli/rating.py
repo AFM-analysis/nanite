@@ -214,7 +214,7 @@ def fit_perform(path, path_results, profile_path=PROFILE_PATH):
                           path=imio)
                 imio.seek(0)
                 imdat = (mpimg.imread(imio) * 255).astype("uint8")
-                tf.save(imdat, compress=9)
+                tf.save(imdat, contiguous=True)
 
 
 @lru_cache(maxsize=5)

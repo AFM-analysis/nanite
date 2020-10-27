@@ -108,3 +108,5 @@ _version_save.py
 *.bib.bak
 *.bib.sav
 pip-wheel-metadata
+
+.idea

@@ -10,7 +10,8 @@ datadir = pathlib.Path(__file__).resolve().parent / "data"
 bad_files = list(datadir.glob("bad*"))
 
 
-@pytest.mark.filterwarnings('ignore::nanite.preproc.CannotSplitWarning')
+@pytest.mark.filterwarnings('ignore::nanite.preproc.CannotSplitWarning',
+                            'ignore::UserWarning')
 def test_process_bad():
     for bf in bad_files:
         ds = IndentationGroup(bf)
