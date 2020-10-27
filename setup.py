@@ -33,7 +33,7 @@ setup(
     long_description=open('README.rst').read() if exists('README.rst') else '',
     install_requires=["afmformats>=0.10.2",
                       "h5py>=2.8.0",
-                      "lmfit==0.9.5",
+                      "lmfit>=1",
                       "numpy>=1.16.0",  # cython build
                       "scikit-learn>=0.23.0",  # rating tests
                       "scipy",

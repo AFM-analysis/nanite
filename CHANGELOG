@@ -1,3 +1,6 @@
+1.6.3
+ - tests: fix fails due to tifffile upgrade
+ - setup: lift historic pinning of lmfit==0.9.5
 1.6.2
  - tests: improve coverage
  - enh: add sanity checks for models during registration (#5)
