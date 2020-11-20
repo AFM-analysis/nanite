@@ -1,6 +1,5 @@
 import lmfit
 import numpy as np
-from . import weight
 
 
 def get_parameter_defaults():
@@ -80,54 +79,6 @@ def hertz_sneddon_spherical_approx(delta, E, R, nu, contact_point=0,
         + 11/15120*(root[pos]/R)**3
         + 1357/6652800*(root[pos]/R)**4)
     return aa*bb + baseline
-
-
-def model(params, x):
-    if x[0] < x[-1]:
-        revert = True
-    else:
-        revert = False
-    if revert:
-        x = x[::-1]
-    mf = hertz_sneddon_spherical_approx(
-        E=params["E"].value,
-        delta=x,
-        R=params["R"].value,
-        nu=params["nu"].value,
-        contact_point=params["contact_point"].value,
-        baseline=params["baseline"].value)
-    if revert:
-        return mf[::-1]
-    return mf
-
-
-def residual(params, delta, force, weight_cp=5e-7):
-    """ Compute residuals for fitting
-
-    Parameters
-    ----------
-    params: lmfit.Parameters
-        The fitting parameters for `model`
-    delta: 1D ndarray of lenght M
-        The indentation distances
-    force: 1D ndarray of length M
-        The corresponding force data
-    weight_cp: positive float or zero/False
-        The distance from the contact point until which
-        linear weights will be applied. Set to zero to
-        disable weighting.
-    """
-    md = model(params, delta)
-    resid = force-md
-
-    if weight_cp:
-        # weight the curve so that the data around the contact_point do
-        # not affect the fit so much.
-        weights = weight.weight_cp(cp=params["contact_point"].value,
-                                   delta=delta,
-                                   weight_dist=weight_cp)
-        resid *= weights
-    return resid
 
 
 model_doc = hertz_sneddon_spherical_approx.__doc__
