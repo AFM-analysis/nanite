@@ -59,9 +59,9 @@ in PyJibe as well.
 
 Getting started
 ---------------
-First, create a Python file ``model_user.py`` which will be the home of your
-new model (make sure the name starts with ``model``). Place the file in the
-following location: ``nanite/model/model_user.py``. You file should at least
+First, create a Python file ``model_unique_name.py`` which will be the home of your
+new model (make sure the name starts with ``model_``). Place the file in the
+following location: ``nanite/model/model_unique_name.py``. You file should at least
 contain the following:
 
 .. code:: python
@@ -73,6 +73,7 @@ contain the following:
 
 
     def get_parameter_defaults():
+        """Return the default model parameters"""
         # The order of the parameters must match the order
         # of ´parameter_names´ and ´parameter_keys´.
         params = lmfit.Parameters()
@@ -145,9 +146,9 @@ adding the line
 
 .. code:: python
 
-    from . import model_user  # noqa: F401
+    from . import model_unique_name  # noqa: F401
 
-at the top in the file ``nanite/model/__init__.py``.
+at the top in the file ``nanite/model/__init__.py``. That's it!
 
 A few things should be noted:
 
@@ -155,3 +156,70 @@ A few things should be noted:
 - Always include a model formula. You can test whether it renders
   correctly by building the documentation (see above) and checking
   whether your model shows up properly in the code reference.
+
+Now it is time for a quick sanity check:
+
+.. code:: python
+
+    from nanite import model
+    assert "unique_model_key" in model.models_available
+
+
+Ancillary parameters
+--------------------
+For more elaborate models, you might need additional parameters from the
+:class:`nanite.indent.Indentation` instance. This is where ancillary
+parameters come into play.
+
+You can define an arbitrary number of ancillary parameters in your
+``model_unique_name.py`` file:
+
+.. code:: python
+
+    def compute_ancillaries(idnt):
+        """Compute ancillaries for my model
+
+        Parameters
+        ----------
+        idnt: nanite.indent.Indentation
+            Indentation dataset from which to extract the ancillary
+            parameters.
+
+        Returns
+        -------
+        example: dict
+            Dictionary with ancillary parameters. In this example:
+
+            - "force_range": total force range covered by approach and retract
+        """
+        # You have access to the initial fit parameters (including a
+        # good contact point estimate) with this line:
+        parms = idnt.get_initial_fit_parameters(model_key=model_key,
+                                                model_ancillaries=False)
+
+        # You can access individual columns...
+        force = idnt.data["force"]
+        segment = idnt.data["segment"]  # `False` for approach; `True` for retract
+        tip_position = idnt.data["tip position"]
+
+        # ...and segments
+        force_approach = force[~segment]  # equivalent to force[segment == False]
+        force_retract = force[segment]
+
+        # Initialize ancillary dictionary.
+        anc_dict = dict()
+
+        # This is the exemplary force parameter
+        anc_dict["force_range"] = np.ptp(force)
+
+        return anc_dict
+
+    # And below the other `parameter_keys` etc.:
+    parameter_anc_keys = ["force_range"]
+    parameter_anc_names = ["Overall peak-to-peak force"]
+    parameter_anc_units = ["N"]
+
+If an ancillary parameter name matches that of a fitting parameter
+(defined in ``get_parameter_defaults`` above), then the ancillary
+parameter is used as an initial value for fitting (see
+:func:`nanite.fit.guess_initial_parameters`).
