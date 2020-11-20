@@ -69,8 +69,6 @@ contain the following:
     import lmfit
     import numpy as np
 
-    from . import weight
-
 
     def get_parameter_defaults():
         """Return the default model parameters"""
@@ -224,7 +222,16 @@ You can define an arbitrary number of ancillary parameters in your
     parameter_anc_names = ["Overall peak-to-peak force"]
     parameter_anc_units = ["N"]
 
-If an ancillary parameter key matches that of a fitting parameter
-(defined in ``get_parameter_defaults`` above), then the ancillary
-parameter is used as an initial value for fitting (see
-:func:`nanite.fit.guess_initial_parameters`).
+
+You should know:
+
+- If an ancillary parameter key matches that of a fitting parameter
+  (defined in ``get_parameter_defaults`` above), then the ancillary
+  parameter can be used as an initial value for fitting (see
+  :func:`nanite.fit.guess_initial_parameters`).
+- If ``compute_ancillaries`` does not know how to compute a certain
+  parameter, it shoud set it to ``np.nan`` instead of ``None``
+  (compatibility with PyJibe).
+- If you would like to define an ancillary parameter that depends on
+  a successful fit, you could first check against ``idnt.fit_properties["success"]``
+  and then compute your parameter (else set it to ``np.nan``).
