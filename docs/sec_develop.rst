@@ -156,6 +156,11 @@ A few things should be noted:
 - Always include a model formula. You can test whether it renders
   correctly by building the documentation (see above) and checking
   whether your model shows up properly in the code reference.
+- Fitting parameters should not contain spaces. Only use characters that
+  are allowed in Python variable names.
+- Since fitting is based on `lmfit <https://pypi.org/project/lmfit/>`_, you may define
+  `mathematical constraints <https://lmfit.github.io/lmfit-py/constraints.html>`_
+  in ``get_parameter_defaults``.
 
 Now it is time for a quick sanity check:
 
@@ -219,7 +224,7 @@ You can define an arbitrary number of ancillary parameters in your
     parameter_anc_names = ["Overall peak-to-peak force"]
     parameter_anc_units = ["N"]
 
-If an ancillary parameter name matches that of a fitting parameter
+If an ancillary parameter key matches that of a fitting parameter
 (defined in ``get_parameter_defaults`` above), then the ancillary
 parameter is used as an initial value for fitting (see
 :func:`nanite.fit.guess_initial_parameters`).
