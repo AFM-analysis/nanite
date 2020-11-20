@@ -7,6 +7,7 @@ cimport numpy as np
 
 
 def get_parameter_defaults():
+    """Return the default model parameters"""
     # The order of the parameters must match the order 
     # of ´parameter_names´ and ´parameter_keys´.
     params = lmfit.Parameters()
@@ -35,10 +36,10 @@ def hertz_spherical(delta, double E, double R, double nu,
 
     Parameters
     ----------
-    E: float
-        Young's modulus [N/m²]
     delta: 1d ndarray
         Indentation [m]
+    E: float
+        Young's modulus [N/m²]
     R: float
         Tip radius [m]
     nu: float
@@ -47,9 +48,6 @@ def hertz_spherical(delta, double E, double R, double nu,
         Indentation offset [m]
     baseline: float
         Force offset [N]
-    negindent: bool
-        If `True`, will assume that the indentation value(s) given by
-        `delta` are negative and must be multiplied by -1.
 
     Returns
     -------
@@ -144,7 +142,7 @@ def model(params, x):
 
 
 def residual(params, delta, force, weight_cp=5e-7):
-    """ Compute residuals for fitting
+    """Compute residuals for fitting
     
     Parameters
     ----------
