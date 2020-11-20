@@ -158,7 +158,9 @@ A few things should be noted:
   are allowed in Python variable names.
 - Since fitting is based on `lmfit <https://pypi.org/project/lmfit/>`_, you may define
   `mathematical constraints <https://lmfit.github.io/lmfit-py/constraints.html>`_
-  in ``get_parameter_defaults``.
+  in ``get_parameter_defaults``. However, if possible, try to solve your
+  particular problem with ancillaries (see below), a concept that is easier
+  to understand.
 
 Now it is time for a quick sanity check:
 
