@@ -1,3 +1,6 @@
+1.7.0
+ - enh: simplified writing new model functions by introducing default
+   modeling and residual wrappers
 1.6.3
  - tests: fix fails due to tifffile upgrade
  - setup: lift historic pinning of lmfit==0.9.5

@@ -10,6 +10,9 @@ from . import model_hertz_three_sided_pyramid  # noqa: F401
 from . import model_sneddon_spherical  # noqa: F401
 from . import model_sneddon_spherical_approximation  # noqa: F401
 
+from . import residuals
+
+
 #: Common ancillary parameters
 ANCILLARY_COMMON = OrderedDict()
 ANCILLARY_COMMON["max_indent"] = ("Maximum indentation", "m")
@@ -175,8 +178,6 @@ def register_model(module, module_name):
     # sanity checks
     missing = []
     for attr in ["get_parameter_defaults",
-                 "model",
-                 "residual",
                  "model_doc",
                  "model_key",
                  "model_name",
@@ -192,6 +193,7 @@ def register_model(module, module_name):
         raise ModelIncompleteError(
             "Model `{}` is missing the following ".format(module_name)
             + "attributes: {}".format(", ".join(missing)))
+
     # check for completeness of ancillary parameter recipe
     if hasattr(module, "compute_ancillaries"):
         missing_anc = []
@@ -205,6 +207,7 @@ def register_model(module, module_name):
             raise ModelIncompleteError(
                 "Model `{}` is missing the following ".format(module_name)
                 + "attributes: {}".format(", ".join(missing_anc)))
+
     # check length of modeling lists
     if len(module.parameter_keys) != len(module.parameter_names):
         raise ModelImplementationError(
@@ -214,6 +217,7 @@ def register_model(module, module_name):
         raise ModelImplementationError(
             "'parameter_keys' and 'parameter_units' have different lengths "
             + "for model '{}'!".format(module.model_key))
+
     # checks for model parameters
     p_def = list(module.get_parameter_defaults().keys())
     p_arg = list(inspect.signature(module.model_func).parameters.keys())
@@ -231,6 +235,18 @@ def register_model(module, module_name):
                 + "The abscissa (usually `delta`) should come first. "
                 + "This warning may become an Exception in the future!",
                 ModelImplementationWarning)
+
+    # check for residuals function
+    if not hasattr(module, "residual"):
+        # use the default residual function
+        module.residual = residuals.get_default_residuals_wrapper(
+            model_function=module.model_func)
+
+    # check for modeling function
+    if not hasattr(module, "model"):
+        # use the default residual function
+        module.model = residuals.get_default_modeling_wrapper(
+            model_function=module.model_func)
 
     # add model
     models_available[module.model_key] = module
