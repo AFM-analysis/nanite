@@ -11,12 +11,12 @@ datapath = pathlib.Path(__file__).parent / "data"
 jpkfile = datapath / "spot3-0192.jpk-force"
 
 
-class MockModel():
+class MockModel:
     def __init__(self, model_key, **kwargs):
         # rebase on hertz model
         md = nanite.model.models_available["hertz_para"]
-        for key in dir(md):
-            setattr(self, key, getattr(md, key))
+        for akey in dir(md):
+            setattr(self, akey, getattr(md, akey))
         for kw in kwargs:
             setattr(self, kw, kwargs[kw])
         self.model_key = model_key

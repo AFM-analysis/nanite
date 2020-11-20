@@ -23,8 +23,8 @@ def setup_training_set(n=300):
     for cc in IndentationRater.get_feature_names(which_type="continuous"):
         cvals = np.random.random_sample(size=n)
         np.savetxt(tdir / "train_{}.txt".format(cc), cvals)
-    rating = np.random.choice(range(11), size=n)
-    np.savetxt(tdir / "train_response.txt", rating)
+    thisrating = np.random.choice(range(11), size=n)
+    np.savetxt(tdir / "train_response.txt", thisrating)
     return tdir
 
 

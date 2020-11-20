@@ -423,7 +423,7 @@ class Indentation(object):
         model_key: str
             Optionally set a model key. This will override the
             "model_key" key in `self.fit_properties`.
-        global_ancillaries: bool
+        common_ancillaries: bool
             Guess global ancillaries such as the contact point.
         model_ancillaries: bool
             Guess model-related ancillaries

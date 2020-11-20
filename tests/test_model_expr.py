@@ -14,7 +14,7 @@ datadir = pathlib.Path(__file__).resolve().parent / "data"
 jpkfile = datadir / "spot3-0192.jpk-force"
 
 
-class MockModelExpr():
+class MockModelExpr:
     def __init__(self, **kwargs):
         """E and E1 add up to the actual emodulus. E1 is varied indirectly"""
         self.model_doc = """Mock model with constraint"""

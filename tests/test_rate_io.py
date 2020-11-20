@@ -43,6 +43,8 @@ def setuph5(ret_idnt=False, path=jpkfile):
                   user_name="hans",
                   user_comment="this is a comment",
                   h5mode="a")
+    else:
+        idnt = grp[0]
 
     if ret_idnt:
         return tdir, h5path, idnt
@@ -116,12 +118,12 @@ def test_rate_manager_get_ts():
     path = datadir / "map-data-reference-points.jpk-force-map"
     tdir, h5path = setuph5(path=path)
     rmg = RateManager(h5path)
-    X2, _ = rmg.get_training_set(which_type="binary")
-    assert np.all(X2 == 1)
-    X3, _ = rmg.get_training_set(which_type="continuous",
+    x2, _ = rmg.get_training_set(which_type="binary")
+    assert np.all(x2 == 1)
+    x3, _ = rmg.get_training_set(which_type="continuous",
                                  prefilter_binary=True)
-    X4, _ = rmg.get_training_set(remove_nans=True)
-    assert np.all(np.hstack((X2, X3)) == X4)
+    x4, _ = rmg.get_training_set(remove_nans=True)
+    assert np.all(np.hstack((x2, x3)) == x4)
     shutil.rmtree(tdir, ignore_errors=True)
 
 
@@ -130,25 +132,25 @@ def test_rate_manager_get_ts_bad():
     path = datadir / "bad_map-data-2013.05.27-13.50.21.jpk-force-map"
     tdir, h5path = setuph5(path=path)
     rmg = RateManager(h5path)
-    X2, _ = rmg.get_training_set(which_type="binary")
-    assert np.allclose(X2.flatten(), [1, 0, 1])
-    X3, _ = rmg.get_training_set(which_type="continuous",
+    x2, _ = rmg.get_training_set(which_type="binary")
+    assert np.allclose(x2.flatten(), [1, 0, 1])
+    x3, _ = rmg.get_training_set(which_type="continuous",
                                  prefilter_binary=True)
-    assert X3.size == 0
-    X4, _ = rmg.get_training_set(remove_nans=True)
-    assert X4.size == 0
+    assert x3.size == 0
+    x4, _ = rmg.get_training_set(remove_nans=True)
+    assert x4.size == 0
     shutil.rmtree(tdir, ignore_errors=True)
 
 
 def test_rate_manager_get_ts_single():
     tdir, h5path = setuph5()
     rmg = RateManager(h5path)
-    X2, _ = rmg.get_training_set(which_type="binary")
-    assert np.all(X2 == 1)
-    X3, _ = rmg.get_training_set(which_type="continuous",
+    x2, _ = rmg.get_training_set(which_type="binary")
+    assert np.all(x2 == 1)
+    x3, _ = rmg.get_training_set(which_type="continuous",
                                  prefilter_binary=True)
-    X4, _ = rmg.get_training_set(remove_nans=True)
-    assert np.all(np.hstack((X2, X3)) == X4)
+    x4, _ = rmg.get_training_set(remove_nans=True)
+    assert np.all(np.hstack((x2, x3)) == x4)
     shutil.rmtree(tdir, ignore_errors=True)
 
 

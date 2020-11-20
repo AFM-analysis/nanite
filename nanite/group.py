@@ -34,7 +34,7 @@ class IndentationGroup(object):
 
         Parameters
         ----------
-        path: str
+        path: str or pathlib.Path or None
             The path to the data file. The data format is determined
             using the extension of the file and the data is loaded
             with the correct method.
@@ -42,6 +42,8 @@ class IndentationGroup(object):
             A method that accepts a float between 0 and 1
             to externally track the process of loading the data.
         """
+        if path is not None:
+            path = pathlib.Path(path)
         self._mmlist = []
 
         if path is not None:
