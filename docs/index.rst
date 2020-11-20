@@ -16,6 +16,7 @@ Documentation
    sec_fitting_guide
    sec_rating_workflow
    sec_examples
+   sec_develop
    sec_code_reference
 
 .. toctree::
