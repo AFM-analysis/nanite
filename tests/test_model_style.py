@@ -34,7 +34,8 @@ def test_model_parameter_names():
         md = model.models_available[key]
         for key2, nn in zip(md.parameter_keys, md.parameter_names):
             if key2 in NAME_MAPPING:
-                assert nn in NAME_MAPPING[key2], "bad {} in {}".format(key2, md)
+                assert nn in NAME_MAPPING[key2], "bad {} in {}".format(
+                    key2, md)
             else:
                 msg = "Parameter {} not registered for test!".format(key2)
                 assert False, msg
@@ -45,7 +46,8 @@ def test_model_parameter_units():
         md = model.models_available[key]
         for key2, un in zip(md.parameter_keys, md.parameter_units):
             if key2 in UNIT_MAPPING:
-                assert UNIT_MAPPING[key2] == un, "bad {} in {}".format(key2, md)
+                assert UNIT_MAPPING[key2] == un, "bad {} in {}".format(
+                    key2, md)
             else:
                 msg = "Parameter {} not registered for test!".format(key2)
                 assert False, msg

@@ -11,11 +11,8 @@ environment:
     secure: Ry77Jz+ZhUApoPN/x3oOxDjDWhDXYwWCakp7ak0uiDExS97/wqVpZ5PZzKq3Liof
   PYPI_USR: ci_afm
   matrix:
-    - PYTHON: "C:\\Python36"
     - PYTHON: "C:\\Python36-x64"
-    - PYTHON: "C:\\Python37"
     - PYTHON: "C:\\Python37-x64"
-    - PYTHON: "C:\\Python38"
     - PYTHON: "C:\\Python38-x64"
 
 install:
