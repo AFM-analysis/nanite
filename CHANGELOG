@@ -1,3 +1,5 @@
+1.7.1
+ - build: migrate to GitHub Actions
 1.7.0
  - enh: simplified writing new model functions by introducing default
    modeling and residual wrappers

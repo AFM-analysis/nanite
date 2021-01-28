@@ -2,4 +2,4 @@
 Bilbliography
 =============
 
-.. bibliography:: nanite.bib
+.. bibliography::
