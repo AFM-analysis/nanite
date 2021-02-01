@@ -21,7 +21,7 @@ install:
   # Check that we have the expected version and architecture for Python
   - "python --version"
   # install
-  - "appveyor-retry pip install wheel"
+  - "appveyor-retry pip install --upgrade pip wheel"
   # dependencies
   - "appveyor-retry pip install -e .[CLI]"
   - "python -m pip freeze"
