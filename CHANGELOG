@@ -1,5 +1,5 @@
 1.7.2
- - build: pin numpy to 1.19.5 in pyproject.toml
+ - build: use oldest-supported-numpy in pyproject.toml
 1.7.1
  - build: migrate to GitHub Actions
 1.7.0
