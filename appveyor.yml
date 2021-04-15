@@ -8,7 +8,7 @@ notifications:
 
 environment:
   PYPI_PWD:
-    secure: Ry77Jz+ZhUApoPN/x3oOxDjDWhDXYwWCakp7ak0uiDExS97/wqVpZ5PZzKq3Liof
+    secure: y/OGUVc+ZJ5LIRNWdbpLJbXc+PNFXoGBTAtf09iFiKx8FgZ1s26Vm3cE/0bdO3l6
   PYPI_USR: ci_afm
   matrix:
     - PYTHON: "C:\\Python36-x64"
