@@ -1,3 +1,5 @@
+1.7.3
+ - build: move windows pipeline to GH Actions
 1.7.2
  - build: use oldest-supported-numpy in pyproject.toml
 1.7.1
