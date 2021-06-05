@@ -265,7 +265,7 @@ class IndentationFeatures(object):
             r_bl = self.datares_apr[blidx]
             r_bl = r_bl[~np.isnan(r_bl)]
             # perform gaussian blur
-            sigma = max(5, (np.int(r_bl.shape[0]/120)//2)*2+1)
+            sigma = max(5, (int(r_bl.shape[0]/120)//2)*2+1)
             y = spfilt.gaussian_filter1d(r_bl, sigma=sigma)
             if len(y) > 2:
                 grad = np.gradient(y)
