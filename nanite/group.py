@@ -4,15 +4,20 @@ from .indent import Indentation
 from .read import load_data
 
 
-def load_group(path, callback=None):
+def load_group(path, callback=None, meta_override=None):
     """Load indentation data from disk
 
     Parameters
     ----------
     path: path-like
         Path to experimental data
-    callback: callable or None
-        Callback function for tracking loading progress
+    callback: callable
+        function for tracking progress; must accept a float in
+        [0, 1] as an argument.
+    meta_override: dict
+        if specified, contains key-value pairs of metadata that
+        should be used when loading the files
+        (see :data:`afmformats.meta.META_FIELDS`)
 
     Returns
     -------
@@ -20,7 +25,7 @@ def load_group(path, callback=None):
         Indentation group with force-distance data
     """
     path = pathlib.Path(path)
-    data = load_data(path, callback=callback)
+    data = load_data(path, callback=callback, meta_override=meta_override)
     grp = IndentationGroup()
     for dd in data:
         grp.append(Indentation(dd))
@@ -29,15 +34,14 @@ def load_group(path, callback=None):
 
 
 class IndentationGroup(object):
-    def __init__(self, path=None, callback=None):
+    def __init__(self, path=None, callback=None, meta_override=None):
         """Group of Indentation
 
         Parameters
         ----------
         path: str or pathlib.Path or None
             The path to the data file. The data format is determined
-            using the extension of the file and the data is loaded
-            with the correct method.
+            and the file is loaded using :ref:`afmformats:index`.
         callback: callable or None
             A method that accepts a float between 0 and 1
             to externally track the process of loading the data.
@@ -47,7 +51,9 @@ class IndentationGroup(object):
         self._mmlist = []
 
         if path is not None:
-            self += load_group(path, callback=callback)
+            self += load_group(path,
+                               callback=callback,
+                               meta_override=meta_override)
 
         self.path = path
 

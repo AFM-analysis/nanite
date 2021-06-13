@@ -55,9 +55,13 @@ def test_correct_force_offset():
     assert np.allclose(np.average(idnt.data["force"][:idp]), 0)
 
 
-if __name__ == "__main__":
-    # Run all tests
-    loc = locals()
-    for key in list(loc.keys()):
-        if key.startswith("test_") and hasattr(loc[key], "__call__"):
-            loc[key]()
+@pytest.mark.parametrize(
+    "metadata,software",
+    [
+        (None, "JPK"),
+        ({"software": "custom1a"}, "custom1a"),
+    ])
+def test_metadata_override(metadata, software):
+    grp = IndentationGroup(jpkfile, meta_override=metadata)
+    idnt = grp[0]
+    assert idnt.metadata["software"] == software

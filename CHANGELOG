@@ -1,3 +1,7 @@
+1.7.4
+ - enh: allow passing metadata to the IndentationGroup initializer
+ - setup: bump afmformats from 0.10.2 to 0.13.2
+ - ref: deprecate get_data_paths in favor of afmformats.find_data
 1.7.3
  - build: move windows pipeline to GH Actions
  - ref: better warning traceback for deprecated weight_cp method

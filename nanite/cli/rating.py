@@ -14,20 +14,21 @@ else:
 
 import types
 
+import afmformats
 from matplotlib.figure import Figure
 import matplotlib.image as mpimg
 import tifffile
 
 from ..indent import Indentation
 from ..group import IndentationGroup
-from ..read import get_data_paths, get_data_paths_enum
+from ..read import get_data_paths_enum
 from ..rate import io as rio
 
 from .profile import Profile, PROFILE_PATH
 from .plotting import plot_data
 
 
-class RatingGUI():
+class RatingGUI:
     def __init__(self, root, data_paths, h5path):
         self.data_paths = data_paths
         self.h5path = h5path
@@ -192,7 +193,7 @@ def fit_perform(path, path_results, profile_path=PROFILE_PATH):
     with ptsv.open(mode="w") as ts:
         ts.write(header + "\n")
     # get all files in path
-    datapaths = get_data_paths(path)
+    datapaths = afmformats.find_data(path, mode="force-distance")
     with tifffile.TiffWriter(fspath(ptif), imagej=True) as tf, \
             ptsv.open(mode="a") as ts:
         for pp in datapaths:
