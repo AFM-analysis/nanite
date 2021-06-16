@@ -285,7 +285,7 @@ def save_hdf5(h5path, indent, user_rate, user_name, user_comment, h5mode="a"):
 
     Parameters
     ----------
-    h5path: str
+    h5path: str or pathlib.Path
         Path to HDF5 rating container where data will be stored
     indent: nanite.Indentation
         The experimental data processed and fitted with nanite
