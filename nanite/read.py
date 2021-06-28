@@ -1,6 +1,7 @@
 import warnings
 
 import afmformats
+from .indent import Indentation
 
 
 def get_data_paths(path):
@@ -9,9 +10,10 @@ def get_data_paths(path):
     DEPRECATED
     """
     warnings.warn("`get_data_paths` is deprecated! Please use "
-                  "afmformats.find_data(path, mode='force-distance') instead",
+                  + "afmformats.find_data(path, modality='force-distance') "
+                  + "instead!",
                   DeprecationWarning)
-    return afmformats.find_data(path, mode="force-distance")
+    return afmformats.find_data(path, modality="force-distance")
 
 
 def get_data_paths_enum(path, skip_errors=False):
@@ -31,7 +33,7 @@ def get_data_paths_enum(path, skip_errors=False):
         each entry in the list is a list of [pathlib.Path, int],
         enumerating all curves in each file
     """
-    paths = afmformats.find_data(path, mode="force-distance")
+    paths = afmformats.find_data(path, modality="force-distance")
     enumpaths = []
     for pp in paths:
         try:
@@ -67,7 +69,7 @@ def load_data(path, callback=None, meta_override=None):
         are used when loading the files
         (see :data:`afmformats.meta.META_FIELDS`)
     """
-    paths = afmformats.find_data(path, mode="force-distance")
+    paths = afmformats.find_data(path, modality="force-distance")
     data = []
     for ii, pp in enumerate(paths):
         measurements = afmformats.load_data(
@@ -75,6 +77,9 @@ def load_data(path, callback=None, meta_override=None):
             # recurse callback function with None as default
             callback=lambda x: callback((ii + x) / len(paths))
             if callback else None,
-            meta_override=meta_override)
+            meta_override=meta_override,
+            modality="force-distance",
+            data_classes_by_modality={"force-distance": Indentation}
+        )
         data += measurements
     return data

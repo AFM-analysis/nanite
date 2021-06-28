@@ -193,7 +193,7 @@ def fit_perform(path, path_results, profile_path=PROFILE_PATH):
     with ptsv.open(mode="w") as ts:
         ts.write(header + "\n")
     # get all files in path
-    datapaths = afmformats.find_data(path, mode="force-distance")
+    datapaths = afmformats.find_data(path, modality="force-distance")
     with tifffile.TiffWriter(fspath(ptif), imagej=True) as tf, \
             ptsv.open(mode="a") as ts:
         for pp in datapaths:

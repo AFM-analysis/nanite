@@ -78,8 +78,8 @@ def get_anc_parms(idnt, model_key):
         and "params_fitted" in idnt.fit_properties
             and "contact_point" in idnt.fit_properties["params_fitted"]):
         cp = idnt.fit_properties["params_fitted"]["contact_point"].value
-        idmax = idnt.data.appr["fit"].argmax()
-        mi = idnt.data.appr["tip position"][idmax]
+        idmax = idnt.appr["fit"].argmax()
+        mi = idnt.appr["tip position"][idmax]
         mival = (cp-mi)
     else:
         mival = np.nan

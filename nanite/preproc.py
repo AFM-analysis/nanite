@@ -70,7 +70,7 @@ class IndentationPreprocessor(object):
             k = apret.metadata["spring constant"]
             force = apret["force"]
             zcant = apret["height (measured)"]
-            apret.data["tip position"] = zcant + force/k
+            apret["tip position"] = zcant + force/k
         else:
             missing = []
             if not has_hm:
@@ -88,9 +88,9 @@ class IndentationPreprocessor(object):
         """
         idp = apret.estimate_contact_point_index()
         if idp:
-            apret.data["force"] -= np.average(apret.data["force"][:idp])
+            apret["force"] -= np.average(apret["force"][:idp])
         else:
-            apret.data["force"] -= apret.data["force"][0]
+            apret["force"] -= apret["force"][0]
 
     @staticmethod
     def correct_tip_offset(apret):
@@ -100,7 +100,7 @@ class IndentationPreprocessor(object):
         contact point.
         """
         cpid = apret.estimate_contact_point_index()
-        apret.data["tip position"] -= apret.data["tip position"][cpid]
+        apret["tip position"] -= apret["tip position"][cpid]
 
     @staticmethod
     def correct_split_approach_retract(apret):
@@ -115,8 +115,8 @@ class IndentationPreprocessor(object):
         To repair this time lag, we append parts of the retract curve to the
         approach curve, such that the curves are split at the minimum height.
         """
-        x = np.array(apret.data["tip position"], copy=True)
-        y = np.array(apret.data["force"], copy=True)
+        x = np.array(apret["tip position"], copy=True)
+        y = np.array(apret["force"], copy=True)
 
         idp = apret.estimate_contact_point_index()
         if idp:
@@ -133,7 +133,7 @@ class IndentationPreprocessor(object):
 
             idmin = np.argmax(x**2+y**2)
 
-            segment = np.zeros(len(apret.data), dtype=bool)
+            segment = np.zeros(len(apret), dtype=bool)
             segment[idmin:] = True
             apret["segment"] = segment
         else:
@@ -148,20 +148,20 @@ class IndentationPreprocessor(object):
         For the columns "height (measured)" and "tip position",
         and for the approach and retract data separately, this
         method adds the columns "height (measured, smoothed)" and
-        "tip position (smoothed)" to `self.data`.
+        "tip position (smoothed)" to `apret`.
         """
         orig = ["height (measured)",
                 "tip position"]
         dest = ["height (measured, smoothed)",
                 "tip position (smoothed)"]
         for o, d in zip(orig, dest):
-            if o not in apret.data.columns:
+            if o not in apret.columns:
                 continue
             # Get approach and retract data
-            app_idx = ~apret.data["segment"]
-            app = np.array(apret.data[o][app_idx])
-            ret_idx = apret.data["segment"]
-            ret = np.array(apret.data[o][ret_idx])
+            app_idx = ~apret["segment"]
+            app = np.array(apret[o][app_idx])
+            ret_idx = apret["segment"]
+            ret = np.array(apret[o][ret_idx])
             # Apply smoothing
             sm_app = smooth_axis_monotone(app)
             sm_ret = smooth_axis_monotone(ret)
@@ -172,7 +172,7 @@ class IndentationPreprocessor(object):
             assert(np.all(end-begin > 0)), "Found retract before approach!"
 
             # If everything is ok, we can add the new columns
-            apret.data[d] = np.concatenate((sm_app, sm_ret))
+            apret[d] = np.concatenate((sm_app, sm_ret))
 
 
 #: Available preprocessors

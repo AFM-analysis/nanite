@@ -165,7 +165,7 @@ def test_write():
         assert attrs["fit model_key"] == "hertz_para"
         assert not attrs["fit optimal_fit_edelta"]
         assert attrs["fit preprocessing"] == "compute_tip_position"
-        assert np.allclose(hi["analysis/4443b7_0"]["fit"], idnt.data["fit"],
+        assert np.allclose(hi["analysis/4443b7_0"]["fit"], idnt["fit"],
                            equal_nan=True)
 
     shutil.rmtree(tdir, ignore_errors=True)

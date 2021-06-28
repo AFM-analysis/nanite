@@ -7,14 +7,14 @@ import numpy as np
 from nanite import model, qmap, IndentationGroup
 
 
-datadir = pathlib.Path(__file__).resolve().parent / "data"
-jpkfile = datadir / "map2x2_extracted.jpk-force-map"
-jpkfile2 = datadir / "map-data-reference-points.jpk-force-map"
+data_path = pathlib.Path(__file__).resolve().parent / "data"
+jpkfile = data_path / "map2x2_extracted.jpk-force-map"
+jpkfile2 = data_path / "map-data-reference-points.jpk-force-map"
 
 
 def test_feat_scan_order():
     qm = qmap.QMap(jpkfile)
-    order = qm.get_qmap("meta scan order", qmap_only=True)
+    order = qm.get_qmap("meta: scan order", qmap_only=True)
     assert order[0, 0] == 0
     assert order[0, -1] == 1
     assert order[-1, -1] == 2
@@ -24,7 +24,7 @@ def test_feat_scan_order():
 
 def test_feat_min_height():
     qm = qmap.QMap(jpkfile)
-    qd = qm.get_qmap("data min height", qmap_only=True)
+    qd = qm.get_qmap("data: lowest height", qmap_only=True)
     assert np.allclose(qd[0, 0], 40.55030392499141)
     assert np.allclose(qd[0, -1], 47.354988549298945)
     assert np.allclose(qd[-1, -1], 96.1627883099352)
@@ -55,7 +55,7 @@ def test_feat_cp():
                        segment="approach",
                        weight_cp=2e-6)
 
-    qd = qm.get_qmap("fit contact point", qmap_only=True)
+    qd = qm.get_qmap("fit: contact point", qmap_only=True)
     vals = qd.flat[~np.isnan(qd.flat)]
     # These are subject to change when contact point preprocessing
     # changes.
@@ -67,8 +67,8 @@ def test_feat_cp():
 def test_feat_emod_nofit():
     qm = qmap.QMap(jpkfile)
     with warnings.catch_warnings(record=True) as w:
-        # No data availabale, because there is no fit
-        qd = qm.get_qmap("fit young's modulus", qmap_only=True)
+        # No data available, because there is no fit
+        qd = qm.get_qmap("fit: Young's modulus", qmap_only=True)
         assert len(w) == 4
         assert w[0].category is qmap.DataMissingWarning
     assert np.alltrue(np.isnan(qd))
@@ -98,7 +98,7 @@ def test_feat_emod_withfit():
                        segment="approach",
                        weight_cp=2e-6)
 
-    qd = qm.get_qmap("fit young's modulus", qmap_only=True)
+    qd = qm.get_qmap("fit: Young's modulus", qmap_only=True)
     vals = qd.flat[~np.isnan(qd.flat)]
     assert np.allclose(vals[0], 57.64803584609825), "gray matter"
     assert np.allclose(vals[2], 46.607331352457955), "white matter"
@@ -131,7 +131,7 @@ def test_feat_rating():
         idnt.rate_quality(training_set="zef18",
                           regressor="Extra Trees")
 
-    qd = qm.get_qmap("meta rating", qmap_only=True)
+    qd = qm.get_qmap("fit: rating", qmap_only=True)
     vals = qd.flat[~np.isnan(qd.flat)]
     assert np.allclose(vals[0], 9.353890485442905), "gray matter"
     assert np.allclose(vals[2], 4.942804081687071), "white matter"
@@ -141,8 +141,8 @@ def test_feat_rating():
 def test_feat_rating_nofit():
     qm = qmap.QMap(jpkfile)
     with warnings.catch_warnings(record=True) as w:
-        # No data availabale, because there is no fit
-        qd = qm.get_qmap("meta rating", qmap_only=True)
+        # No data available, because there is no fit
+        qd = qm.get_qmap("fit: rating", qmap_only=True)
         assert len(w) == 4
         assert w[0].category is qmap.DataMissingWarning
     assert np.alltrue(np.isnan(qd))
@@ -175,7 +175,7 @@ def test_get_coords_bad():
 
 def test_get_qmap():
     qm = qmap.QMap(jpkfile)
-    x, y, _ = qm.get_qmap(feature="data min height", qmap_only=False)
+    x, y, _ = qm.get_qmap(feature="data: lowest height", qmap_only=False)
     assert x.size == 10
     assert y.size == 10
 

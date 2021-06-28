@@ -281,6 +281,10 @@ def get_rater(regressor, training_set="zef18", names=None,
         nanite, the path to a training set, or a tuple
         representing the training set (samples, response)
         for use with sklearn.
+    names: list of str
+        Only use these features for rating
+    lda: bool
+        Perform linear discriminant analysis
 
     Returns
     -------

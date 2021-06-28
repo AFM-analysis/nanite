@@ -235,6 +235,16 @@ def test_rate_quality_nofit():
     assert r1 == -1
 
 
+def test_repr_str():
+    ds1 = nanite.IndentationGroup(jpkfile)
+    idnt = ds1[0]
+    assert "AFMForceDistance" not in str(idnt)
+    assert "Indentation" in str(idnt)
+    assert "spot3-0192.jpk-force" in str(idnt)
+    assert "Indentation" in repr(idnt)
+    assert "spot3-0192.jpk-force" in repr(idnt)
+
+
 if __name__ == "__main__":
     # Run all tests
     loc = locals()

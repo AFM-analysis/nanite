@@ -1,7 +1,9 @@
 from collections import OrderedDict
 import copy
 import inspect
+import warnings
 
+import afmformats
 import lmfit
 import numpy as np
 import scipy.signal as spsig
@@ -13,21 +15,12 @@ from .preproc import IndentationPreprocessor
 from .rate import get_rater
 
 
-class Indentation(object):
-    def __init__(self, idnt_data):
-        """Force-indentation
-
-        Parameters
-        ----------
-        idnt_data: nanite.read.IndentationData
-            Object holding the experimental data
-        """
-        self.metadata = idnt_data.metadata
-        self.path = idnt_data.path
-        self.enum = idnt_data.enum
-
-        #: All data as afmformats.AFMForceDistance
-        self.data = idnt_data
+class Indentation(afmformats.AFMForceDistance):
+    def __init__(self, data, metadata, diskcache=None):
+        """Additional functionalities for afmformats.AFMForceDistance"""
+        super(Indentation, self).__init__(data=data,
+                                          metadata=metadata,
+                                          diskcache=diskcache)
         #: Default preprocessing steps steps,
         #: see :func:`Indentation.apply_preprocessing`.
         self.preprocessing = []
@@ -39,26 +32,16 @@ class Indentation(object):
 
         # Store initial parameters for reset (see `self.reset`)
         frame = inspect.currentframe()
-        args, _, _, values = inspect.getargvalues(frame)
-        self._init_kwargs = {}
-        args.remove("self")
-        for arg in args:
-            self._init_kwargs[arg] = copy.deepcopy(values[arg])
+        iargs, _, _, values = inspect.getargvalues(frame)
+        self._init_kwargs = {
+            "data": copy.deepcopy(data),
+            "metadata": copy.deepcopy(metadata)
+        }
 
-    def __contains__(self, key):
-        return self.data.__contains__(key)
-
-    def __getitem__(self, key):
-        return self.data.__getitem__(key)
-
-    def __setitem__(self, key, value):
-        return self.data.__setitem__(key, value)
-
-    def __repr__(self):
-        return "Indentation {: 6d} in '{}'".format(
-            self.enum,
-            self.path
-        )
+    @property
+    def data(self):
+        warnings.warn("Please use __getitem__ instead!")
+        return self
 
     @property
     def fit_properties(self):
@@ -99,7 +82,7 @@ class Indentation(object):
             # Check availability of axes
             for ax in ["x_axis", "y_axis"]:
                 # make sure the fitting axes are defined
-                if ax in fp and not fp[ax] in self.data:
+                if ax in fp and not fp[ax] in self:
                     fp.pop(ax)
             # Set new fit properties
             self.fit_properties = fp
@@ -302,7 +285,7 @@ class Indentation(object):
             fail.
         """
         # get data
-        y0 = np.array(self.data["force"], copy=True)
+        y0 = np.array(self["force"], copy=True)
         # Only use the (initial) approach part of the curve.
         idmax = np.argmax(y0)
         y = y0[:idmax]
@@ -317,10 +300,6 @@ class Indentation(object):
             idp = min(idp1, idp2)
 
         return idp
-
-    def export(self, path, fmt="tab"):
-        """Saves the current data as tab separated values"""
-        self.data.export(path, fmt=fmt)
 
     def fit_model(self, **kwargs):
         """Fit the approach-retract data to a model function
@@ -480,6 +459,10 @@ class Indentation(object):
         training_set: str
             A label for a training set shipped with nanite or a
             path to a training set.
+        names: list of str
+            Only use these features for rating
+        lda: bool
+            Perform linear discriminant analysis
 
         Returns
         -------
@@ -492,7 +475,7 @@ class Indentation(object):
         The rating is cached based on the fitting hash
         (see `IndentationFitter._hash`).
         """
-        if (self.fit_properties and "hash" in self.fit_properties):
+        if self.fit_properties and "hash" in self.fit_properties:
             curhash = self.fit_properties["hash"]
         else:
             curhash = "none"
