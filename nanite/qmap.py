@@ -1,6 +1,7 @@
 import warnings
 
 import afmformats
+from afmformats.afm_qmap import qmap_feature
 import numpy as np
 
 from .indent import Indentation
@@ -33,10 +34,13 @@ class QMap(afmformats.AFMQMap):
         )
 
     @staticmethod
+    @qmap_feature(name="fit: contact point",
+                  unit="nm",
+                  cache=False)
     def feat_fit_contact_point(idnt):
-        """fit: contact point [nm]"""
-        if idnt.fit_properties and idnt.fit_properties["success"]:
-            # use cached rating
+        """Contact point of the fit"""
+        if idnt.fit_properties.get("success", False):
+            # use cached contact point
             params = idnt.fit_properties["params_fitted"]
             value = params["contact_point"].value * 1e9
         else:
@@ -48,10 +52,13 @@ class QMap(afmformats.AFMQMap):
         return value
 
     @staticmethod
+    @qmap_feature(name="fit: Young's modulus",
+                  unit="Pa",
+                  cache=False)
     def feat_fit_youngs_modulus(idnt):
-        """fit: Young's modulus [Pa]"""
-        if idnt.fit_properties and idnt.fit_properties["success"]:
-            # use cached rating
+        """Young's modulus"""
+        if idnt.fit_properties.get("success", False):
+            # use cached young's modulus
             value = idnt.fit_properties["params_fitted"]["E"].value
         else:
             msg = "The experimental data has not been fitted. Please call " \
@@ -62,8 +69,11 @@ class QMap(afmformats.AFMQMap):
         return value
 
     @staticmethod
+    @qmap_feature(name="fit: rating",
+                  unit="",
+                  cache=False)
     def feat_meta_rating(idnt):
-        """fit: rating []"""
+        """Rating"""
         if idnt._rating is None:
             msg = "The experimental data has not been rated. Please call " \
                   + "`idnt.rate_quality` manually for {}!".format(idnt)
