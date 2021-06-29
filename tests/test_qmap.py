@@ -59,9 +59,9 @@ def test_feat_cp():
     vals = qd.flat[~np.isnan(qd.flat)]
     # These are subject to change when contact point preprocessing
     # changes.
-    assert np.allclose(vals[0], -9.59128590161483e-07), "gray matter"
-    assert np.allclose(vals[2], -3.995012408063929e-06), "white matter"
-    assert np.allclose(vals[1], -9.470884627033841e-07), "background"
+    assert np.allclose(vals[0], -9.59128590161483e+02), "gray matter"
+    assert np.allclose(vals[2], -3.995012408063929e+03), "white matter"
+    assert np.allclose(vals[1], -9.470884627033841e+02), "background"
 
 
 def test_feat_emod_nofit():

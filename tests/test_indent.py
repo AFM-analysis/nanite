@@ -78,7 +78,7 @@ def test_export():
     idnt.apply_preprocessing(["compute_tip_position"])
     # create temporary file
     _, path = tempfile.mkstemp(suffix=".tab", prefix="nanite_idnt_export")
-    idnt.export(path)
+    idnt.export_data(path)
     data = afmformats.load_data(path)[0]
     assert len(data) == 4000
     assert np.allclose(data["force"][100], -4.853736717639109e-10)
