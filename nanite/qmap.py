@@ -34,10 +34,11 @@ class QMap(afmformats.AFMQMap):
 
     @staticmethod
     def feat_fit_contact_point(idnt):
-        """fit: contact point [m]"""
+        """fit: contact point [nm]"""
         if idnt.fit_properties and idnt.fit_properties["success"]:
             # use cached rating
-            value = idnt.fit_properties["params_fitted"]["contact_point"].value
+            params = idnt.fit_properties["params_fitted"]
+            value = params["contact_point"].value * 1e9
         else:
             msg = "The experimental data has not been fitted. Please call " \
                   + "`idnt.fit_model` manually for {}!".format(idnt)

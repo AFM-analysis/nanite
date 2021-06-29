@@ -1,6 +1,8 @@
 1.7.5
  - ref: migrate `QMap` and `Group` code to afmformats 0.14.0
  - ref: `Indentation` is now a subclass for `afmformats.AFMForceDistance`
+ - ref: `QMap` is now a subclass for `afmformats.AFMQMap`
+ - ref: `Group` is now a subclass for `afmformats.AFMGroup`
 1.7.4
  - enh: allow passing metadata to the IndentationGroup initializer
  - setup: bump afmformats from 0.10.2 to 0.13.2
