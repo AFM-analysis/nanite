@@ -14,7 +14,7 @@ jpkfile2 = data_path / "map-data-reference-points.jpk-force-map"
 
 def test_feat_scan_order():
     qm = qmap.QMap(jpkfile)
-    order = qm.get_qmap("meta: scan order", qmap_only=True)
+    order = qm.get_qmap("data: scan order", qmap_only=True)
     assert order[0, 0] == 0
     assert order[0, -1] == 1
     assert order[-1, -1] == 2
@@ -24,7 +24,7 @@ def test_feat_scan_order():
 
 def test_feat_min_height():
     qm = qmap.QMap(jpkfile)
-    qd = qm.get_qmap("data: lowest height", qmap_only=True)
+    qd = qm.get_qmap("data: height base point", qmap_only=True)
     assert np.allclose(qd[0, 0], 40.55030392499141)
     assert np.allclose(qd[0, -1], 47.354988549298945)
     assert np.allclose(qd[-1, -1], 96.1627883099352)
@@ -175,7 +175,7 @@ def test_get_coords_bad():
 
 def test_get_qmap():
     qm = qmap.QMap(jpkfile)
-    x, y, _ = qm.get_qmap(feature="data: lowest height", qmap_only=False)
+    x, y, _ = qm.get_qmap(feature="data: height base point", qmap_only=False)
     assert x.size == 10
     assert y.size == 10
 

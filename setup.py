@@ -31,7 +31,7 @@ setup(
     license="GPL v3",
     description=description,
     long_description=open('README.rst').read() if exists('README.rst') else '',
-    install_requires=["afmformats>=0.14.1",
+    install_requires=["afmformats>=0.14.2",
                       "h5py>=2.8.0",
                       "lmfit>=1",
                       "numpy>=1.16.0",  # cython build
