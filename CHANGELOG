@@ -1,5 +1,5 @@
 1.7.6
- - setup: bump afmformats from 0.14.1 to 0.14.2 (adjust tests)
+ - setup: bump afmformats from 0.14.1 to 0.14.3 (adjust tests, speed)
 1.7.5
  - ref: migrate `QMap` and `Group` code to afmformats 0.14.1
  - ref: `Indentation` is now a subclass for `afmformats.AFMForceDistance`
