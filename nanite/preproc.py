@@ -1,3 +1,4 @@
+import functools
 import warnings
 
 import numpy as np
@@ -7,6 +8,33 @@ from .smooth import smooth_axis_monotone
 
 class CannotSplitWarning(UserWarning):
     pass
+
+
+def preprocessing_step(identifier, name):
+    """Decorator for Indentation preprocessors
+
+    The name is stored as a property of the wrapped function.
+
+    Parameters
+    ----------
+    identifier: str
+        identifier of the preprocessor (e.g. "correct_tip_offset")
+    name: str
+        human-readble name of the preprocessor
+        (e.g. "Estimate contact point")
+    """
+    def attribute_setter(func):
+        """Decorator that sets the necessary attributes
+
+        The outer decorator is used to obtain the attributes.
+        This inner decorator returns the actual function that
+        wraps the preprocessor.
+        """
+        func.identifier = identifier
+        func.name = name
+        return func
+
+    return attribute_setter
 
 
 class IndentationPreprocessor(object):
@@ -31,7 +59,7 @@ class IndentationPreprocessor(object):
         `apret.reset()` before preprocessing a second time.
         """
         for mm in preproc_names:
-            if hasattr(IndentationPreprocessor, mm):
+            if mm in IndentationPreprocessor.available():
                 meth = getattr(IndentationPreprocessor, mm)
                 meth(apret)
             else:
@@ -39,21 +67,45 @@ class IndentationPreprocessor(object):
                 raise KeyError(msg.format(mm))
 
     @staticmethod
+    @functools.lru_cache()
     def available():
-        """List available preprocessor names"""
-        ignore = ["available", "apply"]
-        funcs = IndentationPreprocessor.__dict__
+        """Return list of available preprocessor identifiers"""
         av = []
-        for ff in funcs:
-            if (not ff.startswith("_")
-                and ff not in ignore
-                    and isinstance(funcs[ff], staticmethod)):
-                av.append(ff)
+        for key in dir(IndentationPreprocessor):
+            func = getattr(IndentationPreprocessor, key)
+            if hasattr(func, "identifier"):
+                av.append(func.identifier)
         return sorted(av)
 
     @staticmethod
+    def get_func(identifier):
+        """Return preprocessor function for identifier"""
+        for key in dir(IndentationPreprocessor):
+            func = getattr(IndentationPreprocessor, key)
+            if hasattr(func, "identifier") and func.identifier == identifier:
+                return func
+        else:
+            raise KeyError(f"Preprocessor '{identifier}' unknown!")
+
+    @staticmethod
+    def get_name(identifier):
+        """Return preprocessor name for identifier"""
+        for key in dir(IndentationPreprocessor):
+            func = getattr(IndentationPreprocessor, key)
+            if hasattr(func, "identifier") and func.identifier == identifier:
+                return func.name
+        else:
+            raise KeyError(f"Preprocessor '{identifier}' unknown!")
+
+    @staticmethod
+    @preprocessing_step(identifier="compute_tip_position",
+                        name="tip-sample separation")
     def compute_tip_position(apret):
-        """Compute the tip-sample separation
+        """Perform tip-sample separation
+
+        Populate the "tip position" column by adding the force
+        normalized by the spring constant to the cantilever
+        height ("height (measured)").
 
         This computation correctly reproduces the column
         "Vertical Tip Position" as it is exported by the
@@ -83,6 +135,8 @@ class IndentationPreprocessor(object):
             raise ValueError("Cannot compute tip position: {}".format(mt))
 
     @staticmethod
+    @preprocessing_step(identifier="correct_force_offset",
+                        name="baseline correction")
     def correct_force_offset(apret):
         """Correct the force offset with an average baseline value
         """
@@ -93,6 +147,8 @@ class IndentationPreprocessor(object):
             apret["force"] -= apret["force"][0]
 
     @staticmethod
+    @preprocessing_step(identifier="correct_tip_offset",
+                        name="contact point estimation")
     def correct_tip_offset(apret):
         """Correct the offset of the tip position
 
@@ -103,6 +159,8 @@ class IndentationPreprocessor(object):
         apret["tip position"] -= apret["tip position"][cpid]
 
     @staticmethod
+    @preprocessing_step(identifier="correct_split_approach_retract",
+                        name="segment discovery")
     def correct_split_approach_retract(apret):
         """Split the approach and retract curves (farthest point method)
 
@@ -142,6 +200,8 @@ class IndentationPreprocessor(object):
             warnings.warn(msg, CannotSplitWarning)
 
     @staticmethod
+    @preprocessing_step(identifier="smooth_height",
+                        name="spatial smoothing")
     def smooth_height(apret):
         """Smoothen height data
 
