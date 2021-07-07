@@ -3,6 +3,8 @@
    preprocessing steps
  - ref: explicitly request "force-distance" data from afmformats
    (can be lifted by ``setting nanite.read.DEFAULT_MODALITY`` to ``None``)
+ - setup: bump afmformats from 0.14.3 to 0.15.0 (initial support for
+   loading creep-compliance data)
 1.7.7
  - docs: fix build
 1.7.6
