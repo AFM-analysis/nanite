@@ -1,6 +1,8 @@
 1.7.8
  - ref: introduce preprocessing_step decorator for managing
    preprocessing steps
+ - ref: explicitly request "force-distance" data from afmformats
+   (can be lifted by ``setting nanite.read.DEFAULT_MODALITY`` to ``None``)
 1.7.7
  - docs: fix build
 1.7.6

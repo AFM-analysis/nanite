@@ -4,7 +4,7 @@ import afmformats
 from afmformats.afm_qmap import qmap_feature
 import numpy as np
 
-from .indent import Indentation
+from .read import get_load_data_modality_kwargs
 
 
 class DataMissingWarning(UserWarning):
@@ -30,7 +30,7 @@ class QMap(afmformats.AFMQMap):
             path_or_group=path_or_group,
             meta_override=meta_override,
             callback=callback,
-            data_classes_by_modality={"force-distance": Indentation}
+            **get_load_data_modality_kwargs()
         )
 
     @staticmethod

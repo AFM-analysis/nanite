@@ -13,7 +13,8 @@ class CannotSplitWarning(UserWarning):
 def preprocessing_step(identifier, name):
     """Decorator for Indentation preprocessors
 
-    The name is stored as a property of the wrapped function.
+    The name and identifier are stored as a property of the wrapped
+    function.
 
     Parameters
     ----------

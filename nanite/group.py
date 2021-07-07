@@ -2,8 +2,7 @@ import pathlib
 
 import afmformats
 
-from .indent import Indentation
-from .read import load_data
+from .read import get_load_data_modality_kwargs, load_data
 
 
 def load_group(path, callback=None, meta_override=None):
@@ -58,5 +57,5 @@ class IndentationGroup(afmformats.AFMGroup):
             path=path,
             meta_override=meta_override,
             callback=callback,
-            data_classes_by_modality={"force-distance": Indentation}
+            **get_load_data_modality_kwargs()
         )

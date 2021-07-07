@@ -3,6 +3,13 @@ import warnings
 import afmformats
 from .indent import Indentation
 
+#: The default imaging modality when loading AFM data. Set this to `None`
+#: to also be able to load e.g. creep-compliance data. See issue
+#: https://github.com/AFM-analysis/nanite/issues/11 for more
+#: information. Note that especially the export of rating containers
+#: may not work with any imaging modality other than force-distance.
+DEFAULT_MODALITY = "force-distance"
+
 
 def get_data_paths(path):
     """Return list of data paths with force-distance data
@@ -13,7 +20,7 @@ def get_data_paths(path):
                   + "afmformats.find_data(path, modality='force-distance') "
                   + "instead!",
                   DeprecationWarning)
-    return afmformats.find_data(path, modality="force-distance")
+    return afmformats.find_data(path, modality=DEFAULT_MODALITY)
 
 
 def get_data_paths_enum(path, skip_errors=False):
@@ -33,7 +40,7 @@ def get_data_paths_enum(path, skip_errors=False):
         each entry in the list is a list of [pathlib.Path, int],
         enumerating all curves in each file
     """
-    paths = afmformats.find_data(path, modality="force-distance")
+    paths = afmformats.find_data(path, modality=DEFAULT_MODALITY)
     enumpaths = []
     for pp in paths:
         try:
@@ -46,6 +53,26 @@ def get_data_paths_enum(path, skip_errors=False):
         for dd in data:
             enumpaths.append([pp, dd.enum])
     return enumpaths
+
+
+def get_load_data_modality_kwargs():
+    """Return imaging modality kwargs for afmformats.load_data
+
+    Uses :const:`DEFAULT_MODALITY`.
+
+    Retrurns
+    --------
+    kwargs: dict
+        keyword arguments for :func:`afmformats.load_data`
+    """
+    kwargs = {
+        "modality": DEFAULT_MODALITY,
+        "data_classes_by_modality": {
+            "force-distance": Indentation,
+            "creep-compliance": Indentation,
+            "stress-relaxation": Indentation}
+    }
+    return kwargs
 
 
 def load_data(path, callback=None, meta_override=None):
@@ -69,7 +96,7 @@ def load_data(path, callback=None, meta_override=None):
         are used when loading the files
         (see :data:`afmformats.meta.META_FIELDS`)
     """
-    paths = afmformats.find_data(path, modality="force-distance")
+    paths = afmformats.find_data(path, modality=DEFAULT_MODALITY)
     data = []
     for ii, pp in enumerate(paths):
         measurements = afmformats.load_data(
@@ -78,8 +105,7 @@ def load_data(path, callback=None, meta_override=None):
             callback=lambda x: callback((ii + x) / len(paths))
             if callback else None,
             meta_override=meta_override,
-            modality="force-distance",
-            data_classes_by_modality={"force-distance": Indentation}
+            **get_load_data_modality_kwargs()
         )
         data += measurements
     return data
