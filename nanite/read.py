@@ -60,8 +60,8 @@ def get_load_data_modality_kwargs():
 
     Uses :const:`DEFAULT_MODALITY`.
 
-    Retrurns
-    --------
+    Returns
+    -------
     kwargs: dict
         keyword arguments for :func:`afmformats.load_data`
     """
