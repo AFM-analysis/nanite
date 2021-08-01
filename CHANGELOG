@@ -1,5 +1,6 @@
 1.7.9
  - docs: update doc strings for the "sneddon_spher_approx" model
+ - docs: remove duplcate docs for model functions
 1.7.8
  - ref: introduce preprocessing_step decorator for managing
    preprocessing steps

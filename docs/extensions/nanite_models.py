@@ -67,7 +67,7 @@ class ModelDoc(Base):
             rst.append("    :members:")
             rst.append("    :undoc-members:")
             rst.append("    :exclude-members: model, residual, "
-                       + "get_parameter_defaults")
+                       + "get_parameter_defaults, model_func")
             rst.append("")
 
         return rst
