@@ -63,6 +63,14 @@ def hertz_sneddon_spherical_approx(delta, E, R, nu, contact_point=0,
 
     - no surface forces
 
+    Truncated power series approximation:
+
+    This model is a truncated power series approximation of
+    :ref:`sec_ref_model_sneddon_spher`. The expected error is more
+    than four magnitues lower than the signal (see e.g.
+    :ref:`example_model_spherical_indenter`). The Bio-AFM analysis software
+    by JPK/Bruker uses the same model.
+
     References
     ----------
     Sneddon (1965) :cite:`Sneddon1965`,
@@ -84,7 +92,7 @@ def hertz_sneddon_spherical_approx(delta, E, R, nu, contact_point=0,
 model_doc = hertz_sneddon_spherical_approx.__doc__
 model_func = hertz_sneddon_spherical_approx
 model_key = "sneddon_spher_approx"
-model_name = "spherical indenter (Sneddon, approximative)"
+model_name = "spherical indenter (Sneddon, truncated power series)"
 parameter_keys = ["E", "R", "nu", "contact_point", "baseline"]
 parameter_names = ["Young's Modulus", "Tip Radius",
                    "Poisson's Ratio", "Contact Point", "Force Baseline"]
