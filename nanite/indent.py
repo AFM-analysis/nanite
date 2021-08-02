@@ -329,7 +329,7 @@ class Indentation(afmformats.AFMForceDistance):
         preprocessing: list of str
             Preprocessing
         segment: str
-            One of "approach" or "retract".
+            Segment index (e.g. 0 for approach)
         weight_cp: float
             Weight the contact point region which shows artifacts
             that are difficult to model with e.g. Hertz.

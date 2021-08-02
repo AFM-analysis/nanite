@@ -19,7 +19,7 @@ def test_app_ret():
                             "correct_force_offset"])
     idp = ar.estimate_contact_point_index()
 
-    aprid = ~ar["segment"]
+    aprid = ar["segment"] == 0
     x = ar["tip position"][aprid]
     y = ar["force"][aprid]
     contact_point = x[idp]

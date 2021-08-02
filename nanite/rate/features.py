@@ -41,7 +41,7 @@ class IndentationFeatures(object):
 
     @property
     def datafit_apr(self):
-        seg = ~self.dataset["segment"]
+        seg = self.dataset["segment"] == 0
         f = self.dataset["fit"][seg].copy()
         return f
 
@@ -52,7 +52,7 @@ class IndentationFeatures(object):
     @property
     def datax_apr(self):
         xaxis = self.dataset.fit_properties["x_axis"]
-        seg = ~self.dataset["segment"]
+        seg = self.dataset["segment"] == 0
         x = self.dataset[xaxis][seg].copy()
         # Make sure everything is ok
         assert x[0] > x[-1], "Approach from large distances towards lower"
@@ -61,7 +61,7 @@ class IndentationFeatures(object):
     @property
     def datay_apr(self):
         yaxis = self.dataset.fit_properties["y_axis"]
-        seg = ~self.dataset["segment"]
+        seg = self.dataset["segment"] == 0
         y = self.dataset[yaxis][seg].copy()
         return y
 

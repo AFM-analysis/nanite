@@ -1,5 +1,6 @@
 import copy
 import hashlib
+import numbers
 import warnings
 
 import lmfit
@@ -16,7 +17,7 @@ FP_DEFAULT = dict(model_key="hertz_para",
                   preprocessing=[],
                   range_type="absolute",
                   range_x=[0, 0],
-                  segment="approach",
+                  segment=0,
                   weight_cp=1e-6,
                   x_axis="tip position",
                   y_axis="force",
@@ -60,24 +61,17 @@ class FitProperties(dict):
       obsolete fitting results).
 
     Additional attributes:
-
-    - "segment_bool": bool
-        `False` for "approach" and `True` for "retract"
     """
-
-    def __getitem__(self, key):
-        if key == "segment_bool":
-            if self["segment"] == "approach":
-                return False
-            if self["segment"] == "retract":
-                return True
-            else:
-                msg = "Unknown segment: {}".format(self["segment"])
-                raise FitKeyError(msg)
-        else:
-            return super(FitProperties, self).__getitem__(key)
-
     def __setitem__(self, key, value):
+        if key == "segment":
+            # Since version 1.8.0, nanite uses an integer to identify
+            # the segment. Replace the input accordingly for backwards
+            # compatibility.
+            if value == "approach":
+                value = 0
+            elif value == "retract":
+                value = 1
+        # Proceed with normal checks.
         if key in FP_DEFAULT:
             if (key in self
                 and key == "params_initial"
@@ -152,8 +146,8 @@ class IndentationFitter(object):
                 as well, this requires a two-pass fitting.
         preprocessing: list of str
             Preprocessing
-        segment: str
-            One of "approach" or "retract".
+        segment: int
+            Segment index (e.g. 0 for approach)
         weight_cp: float
             Weight the contact point region which shows artifacts
             that are difficult to model with e.g. Hertz.
@@ -191,7 +185,7 @@ class IndentationFitter(object):
             )
 
         # Set arrays
-        self.segment = (idnt["segment"] == self.fp["segment_bool"])
+        self.segment = idnt["segment"] == self.fp["segment"]
         self.segment.setflags(write=False)
 
         self.x_axis = idnt[self.fp["x_axis"]]
@@ -223,9 +217,9 @@ class IndentationFitter(object):
         if (np.isnan(self.fp["range_x"][0]) or
                 np.isnan(self.fp["range_x"][1])):
             raise FitKeyError("`range_x` must not contain NaN!")
-        if self.fp["segment"] not in ["approach", "retract"]:
-            msg = "`segment` must be  'approach' or 'retract'!"
-            raise FitKeyError(msg)
+        if not isinstance(self.fp["segment"], numbers.Integral):
+            raise FitKeyError(
+                f"`segment` must be integer, got '{self.fp['segment']}!")
         if self.fp["model_key"] not in model.models_available:
             msg = "unknown model '{}'".format(self.fp["model_key"])
             raise FitKeyError(msg)
@@ -268,14 +262,14 @@ class IndentationFitter(object):
         # We are agnostic concerning the direction of indentation.
         # `xseg` should start at the baseline.
         seems_approach = np.average(yseg[:10]) < np.average(yseg[-10:])
-        if seems_approach and self.fp["segment"] == "approach":
+        if seems_approach and self.fp["segment"] == 0:
             if xseg[0] < xseg[-1]:
                 msg = "Unexpected trend in approach x data!"
                 raise FitDataError(msg)
         elif seems_approach:
             msg = "Data appears to be 'approach', but is 'retract'!"
             raise FitDataError(msg)
-        elif not seems_approach and self.fp["segment"] == "retract":
+        elif not seems_approach and self.fp["segment"] > 0:
             if xseg[0] > xseg[-1]:
                 msg = "Unexpected trend in retract x data!"
                 raise FitDataError(msg)
@@ -572,7 +566,7 @@ def obj2bytes(obj):
     """Bytes representation of an object for hashing"""
     if isinstance(obj, str):
         return obj.encode("utf-8")
-    elif isinstance(obj, (bool, int, float)):
+    elif isinstance(obj, (bool, int, float, np.bool_)):
         return str(float(obj)).encode("utf-8")
     elif obj is None:
         return b"none"

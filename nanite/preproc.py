@@ -192,8 +192,8 @@ class IndentationPreprocessor(object):
 
             idmin = np.argmax(x**2+y**2)
 
-            segment = np.zeros(len(apret), dtype=bool)
-            segment[idmin:] = True
+            segment = np.zeros(len(apret), dtype=np.uint8)
+            segment[idmin:] = 1
             apret["segment"] = segment
         else:
             msg = "Cannot correct splitting of approach and retract curve " +\
@@ -219,9 +219,9 @@ class IndentationPreprocessor(object):
             if o not in apret.columns:
                 continue
             # Get approach and retract data
-            app_idx = ~apret["segment"]
+            app_idx = apret["segment"] == 0
             app = np.array(apret[o][app_idx])
-            ret_idx = apret["segment"]
+            ret_idx = apret["segment"] == np.max(apret["segment"])
             ret = np.array(apret[o][ret_idx])
             # Apply smoothing
             sm_app = smooth_axis_monotone(app)

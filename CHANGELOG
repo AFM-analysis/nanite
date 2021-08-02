@@ -1,4 +1,6 @@
-1.7.9
+1.8.0
+ - BREAKING CHANGE: segment in FitProperties is now an integer
+ - setup: bump afmformats from 0.15.0 to 0.16.0
  - docs: update doc strings for the "sneddon_spher_approx" model
  - docs: remove duplcate docs for model functions
 1.7.8

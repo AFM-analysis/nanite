@@ -1,4 +1,5 @@
 import argparse
+import numbers
 import pathlib
 
 import appdirs
@@ -17,14 +18,14 @@ DEFAULTS = {"model_key": "sneddon_spher_approx",
                               "correct_tip_offset"],
             "range_type": "absolute",
             "range_x": [0, 0],
-            "segment": "approach",
+            "segment": 0,
             "weight_cp": 5e-7,
             "rating regressor": "Extra Trees",
             "rating training set": "zef18",
             }
 
 
-class Profile(object):
+class Profile:
     def __init__(self, path=PROFILE_PATH, create=True):
         """Initialize settings file (create if it does not exist)"""
         path = pathlib.Path(path)
@@ -49,6 +50,8 @@ class Profile(object):
                 val = data[key].split(",")
                 if isfloat(val[0]) and isfloat(val[1]):
                     val = [float(vv) for vv in val]
+            elif isinstance(default, numbers.Integral):
+                val = int(data[key])
             else:
                 val = float(data[key])
         else:
@@ -107,7 +110,15 @@ class Profile(object):
         for line in fc:
             line = line.strip()
             var, val = line.split("=", 1)
-            cdict[var.strip()] = val.strip()
+            # support "approach" and "retract" from pre 1.8.0 versions
+            var = var.strip()
+            val = val.strip()
+            if var == "segment":
+                if val == "approach":
+                    val = "0"
+                elif val == "retract":
+                    val = "1"
+            cdict[var] = val
         return cdict
 
     def save(self, cdict):

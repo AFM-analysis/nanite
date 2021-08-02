@@ -16,7 +16,7 @@ from ..group import IndentationGroup
 from . import rater
 
 
-class RateManager():
+class RateManager:
     def __init__(self, path, verbose=0):
         """Manage user-defined rates"""
         #: Path to the manual ratings (directory or .h5 file)

@@ -19,7 +19,7 @@ def test_app_ret():
                               "correct_force_offset"])
     idp = idnt.estimate_contact_point_index()
 
-    aprid = ~idnt["segment"]
+    aprid = idnt["segment"] == 0
     x = idnt["tip position"][aprid]
     y = idnt["force"][aprid]
     contact_point = x[idp]

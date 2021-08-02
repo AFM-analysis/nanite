@@ -114,6 +114,22 @@ def test_rate_manager_export():
     shutil.rmtree(tdir, ignore_errors=True)
 
 
+def test_rate_manager_import():
+    pin = datadir / "rate-export_1.7.8.h5"
+    tdir = pathlib.Path(tempfile.mkdtemp(prefix="nanite_rate_load_"))
+    h5path = tdir / pin.name
+    shutil.copy2(pin, h5path)
+
+    datalist = load_hdf5(h5path)
+    rating = datalist[0]
+    dataset = rating["data_set"]
+    assert rating["rating"] == 5
+    assert dataset.fit_properties["segment"] == "approach"
+    # trigger recomputation of fit to force resetting of "segment"
+    dataset.fit_model(range_x=[1.75e-5, 2.3e-5])
+    assert dataset.fit_properties["segment"] == 0
+
+
 def test_rate_manager_get_ts():
     path = datadir / "map-data-reference-points.jpk-force-map"
     tdir, h5path = setuph5(path=path)
