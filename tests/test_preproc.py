@@ -25,6 +25,20 @@ def test_process_bad():
             idnt.fit_model()
 
 
+def test_correct_split_approach_retract():
+    fd = IndentationGroup(data_path / "spot3-0192.jpk-force")[0]
+
+    fd.apply_preprocessing(["compute_tip_position",
+                            "correct_force_offset",
+                            "correct_tip_offset"])
+    assert fd.appr["segment"].size == 2000
+    fd.apply_preprocessing(["compute_tip_position",
+                            "correct_force_offset",
+                            "correct_tip_offset",
+                            "correct_split_approach_retract"])
+    assert fd.appr["segment"].size == 2006
+
+
 def test_unknown_method():
     idnt = IndentationGroup(data_path / "spot3-0192.jpk-force")[0]
     try:
