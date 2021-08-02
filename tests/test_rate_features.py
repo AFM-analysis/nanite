@@ -7,8 +7,8 @@ from nanite import IndentationGroup, model
 from nanite.rate import features
 
 
-datadir = pathlib.Path(__file__).resolve().parent / "data"
-jpkfile = datadir / "spot3-0192.jpk-force"
+data_path = pathlib.Path(__file__).resolve().parent / "data"
+jpkfile = data_path / "spot3-0192.jpk-force"
 
 
 def setup_indent():

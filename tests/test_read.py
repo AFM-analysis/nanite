@@ -5,7 +5,7 @@ import tempfile
 import nanite.read
 
 
-data_dir = pathlib.Path(__file__).parent / "data"
+data_path = pathlib.Path(__file__).parent / "data"
 
 
 def test_recursive_callback():
@@ -16,9 +16,9 @@ def test_recursive_callback():
     td3 = td / "data3" / "data4"
     td3.mkdir(parents=True)
 
-    shutil.copy2(data_dir / "spot3-0192.jpk-force", td2 / "spot1.jpk-force")
-    shutil.copy2(data_dir / "spot3-0192.jpk-force", td2 / "spot2.jpk-force")
-    shutil.copy2(data_dir / "spot3-0192.jpk-force", td3 / "spot3.jpk-force")
+    shutil.copy2(data_path / "spot3-0192.jpk-force", td2 / "spot1.jpk-force")
+    shutil.copy2(data_path / "spot3-0192.jpk-force", td2 / "spot2.jpk-force")
+    shutil.copy2(data_path / "spot3-0192.jpk-force", td3 / "spot3.jpk-force")
 
     # trace the callback calls
     calls = []

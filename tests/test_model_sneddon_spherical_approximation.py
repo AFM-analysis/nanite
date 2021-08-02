@@ -8,8 +8,8 @@ from nanite import IndentationGroup
 from nanite.model import model_sneddon_spherical_approximation as mod_ssa
 
 
-datadir = pathlib.Path(__file__).resolve().parent / "data"
-jpkfile = datadir / "spot3-0192.jpk-force"
+data_path = pathlib.Path(__file__).resolve().parent / "data"
+jpkfile = data_path / "spot3-0192.jpk-force"
 
 
 def test_app_ret():

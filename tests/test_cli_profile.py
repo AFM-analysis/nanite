@@ -28,11 +28,6 @@ def test_profile_getter():
     assert pf["weight_cp"] == 5e-7
     assert pf["weight_cp"] == 5e-7
 
-    try:
-        name.unlink()
-    except OSError:
-        pass
-
 
 def test_profile_getter_1_7_8():
     """Load a profile from version 1.7.8"""
@@ -57,11 +52,6 @@ def test_profile_fitparams():
     assert len(params) == 5
     assert "E" in params.keys()
 
-    try:
-        name.unlink()
-    except OSError:
-        pass
-
 
 def test_single_fitparam():
     _, name = tempfile.mkstemp(suffix=".cfg", prefix="test_nanite_profile_")
@@ -73,11 +63,6 @@ def test_single_fitparam():
     params = pf.get_fit_params()
     assert params["E"].value == 50
     assert params["R"].value == 16e-6
-
-    try:
-        name.unlink()
-    except OSError:
-        pass
 
 
 if __name__ == "__main__":

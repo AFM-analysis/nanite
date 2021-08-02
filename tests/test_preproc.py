@@ -6,8 +6,8 @@ import pytest
 from nanite import IndentationGroup
 
 
-datadir = pathlib.Path(__file__).resolve().parent / "data"
-bad_files = list(datadir.glob("bad*"))
+data_path = pathlib.Path(__file__).resolve().parent / "data"
+bad_files = list(data_path.glob("bad*"))
 
 
 @pytest.mark.filterwarnings('ignore::nanite.preproc.CannotSplitWarning',
@@ -26,7 +26,7 @@ def test_process_bad():
 
 
 def test_unknown_method():
-    idnt = IndentationGroup(datadir / "spot3-0192.jpk-force")[0]
+    idnt = IndentationGroup(data_path / "spot3-0192.jpk-force")[0]
     try:
         idnt.apply_preprocessing(["compute_tip_position",
                                   "unknown_method"])

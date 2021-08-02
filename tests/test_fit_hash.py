@@ -6,8 +6,8 @@ import nanite
 from nanite import IndentationGroup
 
 
-datapath = pathlib.Path(__file__).parent / "data"
-jpkfile = datapath / "spot3-0192.jpk-force"
+data_path = pathlib.Path(__file__).parent / "data"
+jpkfile = data_path / "spot3-0192.jpk-force"
 
 
 def test_hash_time():

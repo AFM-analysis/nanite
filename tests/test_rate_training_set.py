@@ -1,6 +1,5 @@
 """Test usage of user-defined training set"""
 import pathlib
-import shutil
 import tempfile
 
 import numpy as np
@@ -9,8 +8,8 @@ from nanite import IndentationGroup
 from nanite.rate import IndentationRater
 
 
-datapath = pathlib.Path(__file__).parent / "data"
-jpkfile = datapath / "map-data-reference-points.jpk-force-map"
+data_path = pathlib.Path(__file__).parent / "data"
+jpkfile = data_path / "map-data-reference-points.jpk-force-map"
 
 
 def setup_training_set(n=300):
@@ -40,7 +39,6 @@ def test_user_training_set():
     assert r1 > 9, "sanity check"
     r2 = idnt.rate_quality(regressor="Extra Trees", training_set=tdir)
     assert 4 < r2 < 5, "with the given random state we end up at 4.55"
-    shutil.rmtree(tdir, ignore_errors=True)
 
 
 if __name__ == "__main__":

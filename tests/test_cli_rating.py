@@ -1,5 +1,4 @@
 import pathlib
-import shutil
 import tempfile
 
 import numpy as np
@@ -8,9 +7,9 @@ from nanite.cli import profile, rating
 from nanite.rate import IndentationRater
 
 
-datadir = pathlib.Path(__file__).resolve().parent / "data"
-jpkfile = datadir / "spot3-0192.jpk-force"
-jpkfile2 = datadir / "map-data-reference-points.jpk-force-map"
+data_path = pathlib.Path(__file__).resolve().parent / "data"
+jpkfile = data_path / "spot3-0192.jpk-force"
+jpkfile2 = data_path / "map-data-reference-points.jpk-force-map"
 
 
 def setup_training_set(n=300):
@@ -39,11 +38,6 @@ def test_fit_data():
     assert idnt.path == jpkfile
     assert idnt.fit_properties["success"]
 
-    try:
-        name.unlink()
-    except OSError:
-        pass
-
 
 def test_fit_data_with_user_training_set():
     tdir = setup_training_set()
@@ -59,16 +53,8 @@ def test_fit_data_with_user_training_set():
     assert np.all(stats[:, 0] == [109, 129, 416])
     assert np.all((3.5 < stats[:, 2]) * (stats[:, 2] < 5))
 
-    try:
-        name.unlink()
-    except OSError:
-        pass
-    shutil.rmtree(tdir, ignore_errors=True)
-    shutil.rmtree(pout, ignore_errors=True)
-
 
 def test_fit_data_with_zef18():
-    tdir = setup_training_set()
     _, name = tempfile.mkstemp(suffix=".cfg", prefix="test_nanite_cli_rate_")
     name = pathlib.Path(name)
     pf = profile.Profile(path=name)
@@ -83,13 +69,6 @@ def test_fit_data_with_zef18():
     assert stats[0, 2] == 9.5
     assert stats[1, 2] == 2.4
     assert stats[2, 2] == 4.9
-
-    try:
-        name.unlink()
-    except OSError:
-        pass
-    shutil.rmtree(tdir, ignore_errors=True)
-    shutil.rmtree(pout, ignore_errors=True)
 
 
 if __name__ == "__main__":

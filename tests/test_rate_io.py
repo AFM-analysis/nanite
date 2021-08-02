@@ -11,8 +11,8 @@ from nanite import model, IndentationGroup
 from nanite.rate.io import RateManager, hdf5_rated, load_hdf5, save_hdf5
 from nanite.rate.rater import IndentationRater
 
-datadir = pathlib.Path(__file__).resolve().parent / "data"
-jpkfile = datadir / "spot3-0192.jpk-force"
+data_path = pathlib.Path(__file__).resolve().parent / "data"
+jpkfile = data_path / "spot3-0192.jpk-force"
 
 
 def setuph5(ret_idnt=False, path=jpkfile):
@@ -58,7 +58,6 @@ def test_hdf5rated():
     assert is_rated
     assert rating == 5
     assert comment == "this is a comment"
-    shutil.rmtree(tdir, ignore_errors=True)
 
 
 def test_rate_manager_basic():
@@ -83,11 +82,10 @@ def test_rate_manager_basic():
         np.ndarray.item(rmg.get_rates(which="Extra Trees",
                                       training_set="zef18")),
         3.5492840783289035)
-    shutil.rmtree(tdir, ignore_errors=True)
 
 
 def test_rate_manager_crossval():
-    path = datadir / "map-data-reference-points.jpk-force-map"
+    path = data_path / "map-data-reference-points.jpk-force-map"
     tdir, h5path = setuph5(path=path)
     rmg = RateManager(h5path)
     cv = rmg.get_cross_validation_score(regressor="Extra Trees",
@@ -95,7 +93,6 @@ def test_rate_manager_crossval():
                                         n_splits=2,
                                         random_state=42)
     assert np.all(cv == 0)
-    shutil.rmtree(tdir, ignore_errors=True)
 
 
 def test_rate_manager_export():
@@ -111,11 +108,9 @@ def test_rate_manager_export():
         # :.2e, because features are not stored with high accuracy
         assert np.ndarray.item(fi) == float("{:.2e}".format(si))
 
-    shutil.rmtree(tdir, ignore_errors=True)
-
 
 def test_rate_manager_import():
-    pin = datadir / "rate-export_1.7.8.h5"
+    pin = data_path / "rate-export_1.7.8.h5"
     tdir = pathlib.Path(tempfile.mkdtemp(prefix="nanite_rate_load_"))
     h5path = tdir / pin.name
     shutil.copy2(pin, h5path)
@@ -131,7 +126,7 @@ def test_rate_manager_import():
 
 
 def test_rate_manager_get_ts():
-    path = datadir / "map-data-reference-points.jpk-force-map"
+    path = data_path / "map-data-reference-points.jpk-force-map"
     tdir, h5path = setuph5(path=path)
     rmg = RateManager(h5path)
     x2, _ = rmg.get_training_set(which_type="binary")
@@ -140,12 +135,11 @@ def test_rate_manager_get_ts():
                                  prefilter_binary=True)
     x4, _ = rmg.get_training_set(remove_nans=True)
     assert np.all(np.hstack((x2, x3)) == x4)
-    shutil.rmtree(tdir, ignore_errors=True)
 
 
 @pytest.mark.filterwarnings('ignore::RuntimeWarning')
 def test_rate_manager_get_ts_bad():
-    path = datadir / "bad_map-data-2013.05.27-13.50.21.jpk-force-map"
+    path = data_path / "bad_map-data-2013.05.27-13.50.21.jpk-force-map"
     tdir, h5path = setuph5(path=path)
     rmg = RateManager(h5path)
     x2, _ = rmg.get_training_set(which_type="binary")
@@ -155,7 +149,6 @@ def test_rate_manager_get_ts_bad():
     assert x3.size == 0
     x4, _ = rmg.get_training_set(remove_nans=True)
     assert x4.size == 0
-    shutil.rmtree(tdir, ignore_errors=True)
 
 
 def test_rate_manager_get_ts_single():
@@ -167,7 +160,6 @@ def test_rate_manager_get_ts_single():
                                  prefilter_binary=True)
     x4, _ = rmg.get_training_set(remove_nans=True)
     assert np.all(np.hstack((x2, x3)) == x4)
-    shutil.rmtree(tdir, ignore_errors=True)
 
 
 def test_write():
@@ -184,15 +176,12 @@ def test_write():
         assert np.allclose(hi["analysis/4443b7_0"]["fit"], idnt["fit"],
                            equal_nan=True)
 
-    shutil.rmtree(tdir, ignore_errors=True)
-
 
 def test_write_read():
     tdir, h5path = setuph5()
 
     datalist = load_hdf5(h5path)
     assert datalist[0]["rating"] == 5
-    shutil.rmtree(tdir, ignore_errors=True)
 
 
 if __name__ == "__main__":

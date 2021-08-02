@@ -4,8 +4,8 @@ import tempfile
 from nanite.cli import plotting
 from nanite import load_group
 
-datadir = pathlib.Path(__file__).resolve().parent / "data"
-jpkfile = datadir / "spot3-0192.jpk-force"
+data_path = pathlib.Path(__file__).resolve().parent / "data"
+jpkfile = data_path / "spot3-0192.jpk-force"
 
 
 def test_plotting():
@@ -25,11 +25,6 @@ def test_plotting():
                    segment="retract")
     plotting.plot_data(idnt=idnt, path=name)
     assert name.stat().st_size > 90000
-
-    try:
-        name.unlink()
-    except OSError:
-        pass
 
 
 if __name__ == "__main__":

@@ -10,8 +10,8 @@ import nanite.model
 from nanite.model import residuals
 
 
-datadir = pathlib.Path(__file__).resolve().parent / "data"
-jpkfile = datadir / "spot3-0192.jpk-force"
+data_dir = pathlib.Path(__file__).resolve().parent / "data"
+jpkfile = data_dir / "spot3-0192.jpk-force"
 
 
 class MockModelExpr:

@@ -10,8 +10,8 @@ import nanite
 import nanite.model
 
 
-datapath = pathlib.Path(__file__).parent / "data"
-jpkfile = datapath / "spot3-0192.jpk-force"
+data_path = pathlib.Path(__file__).parent / "data"
+jpkfile = data_path / "spot3-0192.jpk-force"
 
 
 def test_apply_preprocessing():
@@ -89,11 +89,6 @@ def test_export():
     assert np.allclose(data["tip position"][100], 2.255675939721752e-05,
                        atol=1e-10, rtol=0)
     assert data["segment"][3000] == 1
-
-    try:
-        pathlib.Path(path).unlink()
-    except OSError:
-        pass
 
 
 def test_fitting():
