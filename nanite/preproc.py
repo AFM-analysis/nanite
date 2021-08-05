@@ -10,7 +10,7 @@ class CannotSplitWarning(UserWarning):
     pass
 
 
-def preprocessing_step(identifier, name):
+def preprocessing_step(identifier, name, require_steps=None):
     """Decorator for Indentation preprocessors
 
     The name and identifier are stored as a property of the wrapped
@@ -23,6 +23,9 @@ def preprocessing_step(identifier, name):
     name: str
         human-readble name of the preprocessor
         (e.g. "Estimate contact point")
+    require_steps: list of str
+        list of preprocessing steps that must be added before this
+        step
     """
     def attribute_setter(func):
         """Decorator that sets the necessary attributes
@@ -33,6 +36,7 @@ def preprocessing_step(identifier, name):
         """
         func.identifier = identifier
         func.name = name
+        func.require_steps = require_steps
         return func
 
     return attribute_setter
@@ -59,9 +63,14 @@ class IndentationPreprocessor(object):
         apply it more than once, you might need to call
         `apret.reset()` before preprocessing a second time.
         """
-        for mm in preproc_names:
+        for ii, mm in enumerate(preproc_names):
             if mm in IndentationPreprocessor.available():
                 meth = getattr(IndentationPreprocessor, mm)
+                req = meth.require_steps
+                act = preproc_names[:ii]
+                if req is not None and ((set(req) & set(act)) != set(req)):
+                    raise ValueError(f"The preprocessing step '{mm}' requires "
+                                     f"the steps {meth.require_steps}!")
                 meth(apret)
             else:
                 msg = "The preprocessing method '{}' does not exist!"
@@ -149,7 +158,8 @@ class IndentationPreprocessor(object):
 
     @staticmethod
     @preprocessing_step(identifier="correct_tip_offset",
-                        name="contact point estimation")
+                        name="contact point estimation",
+                        require_steps=["compute_tip_position"])
     def correct_tip_offset(apret):
         """Correct the offset of the tip position
 
@@ -161,7 +171,8 @@ class IndentationPreprocessor(object):
 
     @staticmethod
     @preprocessing_step(identifier="correct_split_approach_retract",
-                        name="segment discovery")
+                        name="segment discovery",
+                        require_steps=["compute_tip_position"])
     def correct_split_approach_retract(apret):
         """Split the approach and retract curves (farthest point method)
 

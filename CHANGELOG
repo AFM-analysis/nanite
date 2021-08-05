@@ -1,3 +1,6 @@
+2.0.1
+ - enh: implement 'require_steps' in preprocessing to make sure
+   that steps are executed in the correct order
 2.0.0
  - BREAKING CHANGE: segment in FitProperties is now an integer
  - setup: bump afmformats from 0.15.0 to 0.16.0

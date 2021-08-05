@@ -41,13 +41,25 @@ def test_correct_split_approach_retract():
 
 def test_unknown_method():
     idnt = IndentationGroup(data_path / "spot3-0192.jpk-force")[0]
-    try:
+    with pytest.raises(KeyError, match="unknown_method"):
         idnt.apply_preprocessing(["compute_tip_position",
                                   "unknown_method"])
-    except KeyError:
-        pass
-    else:
-        assert False, "Preprocessing with an unknown method must not work."
+
+
+def test_wrong_order():
+    idnt = IndentationGroup(data_path / "spot3-0192.jpk-force")[0]
+    with pytest.raises(ValueError, match="requires the steps"):
+        # order matters
+        idnt.apply_preprocessing(["correct_tip_offset",
+                                  "compute_tip_position"])
+
+
+def test_wrong_order_2():
+    idnt = IndentationGroup(data_path / "spot3-0192.jpk-force")[0]
+    with pytest.raises(ValueError, match="requires the steps"):
+        # order matters
+        idnt.apply_preprocessing(["correct_split_approach_retract",
+                                  "compute_tip_position"])
 
 
 if __name__ == "__main__":
