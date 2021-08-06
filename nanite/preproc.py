@@ -1,3 +1,4 @@
+import copy
 import functools
 import warnings
 
@@ -44,17 +45,18 @@ def preprocessing_step(identifier, name, require_steps=None):
 
 class IndentationPreprocessor(object):
     @staticmethod
-    def apply(apret, preproc_names):
+    def apply(apret, identifiers=None, preproc_names=None):
         """Perform force-distance preprocessing steps
 
         Parameters
         ----------
         apret: nanite.Indentation
             The afm data to preprocess
-        preproc_names: list
-            A list of names for static methods in
-            `IndentationPreprocessor` that will be
+        identifiers: list
+            A list of preprocessing identifiers that will be
             applied (in the order given).
+        preproc_names: list
+            Deprecated - use identifiers instead.
 
         Notes
         -----
@@ -63,18 +65,41 @@ class IndentationPreprocessor(object):
         apply it more than once, you might need to call
         `apret.reset()` before preprocessing a second time.
         """
-        for ii, mm in enumerate(preproc_names):
-            if mm in IndentationPreprocessor.available():
-                meth = getattr(IndentationPreprocessor, mm)
+        if preproc_names is not None:
+            identifiers = preproc_names
+            warnings.warn(
+                "Please use 'identifiers' instead of 'preproc_names'!",
+                DeprecationWarning)
+        for ii, pid in enumerate(identifiers):
+            if pid in IndentationPreprocessor.available():
+                meth = IndentationPreprocessor.get_func(pid)
                 req = meth.require_steps
-                act = preproc_names[:ii]
+                act = identifiers[:ii]
                 if req is not None and ((set(req) & set(act)) != set(req)):
-                    raise ValueError(f"The preprocessing step '{mm}' requires "
-                                     f"the steps {meth.require_steps}!")
+                    raise ValueError(f"The preprocessing step '{pid}' requires"
+                                     f" the steps {meth.require_steps}!")
                 meth(apret)
             else:
                 msg = "The preprocessing method '{}' does not exist!"
-                raise KeyError(msg.format(mm))
+                raise KeyError(msg.format(pid))
+
+    @staticmethod
+    def autosort(identifiers):
+        """Automatically sort preprocessing identifiers via require_steps"""
+        sorted_identifiers = copy.copy(identifiers)
+        for pid in identifiers:
+            meth = IndentationPreprocessor.get_func(pid)
+            if meth.require_steps is not None:
+                # We have a requirement, check whether it is fulfilled
+                cix = sorted_identifiers.index(pid)
+                rix = [sorted_identifiers.index(r) for r in meth.require_steps]
+                if np.any(np.array(rix) > cix):
+                    # We change the order by popping the original cix and
+                    # then inserting the step after the largest rix.
+                    sorted_identifiers.remove(pid)
+                    new_cix = np.max(rix) + 1
+                    sorted_identifiers.insert(new_cix, pid)
+        return sorted_identifiers
 
     @staticmethod
     @functools.lru_cache()
@@ -100,12 +125,14 @@ class IndentationPreprocessor(object):
     @staticmethod
     def get_name(identifier):
         """Return preprocessor name for identifier"""
-        for key in dir(IndentationPreprocessor):
-            func = getattr(IndentationPreprocessor, key)
-            if hasattr(func, "identifier") and func.identifier == identifier:
-                return func.name
-        else:
-            raise KeyError(f"Preprocessor '{identifier}' unknown!")
+        func = IndentationPreprocessor.get_func(identifier)
+        return func.name
+
+    @staticmethod
+    def get_require_steps(identifier):
+        """Return requirement identifiers for identifier"""
+        func = IndentationPreprocessor.get_func(identifier)
+        return func.require_steps
 
     @staticmethod
     @preprocessing_step(identifier="compute_tip_position",
