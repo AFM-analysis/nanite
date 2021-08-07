@@ -4,13 +4,12 @@ import inspect
 import warnings
 
 import afmformats
-import lmfit
 import numpy as np
-import scipy.signal as spsig
 
 from .fit import IndentationFitter, FitProperties, guess_initial_parameters, \
     FP_DEFAULT
 from . import model
+from . import poc
 from .preproc import IndentationPreprocessor
 from .rate import get_rater
 
@@ -145,91 +144,6 @@ class Indentation(afmformats.AFMForceDistance):
         )
         return dopt
 
-    @classmethod
-    def _estimate_contact_point_index_from_baseline(cls, fg):
-        idp1 = np.nan
-        # Method 1: base line deviation
-        # Crop the slow approach trace (10% of the curve)
-        baseline = fg[:int(fg.size*.1)]
-        if baseline.size:
-            bl_avg = np.average(baseline)
-            bl_rng = np.max(np.abs(baseline-bl_avg))*2
-            bl_dev = (fg-bl_avg) > bl_rng
-            if np.sum(bl_dev):
-                idp1 = np.where(bl_dev)[0][0]
-        return idp1
-
-    @classmethod
-    def _estimate_contact_point_index_from_cl_fit(cls, fg):
-        """This is probably the most robust version"""
-        # TODO:
-        # - test whether this is really slower than the other methods
-        def residual(params, x, data):
-            off = params["off"]
-            x0 = params["x0"]
-            m = params["m"]
-            one = off
-            two = m*(x-x0) + off
-            return data - np.maximum(one, two)
-
-        if fg.size > 4:
-            x = np.arange(fg.size)
-
-            params = lmfit.Parameters()
-            params.add('off', value=np.mean(fg[:10]))
-            params.add('x0', value=fg.size//2)
-            params.add('m', value=(fg.max() - fg.min()) / fg.size)
-
-            out = lmfit.minimize(residual, params, args=(x, fg))
-            if out.success:
-                idp = int(out.params["x0"])
-            else:
-                idp = fg.size // 2
-        else:
-            # approach part too short to be reasonable
-            idp = 0
-        return idp
-
-    @classmethod
-    def _estimate_contact_point_index_from_sign_gradient(cls, fg):
-        idp2 = np.nan
-        # Method 2: gradient change
-        # Perform a median filter to smooth the array
-        filtsize = 15
-        y = spsig.medfilt(fg, filtsize)
-        # Cut off the trailing 10 points (noise)
-        cutoff = 10
-        if y.size > cutoff+1:
-            grad = np.gradient(y)[:-cutoff]
-            # Use the point where the gradient becomes positive for the
-            # first time.
-            gradpos = grad > 0
-            if np.sum(gradpos):
-                # The contains positive values.
-                # Flip `gradpos`, because we want the first value from the
-                # end of the array.
-                idp2 = y.size - np.where(gradpos[::-1])[0][0] - cutoff - 1
-        return idp2
-
-    @classmethod
-    def _estimate_contact_point_index_preprocess_gradient(cls, force):
-        # Preprocessing (remove tilt from curve)
-        # apply rolling average filter to force
-        p1_fs = min(47, force.size//2//2*2 + 1)
-        assert p1_fs % 2 == 1, "must be odd"
-        p1_cumsum_vec = np.cumsum(np.insert(np.copy(force), 0, 0))
-        p1 = (p1_cumsum_vec[p1_fs:] - p1_cumsum_vec[:-p1_fs]) / p1_fs
-        # take the gradient
-        if p1.size > 1:
-            p1g = np.gradient(p1)
-            # apply rolling average filter to the gradient
-            p1g_cumsum_vec = np.cumsum(np.insert(np.copy(p1g), 0, 0))
-            p1gm = (p1g_cumsum_vec[p1_fs:] - p1g_cumsum_vec[:-p1_fs]) / p1_fs
-        else:
-            # fallback for bad data (array with very few elements)
-            p1gm = p1
-        return p1gm
-
     def estimate_contact_point_index(self):
         """Estimate the contact point
 
@@ -284,21 +198,8 @@ class Indentation(afmformats.AFMForceDistance):
             Added max(constant, linear) fit when the other methods
             fail.
         """
-        # get data
-        y0 = np.array(self["force"], copy=True)
-        # Only use the (initial) approach part of the curve.
-        idmax = np.argmax(y0)
-        y = y0[:idmax]
-
-        fg = self._estimate_contact_point_index_preprocess_gradient(y)
-        idp1 = self._estimate_contact_point_index_from_baseline(fg)
-        idp2 = self._estimate_contact_point_index_from_sign_gradient(fg)
-
-        if np.isnan(idp1) or np.isnan(idp2):
-            idp = self._estimate_contact_point_index_from_cl_fit(fg)
-        else:
-            idp = min(idp1, idp2)
-
+        idp = poc.compute_poc(force=np.array(self["force"], copy=True),
+                              method="scheme_2020")
         return idp
 
     def fit_model(self, **kwargs):

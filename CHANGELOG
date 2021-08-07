@@ -1,3 +1,5 @@
+2.1.0
+ - ref: move contact point estimation to new 'poc' submodule
 2.0.1
  - enh: implement 'require_steps' in preprocessing to make sure
    that steps are executed in the correct order
