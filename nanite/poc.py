@@ -148,7 +148,8 @@ def poc_gradient_zero_crossing(force):
     3. Cut off gradient at maxiumum with a 10 point reserve
     4. Apply a moving average filter to the gradient
     5. The POC is the index of the averaged gradient curve where
-       the values are below 1% of the gradient maximum.
+       the values are below 1% of the gradient maximum, measured
+       from the indentation maxium (not from baseline).
     """
     cp = np.nan
     # Perform a median filter to smooth the array
