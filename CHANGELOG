@@ -1,7 +1,18 @@
-2.1.0
+3.0.0
+ - BREAKING CHANGE: The contact point estimation method "scheme_2020"
+   has been removed, although it has been the default for some time.
+   It turns out that it does not perform so well and there are other
+   more stable methods (to be implemented). Furthermore, some of the
+   contact point estimation methods were improved so that basically
+   many tests had to be updated. This will not break your analysis,
+   it just means your contact points will change.
  - feat: implement options for preprocessing methods
  - feat: the "correct_tip_offset" preprocessing method now
    accepts the "method" argument (see new poc submodule)
+ - fix: contact point estimation with gradient-based method
+   "poc_gradient_zero_crossing" did not really work
+ - enh: improve contact point estimation with "fit_constant_line"
+ - enh: speed-up contact point estimation with "deviation_from_baseline"
  - ref: CLI profiles now use JSON format by default
    (old format still supported)
  - ref: move contact point estimation to new 'poc' submodule

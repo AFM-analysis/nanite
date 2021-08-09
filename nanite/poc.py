@@ -1,7 +1,7 @@
 """Methods for estimating the point of contact (POC)"""
 import lmfit
 import numpy as np
-import scipy.signal as spsig
+from scipy.ndimage.filters import uniform_filter1d
 
 
 #: List of all methods available for contact point estimation
@@ -17,38 +17,7 @@ def compute_preproc_clip_approach(force):
     return fg
 
 
-def compute_preproc_gradient(force):
-    """Compute the gradient of the force curve
-
-    This method also removes the tilt in the approach part.
-
-    1. Compute the rolling average of the force
-       (Otherwise the gradient would be too wild)
-    2. Compute the gradient
-       (Converting to gradient space gets rid of linear
-       contributions in the approach part)
-    3. Compute the rolling average of the gradient
-       (Makes the curve to analyze more smooth so that the
-      methods below don't hit the alarm too early)
-    """
-    # apply rolling average filter to force
-    p1_fs = min(47, force.size // 2 // 2 * 2 + 1)
-    assert p1_fs % 2 == 1, "must be odd"
-    p1_cumsum_vec = np.cumsum(np.insert(np.copy(force), 0, 0))
-    p1 = (p1_cumsum_vec[p1_fs:] - p1_cumsum_vec[:-p1_fs]) / p1_fs
-    # take the gradient
-    if p1.size > 1:
-        p1g = np.gradient(p1)
-        # apply rolling average filter to the gradient
-        p1g_cumsum_vec = np.cumsum(np.insert(np.copy(p1g), 0, 0))
-        p1gm = (p1g_cumsum_vec[p1_fs:] - p1g_cumsum_vec[:-p1_fs]) / p1_fs
-    else:
-        # fallback for bad data (array with very few elements)
-        p1gm = p1
-    return p1gm
-
-
-def compute_poc(force, method="scheme_2020"):
+def compute_poc(force, method="deviation_from_baseline"):
     """Compute the contact point from force data
 
     If the POC method returns np.nan, then the center of the
@@ -59,8 +28,6 @@ def compute_poc(force, method="scheme_2020"):
         if mfunc.identifier == method:
             if "clip_approach" in mfunc.preprocessing:
                 force = compute_preproc_clip_approach(force)
-            if "gradient" in mfunc.preprocessing:
-                force = compute_preproc_gradient(force)
             cp = mfunc(force)
             break
     else:
@@ -85,7 +52,7 @@ def poc(identifier, name, preprocessing):
         (e.g. "Deviation from baseline")
     preprocessing: list of str
         list of preprocessing methods that should be applied;
-        may contain ["gradient", "clip_approach"].
+        may contain ["clip_approach"].
     """
     def attribute_setter(func):
         """Decorator that sets the necessary attributes
@@ -105,7 +72,7 @@ def poc(identifier, name, preprocessing):
 
 @poc(identifier="deviation_from_baseline",
      name="Deviation from baseline",
-     preprocessing=["gradient", "clip_approach"])
+     preprocessing=["clip_approach"])
 def poc_deviation_from_baseline(force):
     """Deviation from baseline
 
@@ -121,14 +88,16 @@ def poc_deviation_from_baseline(force):
         bl_avg = np.average(baseline)
         bl_rng = np.max(np.abs(baseline - bl_avg)) * 2
         bl_dev = (force - bl_avg) > bl_rng
-        if np.sum(bl_dev):
-            cp = np.where(bl_dev)[0][0]
+        # argmax gets the first largest value
+        maxid = np.argmax(bl_dev)
+        if bl_dev[maxid]:
+            cp = maxid
     return cp
 
 
 @poc(identifier="fit_constant_line",
      name="Piecewise fit with constant and line",
-     preprocessing=["gradient", "clip_approach"])
+     preprocessing=["clip_approach"])
 def poc_fit_constant_line(force):
     """Piecewise fit with constant and line
 
@@ -145,101 +114,61 @@ def poc_fit_constant_line(force):
         m = params["m"]
         one = off
         two = m * (x - x0) + off
-        return data - np.maximum(one, two)
+        curve = np.maximum(one, two)
+        return data - curve
 
+    y = np.array(force, copy=True)
     cp = np.nan
-    if force.size > 4:  # 3 fit parameters
-        x = np.arange(force.size)
-
+    if y.size > 4:  # 3 fit parameters
+        ymin, ymax = np.min(y), np.max(y)
+        y = (y - ymin) / (ymax - ymin)
+        x = np.arange(y.size)
+        x0 = poc_deviation_from_baseline(force)
+        if np.isnan(x0):
+            x0 = y.size // 2
         params = lmfit.Parameters()
-        params.add('off', value=np.mean(force[:10]))
-        params.add('x0', value=force.size // 2)
-        params.add('m', value=(force.max() - force.min()) / force.size)
+        params.add('off', value=np.mean(y[:10]))
+        params.add('x0', value=x0)
+        params.add('m', value=1)
 
-        out = lmfit.minimize(residual, params, args=(x, force))
+        out = lmfit.minimize(residual, params, args=(x, y))
         if out.success:
             cp = int(out.params["x0"])
-
     return cp
 
 
 @poc(identifier="gradient_zero_crossing",
      name="Gradient zero-crossing of indentation part",
-     preprocessing=["gradient", "clip_approach"])
+     preprocessing=["clip_approach"])
 def poc_gradient_zero_crossing(force):
     """Gradient zero-crossing of indentation part
 
-    1. Apply a median filter to the curve
+    1. Apply a moving average filter to the curve
     2. Compute the gradient
-    3. Cut off trailing 10 points from the gradient (noise)
-    4. The CP is the index of the gradient curve when the
-       sign changes, measured from the point of maximal
-       indentation.
+    3. Cut off gradient at maxiumum with a 10 point reserve
+    4. Apply a moving average filter to the gradient
+    5. The POC is the index of the averaged gradient curve where
+       the values are below 1% of the gradient maximum.
     """
     cp = np.nan
     # Perform a median filter to smooth the array
-    filtsize = 15
-    y = spsig.medfilt(force, filtsize)
-    # Cut off the trailing 10 points (noise)
-    cutoff = 10
-    if y.size > cutoff + 1:
+    filtsize = max(5, int(force.size*.01))
+    y = uniform_filter1d(force, size=filtsize)
+    if y.size > 1:
+        # Cutoff at maximum plus some reserve
+        cutoff = y.size - np.argmax(y) + 10
         grad = np.gradient(y)[:-cutoff]
-        # Use the point where the gradient becomes positive for the
-        # first time.
-        gradpos = grad > 0
-        if np.sum(gradpos):
-            # The contains positive values.
-            # Flip `gradpos`, because we want the first value from the
-            # end of the array.
-            cp = y.size - np.where(gradpos[::-1])[0][0] - cutoff - 1
-    return cp
-
-
-@poc(identifier="scheme_2020",
-     name="Heuristic analysis pipeline 2020",
-     preprocessing=["gradient", "clip_approach"])
-def poc_scheme_2020(force):
-    """Heuristic analysis pipeline 2020
-
-    This pipeline was first implemented in nanite 1.6.1 in the
-    year of 2020.
-
-    Preprocessing:
-
-    1. Compute the rolling average of the force
-       (Otherwise the gradient would be too wild)
-    2. Compute the gradient
-       (Converting to gradient space gets rid of linear
-       contributions in the approach part)
-    3. Compute the rolling average of the gradient
-       (Makes the curve to analyze more smooth so that the
-       methods below don't hit the alarm too early)
-
-    Method 1: baseline deviation
-
-    1. Obtain the baseline (initial 10% of the gradient curve)
-    2. Compute average and maximum deviation of the baseline
-    3. The CP is the index of the curve where it exceeds
-       twice of the maximum deviation
-
-    Method 2: sign of gradient
-
-    1. Apply a median filter to the approach curve
-    2. Compute the gradient
-    3. Cut off trailing 10 points from the gradient (noise)
-    4. The CP is the index of the gradient curve when the
-       sign changes, measured from the point of maximal
-       indentation.
-
-    If one of the methods fail, then a combined constant+linear
-    function (max(constant, linear) is fitted to the gradient to
-    determine the contact point.
-    """
-    cp1 = poc_deviation_from_baseline(np.array(force, copy=True))
-    cp2 = poc_gradient_zero_crossing(np.array(force, copy=True))
-
-    if np.isnan(cp1) or np.isnan(cp2):
-        cp = poc_fit_constant_line(force)
-    else:
-        cp = min(cp1, cp2)
+        if grad.size > 50:
+            # Use the point where the gradient becomes small enough.
+            gradn = uniform_filter1d(grad, size=filtsize)
+            gradpos = gradn <= 0.01 * np.max(gradn)
+            if np.sum(gradpos):
+                # The gradient contains positive values.
+                # Flip `gradpos`, because we want the first value from the
+                # end of the array.
+                # Weight with two times "filtsize//2", because we actually
+                # want the rolling median filter from the edge and not at the
+                # center of the array (and two times, because we did two
+                # filter operations).
+                cp = y.size - np.where(gradpos[::-1])[0][0] - cutoff + filtsize
     return cp

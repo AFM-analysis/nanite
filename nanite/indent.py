@@ -158,59 +158,10 @@ class Indentation(afmformats.AFMForceDistance):
         )
         return dopt
 
-    def estimate_contact_point_index(self, method="scheme_2020"):
-        """Estimate the contact point
+    def estimate_contact_point_index(self, method="deviation_from_baseline"):
+        """Estimate the contact point index
 
-        Contact point (CP) estimation involves a preprocessing step
-        where the force data are transformed into gradient space
-        (to account for a slope in the approach curve) and a
-        subsequent analysis with two different methods to determine
-        when the gradient changes significantly enough to qualify for
-        a CP. Of those two methods, the one which yields the smallest
-        index (measured from the beginning of the approach curve)
-        is returned. If one of the methods fail, then a fit function
-        with a constant and linear part is used to determine the CP.
-
-        Preprocessing:
-
-        1. Compute the rolling average of the force
-           (Otherwise the gradient would be too wild)
-        2. Compute the gradient
-           (Converting to gradient space gets rid of linear
-           contributions in the approach part)
-        3. Compute the rolling average of the gradient
-           (Makes the curve to analyze more smooth so that the
-           methods below don't hit the alarm too early)
-
-        Method 1: baseline deviation
-
-        1. Obtain the baseline (initial 10% of the gradient curve)
-        2. Compute average and maximum deviation of the baseline
-        3. The CP is the index of the curve where it exceeds
-           twice of the maximum deviation
-
-        Method 2: sign of gradient
-
-        1. Apply a median filter to the approach curve
-        2. Compute the gradient
-        3. Cut off trailing 10 points from the gradient (noise)
-        4. The CP is the index of the gradient curve when the
-           sign changes, measured from the point of maximal
-           indentation.
-
-        If one of the methods fail, then a combined constant+linear
-        function (max(constant, linear) is fitted to the gradient to
-        determine the contact point. If that fails as well, then
-        the CP defaults to the center of the entire approach curve.
-
-        .. versionchanged:: 1.6.0
-            Add the gradient preprocessing step to circumvent issues
-            with tilted baselines. This feature does not significantly
-            affect fitting results.
-
-        .. versionchanged:: 1.6.1
-            Added max(constant, linear) fit when the other methods
-            fail.
+        See the `poc` submodule for more information.
         """
         idp = poc.compute_poc(force=np.array(self["force"], copy=True),
                               method=method)

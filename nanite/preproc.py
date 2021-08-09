@@ -189,7 +189,8 @@ class IndentationPreprocessor(object):
     def correct_force_offset(apret):
         """Correct the force offset with an average baseline value
         """
-        idp = apret.estimate_contact_point_index()
+        idp = poc.compute_poc(force=apret["force"],
+                              method="deviation_from_baseline")
         if idp:
             apret["force"] -= np.average(apret["force"][:idp])
         else:
@@ -207,7 +208,7 @@ class IndentationPreprocessor(object):
              "choices_human_readable": [p.name for p in poc.POC_METHODS]}
         ]
         )
-    def correct_tip_offset(apret, method="scheme_2020"):
+    def correct_tip_offset(apret, method="deviation_from_baseline"):
         """Correct the offset of the tip position
 
         An estimate of the tip position is used to compute the
@@ -235,8 +236,8 @@ class IndentationPreprocessor(object):
         x = np.array(apret["tip position"], copy=True)
         y = np.array(apret["force"], copy=True)
 
-        idp = apret.estimate_contact_point_index()
-        if idp:
+        idp = poc.poc_deviation_from_baseline(y)
+        if idp and not np.isnan(idp):
             # Flip and normalize tip position so that maximum is at minimum
             # z-position (set to 1) which coincides with maximum indentation.
             x -= x[idp]

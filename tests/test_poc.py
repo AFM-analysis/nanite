@@ -11,23 +11,21 @@ data_path = pathlib.Path(__file__).resolve().parent / "data"
 
 
 @pytest.mark.parametrize("method,contact_point", [
-    ["scheme_2020", 1805],
-    ["gradient_zero_crossing", 1902],
-    ["fit_constant_line", 1838],
-    ["deviation_from_baseline", 1805],
+    ["gradient_zero_crossing", 1895],
+    ["fit_constant_line", 1919],
+    ["deviation_from_baseline", 1908],
     ])
 def test_poc_estimation(method, contact_point):
     fd = IndentationGroup(data_path / "spot3-0192.jpk-force")[0]
     fd.apply_preprocessing(["compute_tip_position",
                             "correct_force_offset"])
-    assert poc.compute_poc(fd["force"], method)
+    assert poc.compute_poc(fd["force"], method) == contact_point
 
 
 @pytest.mark.parametrize("method,contact_point", [
-    ["scheme_2020", 1805],
-    ["gradient_zero_crossing", 1902],
-    ["fit_constant_line", 1838],
-    ["deviation_from_baseline", 1805],
+    ["gradient_zero_crossing", 1895],
+    ["fit_constant_line", 1919],
+    ["deviation_from_baseline", 1908],
     ])
 def test_poc_estimation_via_indent(method, contact_point):
     fd = IndentationGroup(data_path / "spot3-0192.jpk-force")[0]
