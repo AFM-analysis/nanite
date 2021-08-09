@@ -9,6 +9,11 @@ POC_METHODS = []
 
 
 def compute_preproc_clip_approach(force):
+    """Clip the approach part (discard the retract part)
+
+    This POC preprocessing method may be applied before
+    applying the POC estimation method.
+    """
     # get data
     fg0 = np.array(force, copy=True)
     # Only use the (initial) approach part of the curve.

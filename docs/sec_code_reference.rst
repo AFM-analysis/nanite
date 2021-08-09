@@ -74,6 +74,15 @@ Preprocessing
    :members:
    :undoc-members:
 
+.. _sec_ref_poc:
+
+Contact point estimation
+========================
+
+.. automodule:: nanite.poc
+   :members:
+   :undoc-members:
+
 
 .. _sec_ref_model:
 

@@ -209,10 +209,10 @@ class IndentationPreprocessor(object):
         ]
         )
     def correct_tip_offset(apret, method="deviation_from_baseline"):
-        """Correct the offset of the tip position
+        """Estimate the point of contact
 
-        An estimate of the tip position is used to compute the
-        contact point.
+        An estimate of the contact point is subtracted from the
+        tip position.
         """
         cpid = poc.compute_poc(force=apret["force"], method=method)
         apret["tip position"] -= apret["tip position"][cpid]

@@ -99,6 +99,6 @@ You can find more examples in the :ref:`examples <sec_examples>` section.
 
 
 How to cite
------------
+===========
 If you use nanite in a scientific publication, please cite
 Müller et al., *BMC Bioinformatics* (2019) :cite:`Mueller19nanite`.
