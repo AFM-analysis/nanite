@@ -20,9 +20,11 @@ class Indentation(afmformats.AFMForceDistance):
         super(Indentation, self).__init__(data=data,
                                           metadata=metadata,
                                           diskcache=diskcache)
-        #: Default preprocessing steps steps,
+        #: Default preprocessing steps,
         #: see :func:`Indentation.apply_preprocessing`.
         self.preprocessing = []
+        #: Preprocessing options
+        self.preprocessing_options = {}
         # protected fit properties
         self._fit_properties = FitProperties()
 
@@ -51,7 +53,7 @@ class Indentation(afmformats.AFMForceDistance):
     def fit_properties(self, fp):
         self._fit_properties.update(fp)
 
-    def apply_preprocessing(self, preprocessing=None):
+    def apply_preprocessing(self, preprocessing=None, options=None):
         """Perform curve preprocessing steps
 
         Parameters
@@ -61,23 +63,34 @@ class Indentation(afmformats.AFMForceDistance):
             stored in the `IndentationPreprocessor` class.
             If set to `None`, `self.preprocessing` will be
             used.
+        options: dict of dict
+            Dictionary of keyword arguments for each preprocessing
+            step (if applicable)
         """
         if preprocessing is None:
             preprocessing = self.preprocessing
 
+        if options is None:
+            options = self.preprocessing_options
+
         if "preprocessing" in self.fit_properties:
-            preproc_past = self.fit_properties["preprocessing"]
+            preproc_past = [self.fit_properties["preprocessing"],
+                            self.fit_properties["preprocessing_options"]]
+
         else:
             preproc_past = []
 
-        if preproc_past != preprocessing:
+        if preproc_past != [preprocessing, options]:
             # Remember initial fit parameters for user convenience
             fp = self.fit_properties
             fp["preprocessing"] = preprocessing
+            fp["preprocessing_options"] = options
             # Reset all data
             self.reset()
             # Apply preprocessing
-            IndentationPreprocessor.apply(self, preprocessing)
+            IndentationPreprocessor.apply(apret=self,
+                                          identifiers=preprocessing,
+                                          options=options)
             # Check availability of axes
             for ax in ["x_axis", "y_axis"]:
                 # make sure the fitting axes are defined
@@ -87,6 +100,7 @@ class Indentation(afmformats.AFMForceDistance):
             self.fit_properties = fp
         # remember preprocessing
         self.preprocessing = preprocessing
+        self.preprocessing_options = copy.deepcopy(options)
 
     def compute_emodulus_mindelta(self, callback=None):
         """Elastic modulus in dependency of maximum indentation
@@ -144,7 +158,7 @@ class Indentation(afmformats.AFMForceDistance):
         )
         return dopt
 
-    def estimate_contact_point_index(self):
+    def estimate_contact_point_index(self, method="scheme_2020"):
         """Estimate the contact point
 
         Contact point (CP) estimation involves a preprocessing step
@@ -199,7 +213,7 @@ class Indentation(afmformats.AFMForceDistance):
             fail.
         """
         idp = poc.compute_poc(force=np.array(self["force"], copy=True),
-                              method="scheme_2020")
+                              method=method)
         return idp
 
     def fit_model(self, **kwargs):
@@ -229,6 +243,8 @@ class Indentation(afmformats.AFMForceDistance):
                 as well, this requires a two-pass fitting.
         preprocessing: list of str
             Preprocessing
+        preprocessing_options: list of str
+            Preprocessing
         segment: str
             Segment index (e.g. 0 for approach)
         weight_cp: float
@@ -240,7 +256,10 @@ class Indentation(afmformats.AFMForceDistance):
             resulting Young's modulus (fitting parameter "E").
         """
         if "preprocessing" in kwargs:
-            self.apply_preprocessing(kwargs["preprocessing"])
+            options = kwargs.get("preprocessing_options",
+                                 self.preprocessing_options)
+            self.apply_preprocessing(preprocessing=kwargs["preprocessing"],
+                                     options=options)
         # self.fit_properties is an instance of FitProperties that
         # stores previous fit kwargs. If the given kwargs are
         # different than in the previous fit, the following two

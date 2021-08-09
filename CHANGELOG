@@ -1,4 +1,9 @@
 2.1.0
+ - feat: implement options for preprocessing methods
+ - feat: the "correct_tip_offset" preprocessing method now
+   accepts the "method" argument (see new poc submodule)
+ - ref: CLI profiles now use JSON format by default
+   (old format still supported)
  - ref: move contact point estimation to new 'poc' submodule
 2.0.1
  - enh: implement 'require_steps' in preprocessing to make sure

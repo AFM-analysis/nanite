@@ -227,7 +227,8 @@ def fit_data(path, enum=0, profile_path=PROFILE_PATH):
 
     pf = Profile(path=profile_path, create=False)
 
-    idnt.apply_preprocessing(pf["preprocessing"])
+    idnt.apply_preprocessing(preprocessing=pf["preprocessing"],
+                             options=pf["preprocessing_options"])
     params = pf.get_fit_params()
 
     idnt.fit_model(model_key=pf["model_key"],

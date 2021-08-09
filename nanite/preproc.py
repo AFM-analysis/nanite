@@ -4,6 +4,7 @@ import warnings
 
 import numpy as np
 
+from . import poc
 from .smooth import smooth_axis_monotone
 
 
@@ -11,7 +12,7 @@ class CannotSplitWarning(UserWarning):
     pass
 
 
-def preprocessing_step(identifier, name, require_steps=None):
+def preprocessing_step(identifier, name, require_steps=None, options=None):
     """Decorator for Indentation preprocessors
 
     The name and identifier are stored as a property of the wrapped
@@ -27,6 +28,9 @@ def preprocessing_step(identifier, name, require_steps=None):
     require_steps: list of str
         list of preprocessing steps that must be added before this
         step
+    options: list of dict
+        if the preprocessor accepts optional keyword arguments,
+        this list yields valid values or dtypes
     """
     def attribute_setter(func):
         """Decorator that sets the necessary attributes
@@ -36,7 +40,9 @@ def preprocessing_step(identifier, name, require_steps=None):
         wraps the preprocessor.
         """
         func.identifier = identifier
+        assert isinstance(name, str)
         func.name = name
+        func.options = options
         func.require_steps = require_steps
         return func
 
@@ -45,7 +51,7 @@ def preprocessing_step(identifier, name, require_steps=None):
 
 class IndentationPreprocessor(object):
     @staticmethod
-    def apply(apret, identifiers=None, preproc_names=None):
+    def apply(apret, identifiers=None, options=None, preproc_names=None):
         """Perform force-distance preprocessing steps
 
         Parameters
@@ -55,6 +61,8 @@ class IndentationPreprocessor(object):
         identifiers: list
             A list of preprocessing identifiers that will be
             applied (in the order given).
+        options: dict of dict
+            Preprocessing options for each identifier
         preproc_names: list
             Deprecated - use identifiers instead.
 
@@ -78,7 +86,11 @@ class IndentationPreprocessor(object):
                 if req is not None and ((set(req) & set(act)) != set(req)):
                     raise ValueError(f"The preprocessing step '{pid}' requires"
                                      f" the steps {meth.require_steps}!")
-                meth(apret)
+                kwargs = options.get(pid)
+                if kwargs:  # also apply preprocessing options
+                    meth(apret, **kwargs)
+                else:
+                    meth(apret)
             else:
                 msg = "The preprocessing method '{}' does not exist!"
                 raise KeyError(msg.format(pid))
@@ -184,16 +196,24 @@ class IndentationPreprocessor(object):
             apret["force"] -= apret["force"][0]
 
     @staticmethod
-    @preprocessing_step(identifier="correct_tip_offset",
-                        name="contact point estimation",
-                        require_steps=["compute_tip_position"])
-    def correct_tip_offset(apret):
+    @preprocessing_step(
+        identifier="correct_tip_offset",
+        name="contact point estimation",
+        require_steps=["compute_tip_position"],
+        options=[
+            {"name": "method",
+             "type": str,
+             "choices": [p.identifier for p in poc.POC_METHODS],
+             "choices_human_readable": [p.name for p in poc.POC_METHODS]}
+        ]
+        )
+    def correct_tip_offset(apret, method="scheme_2020"):
         """Correct the offset of the tip position
 
         An estimate of the tip position is used to compute the
         contact point.
         """
-        cpid = apret.estimate_contact_point_index()
+        cpid = poc.compute_poc(force=apret["force"], method=method)
         apret["tip position"] -= apret["tip position"][cpid]
 
     @staticmethod

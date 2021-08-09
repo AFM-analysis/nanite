@@ -75,7 +75,8 @@ def get_anc_parms(idnt, model_key):
     anc_ord = OrderedDict()
     # compute maximal indentation
     if ("tip position" in idnt
-        and "params_fitted" in idnt.fit_properties
+        and "fit" in idnt
+            and "params_fitted" in idnt.fit_properties
             and "contact_point" in idnt.fit_properties["params_fitted"]):
         cp = idnt.fit_properties["params_fitted"]["contact_point"].value
         idmax = idnt.appr["fit"].argmax()

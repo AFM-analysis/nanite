@@ -15,6 +15,7 @@ FP_DEFAULT = dict(model_key="hertz_para",
                   optimal_fit_num_samples=100,
                   params_initial=None,
                   preprocessing=[],
+                  preprocessing_options={},
                   range_type="absolute",
                   range_x=[0, 0],
                   segment=0,
@@ -145,7 +146,9 @@ class IndentationFitter(object):
                 point. Since the contact point is a fit parameter
                 as well, this requires a two-pass fitting.
         preprocessing: list of str
-            Preprocessing
+            Preprocessing step identifiers
+        preprocessing_options: dict of dicts
+            Preprocessing keyword arguments of steps (if applicable)
         segment: int
             Segment index (e.g. 0 for approach)
         weight_cp: float
@@ -497,6 +500,7 @@ class IndentationFitter(object):
         hashlist = []
         # preprocessing
         hashlist.append(self.fp["preprocessing"])
+        hashlist.append(self.fp["preprocessing_options"])
         # axes data
         hashlist.append(self.x_axis)
         hashlist.append(self.y_axis)
@@ -577,7 +581,7 @@ def obj2bytes(obj):
     elif isinstance(obj, list):
         return b"".join(obj2bytes(o) for o in obj)
     elif isinstance(obj, dict):
-        return obj2bytes(list(obj.items()))
+        return obj2bytes(sorted(obj.items()))
     elif isinstance(obj, lmfit.parameter.Parameter):
         return obj2bytes([obj.value, obj.max, obj.min, obj.vary,
                           obj.expr, obj.name])

@@ -1,6 +1,7 @@
 """Save and load user-rated datasets"""
 from functools import lru_cache
 import hashlib
+import json
 import pathlib
 import shutil
 import tempfile
@@ -259,6 +260,8 @@ def load_hdf5(path, meta_only=False):
                     val = parms
                 elif key == "preprocessing":
                     val = val.split(",")
+                elif key.startswith("preprocessing_options"):
+                    val = json.loads(val)
                 elif key == "range_x":
                     val = val.strip("[]() ").split(",")
                     val = (float(val[0]), float(val[1]))
@@ -328,6 +331,8 @@ def save_hdf5(h5path, indent, user_rate, user_name, user_comment, h5mode="a"):
                     val = val.dumps()
                 elif key == "preprocessing":
                     val = ",".join(val)
+                elif key == "preprocessing_options":
+                    val = json.dumps(val)
                 elif key == "range_x":
                     val = str(val)
                 out.attrs["fit {}".format(key)] = val

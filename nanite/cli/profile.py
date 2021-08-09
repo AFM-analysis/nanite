@@ -1,4 +1,5 @@
 import argparse
+import json
 import numbers
 import pathlib
 
@@ -16,6 +17,7 @@ DEFAULTS = {"model_key": "sneddon_spher_approx",
             "preprocessing": ["compute_tip_position",
                               "correct_force_offset",
                               "correct_tip_offset"],
+            "preprocessing_options": {},
             "range_type": "absolute",
             "range_x": [0, 0],
             "segment": 0,
@@ -23,6 +25,14 @@ DEFAULTS = {"model_key": "sneddon_spher_approx",
             "rating regressor": "Extra Trees",
             "rating training set": "zef18",
             }
+
+
+class JSONPathEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, pathlib.Path):
+            return f"{obj}"
+        # Let the base class default method raise the TypeError
+        return json.JSONEncoder.default(self, obj)
 
 
 class Profile:
@@ -42,20 +52,7 @@ class Profile:
     def __getitem__(self, key):
         default = DEFAULTS[key]
         data = self.load()
-
-        if key in data:
-            if isinstance(default, str):
-                val = data[key]
-            elif isinstance(default, list):
-                val = data[key].split(",")
-                if isfloat(val[0]) and isfloat(val[1]):
-                    val = [float(vv) for vv in val]
-            elif isinstance(default, numbers.Integral):
-                val = int(data[key])
-            else:
-                val = float(data[key])
-        else:
-            val = default
+        val = data.get(key, default)
         # also set default
         self[key] = val
         return val
@@ -65,15 +62,7 @@ class Profile:
             if not (key.endswith("value")
                     or key.endswith("vary")):
                 raise ValueError("Invalid key: '{}'".format(key))
-            default = None
-        else:
-            default = DEFAULTS[key]
         data = self.load()
-        if isinstance(default, list):
-            # convert items to string
-            value = ["{}".format(vv) for vv in value]
-            # convert list to string
-            value = ",".join(value)
         data[key] = value
         self.save(data)
 
@@ -90,20 +79,26 @@ class Profile:
         for p in default:
             vkey = "fit param {} value".format(p)
             if vkey in cdict:
-                default[p].value = float(cdict[vkey])
+                default[p].value = cdict[vkey]
             fkey = "fit param {} vary".format(p)
             if fkey in cdict:
-                fval = cdict[fkey]
-                if fval.lower() == "true":
-                    default[p].vary = True
-                else:
-                    default[p].vary = False
+                assert isinstance(cdict[fkey], bool)
+                default[p].vary = cdict[fkey]
+
         # write
         self.set_fit_params(default)
         return default
 
     def load(self):
         """Loads the profile file returning a dictionary"""
+        try:
+            text = self.path.read_text()
+            return json.loads(text)
+        except json.decoder.JSONDecodeError:
+            return self.load_legacy()
+
+    def load_legacy(self):
+        """Load profile from the old profile file format"""
         with self.path.open() as fop:
             fc = fop.readlines()
         cdict = {}
@@ -119,19 +114,31 @@ class Profile:
                 elif val == "retract":
                     val = "1"
             cdict[var] = val
+
+        for key in cdict:
+            default = DEFAULTS[key]
+            if isinstance(default, list):
+                val = cdict[key].split(",")
+                if isfloat(val[0]) and isfloat(val[1]):
+                    val = [float(vv) for vv in val]
+            elif isinstance(default, str):
+                val = cdict[key]
+            elif isinstance(default, numbers.Integral):
+                val = int(cdict[key])
+            else:
+                val = float(cdict[key])
+            cdict[key] = val
         return cdict
 
     def save(self, cdict):
         """Save a settings dictionary into a file"""
-        skeys = list(cdict.keys())
-        skeys.sort()
-        outlist = []
-        for sk in skeys:
-            sval = cdict[sk]
-            outlist.append(u"{} = {}\n".format(sk, sval))
-
-        with self.path.open('w') as fop:
-            fop.writelines(outlist)
+        self.path.write_text(json.dumps(cdict,
+                                        indent=2,
+                                        sort_keys=True,
+                                        ensure_ascii=False,
+                                        allow_nan=True,
+                                        cls=JSONPathEncoder,
+                                        ))
 
 
 def setup_profile():

@@ -40,6 +40,18 @@ def test_profile_getter_1_7_8():
     assert pf["segment"] == 0
 
 
+def test_profile_getter_2_1_0():
+    """Load a profile from version 2.1.0"""
+    tdir = pathlib.Path(tempfile.mkdtemp(prefix="cli_profile_"))
+    name = "cli-profile-2.1.0.cfg"
+    cfgpath = tdir / name
+    shutil.copy2(data_path / name, cfgpath)
+    pf = profile.Profile(path=cfgpath)
+    assert pf["segment"] == 0
+    assert pf["segment"] == 0
+    assert pf["rating training set"] == "zef18"
+
+
 def test_profile_fitparams():
     _, name = tempfile.mkstemp(suffix=".cfg", prefix="test_nanite_profile_")
     name = pathlib.Path(name)
