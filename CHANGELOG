@@ -1,3 +1,9 @@
+3.1.0
+ - feat: new contact point estimation method "fit_constant_polynomial"
+   which applies a piece-wise constant and polynomial fit
+ - feat: contact point estimation methods now return detailed
+   information about the procedure (currently plottable data to
+   understand the process)
 3.0.0
  - BREAKING CHANGE: The contact point estimation method "scheme_2020"
    has been removed, although it has been the default for some time.

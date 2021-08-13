@@ -1,4 +1,5 @@
 import copy
+import inspect
 import functools
 import warnings
 
@@ -51,7 +52,8 @@ def preprocessing_step(identifier, name, require_steps=None, options=None):
 
 class IndentationPreprocessor(object):
     @staticmethod
-    def apply(apret, identifiers=None, options=None, preproc_names=None):
+    def apply(apret, identifiers=None, options=None, ret_details=False,
+              preproc_names=None):
         """Perform force-distance preprocessing steps
 
         Parameters
@@ -63,8 +65,10 @@ class IndentationPreprocessor(object):
             applied (in the order given).
         options: dict of dict
             Preprocessing options for each identifier
+        ret_details:
+            Return preprocessing details dictionary
         preproc_names: list
-            Deprecated - use identifiers instead.
+            Deprecated - use `identifiers` instead
 
         Notes
         -----
@@ -78,6 +82,7 @@ class IndentationPreprocessor(object):
             warnings.warn(
                 "Please use 'identifiers' instead of 'preproc_names'!",
                 DeprecationWarning)
+        details = {}
         for ii, pid in enumerate(identifiers):
             if pid in IndentationPreprocessor.available():
                 meth = IndentationPreprocessor.get_func(pid)
@@ -86,14 +91,16 @@ class IndentationPreprocessor(object):
                 if req is not None and ((set(req) & set(act)) != set(req)):
                     raise ValueError(f"The preprocessing step '{pid}' requires"
                                      f" the steps {meth.require_steps}!")
-                kwargs = options.get(pid)
-                if kwargs:  # also apply preprocessing options
-                    meth(apret, **kwargs)
-                else:
-                    meth(apret)
+                kwargs = options.get(pid, {})  # empty dict if not defined
+                if "ret_details" in inspect.signature(meth).parameters:
+                    # only set `ret_details` if method accepts it
+                    kwargs["ret_details"] = ret_details
+                details[pid] = meth(apret, **kwargs)
             else:
                 msg = "The preprocessing method '{}' does not exist!"
                 raise KeyError(msg.format(pid))
+        # only return details if required
+        return details if ret_details else None
 
     @staticmethod
     def autosort(identifiers):
@@ -208,14 +215,22 @@ class IndentationPreprocessor(object):
              "choices_human_readable": [p.name for p in poc.POC_METHODS]}
         ]
         )
-    def correct_tip_offset(apret, method="deviation_from_baseline"):
+    def correct_tip_offset(apret, method="deviation_from_baseline",
+                           ret_details=False):
         """Estimate the point of contact
 
         An estimate of the contact point is subtracted from the
         tip position.
         """
-        cpid = poc.compute_poc(force=apret["force"], method=method)
+        data = poc.compute_poc(force=apret["force"],
+                               method=method,
+                               ret_details=ret_details)
+        if ret_details:
+            cpid, details = data
+        else:
+            cpid, details = data, None
         apret["tip position"] -= apret["tip position"][cpid]
+        return details
 
     @staticmethod
     @preprocessing_step(identifier="correct_split_approach_retract",

@@ -25,6 +25,8 @@ class Indentation(afmformats.AFMForceDistance):
         self.preprocessing = []
         #: Preprocessing options
         self.preprocessing_options = {}
+        # preprocessing details (for user convenience)
+        self._preprocessing_details = {}
         # protected fit properties
         self._fit_properties = FitProperties()
 
@@ -53,7 +55,8 @@ class Indentation(afmformats.AFMForceDistance):
     def fit_properties(self, fp):
         self._fit_properties.update(fp)
 
-    def apply_preprocessing(self, preprocessing=None, options=None):
+    def apply_preprocessing(self, preprocessing=None, options=None,
+                            ret_details=False):
         """Perform curve preprocessing steps
 
         Parameters
@@ -66,6 +69,8 @@ class Indentation(afmformats.AFMForceDistance):
         options: dict of dict
             Dictionary of keyword arguments for each preprocessing
             step (if applicable)
+        ret_details:
+            Return preprocessing details dictionary
         """
         if preprocessing is None:
             preprocessing = self.preprocessing
@@ -80,7 +85,8 @@ class Indentation(afmformats.AFMForceDistance):
         else:
             preproc_past = []
 
-        if preproc_past != [preprocessing, options]:
+        if ((preproc_past != [preprocessing, options])
+                or (not self._preprocessing_details and ret_details)):
             # Remember initial fit parameters for user convenience
             fp = self.fit_properties
             fp["preprocessing"] = preprocessing
@@ -88,9 +94,11 @@ class Indentation(afmformats.AFMForceDistance):
             # Reset all data
             self.reset()
             # Apply preprocessing
-            IndentationPreprocessor.apply(apret=self,
-                                          identifiers=preprocessing,
-                                          options=options)
+            details = IndentationPreprocessor.apply(apret=self,
+                                                    identifiers=preprocessing,
+                                                    options=options,
+                                                    ret_details=ret_details)
+            self._preprocessing_details = details
             # Check availability of axes
             for ax in ["x_axis", "y_axis"]:
                 # make sure the fitting axes are defined
@@ -98,9 +106,12 @@ class Indentation(afmformats.AFMForceDistance):
                     fp.pop(ax)
             # Set new fit properties
             self.fit_properties = fp
+
         # remember preprocessing
         self.preprocessing = preprocessing
         self.preprocessing_options = copy.deepcopy(options)
+
+        return self._preprocessing_details
 
     def compute_emodulus_mindelta(self, callback=None):
         """Elastic modulus in dependency of maximum indentation
