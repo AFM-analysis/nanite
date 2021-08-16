@@ -80,6 +80,9 @@ class Indentation(afmformats.AFMForceDistance):
                 or (not self._preprocessing_details and ret_details)):
             # Remember initial fit parameters for user convenience
             fp = self.fit_properties
+            # Reset fit properties
+            fp.reset()
+            # Set preprocessing options
             fp["preprocessing"] = preprocessing
             fp["preprocessing_options"] = options
             # Reset rating
@@ -96,8 +99,6 @@ class Indentation(afmformats.AFMForceDistance):
                 # make sure the fitting axes are defined
                 if ax in fp and not fp[ax] in self:
                     fp.pop(ax)
-            # Set new fit properties
-            self.fit_properties = fp
 
         # remember preprocessing
         self.preprocessing = preprocessing
