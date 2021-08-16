@@ -70,7 +70,7 @@ class PreprocPOCTable(Base):
         pocs = poc.POC_METHODS
 
         rst.append(".. csv-table::")
-        rst.append("    :header: method, description, details")
+        rst.append("    :header: POC method, description, details")
         rst.append("    :delim: tab")
         rst.append("")
 

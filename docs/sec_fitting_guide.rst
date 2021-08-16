@@ -21,7 +21,7 @@ steps correct for offsets or smoothen the data:
 .. nanite_preproc_table::
 
 
-Several methods for estimating the point of contact are implemented in
+Several methods for estimating the point of contact (POC) are implemented in
 nanite:
 
 .. nanite_preproc_poc_table::
