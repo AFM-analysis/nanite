@@ -23,6 +23,55 @@ def test_autosort():
     assert expected == actual
 
 
+def test_autosort2():
+    unsorted = ["correct_split_approach_retract",
+                "correct_force_offset",
+                "correct_tip_offset",
+                "compute_tip_position",
+                ]
+    expected = ["compute_tip_position",
+                "correct_split_approach_retract",
+                "correct_force_offset",
+                "correct_tip_offset",
+                ]
+    actual = IndentationPreprocessor.autosort(unsorted)
+    assert (actual.index("correct_split_approach_retract")
+            > actual.index("compute_tip_position"))
+    assert (actual.index("correct_tip_offset")
+            > actual.index("compute_tip_position"))
+    assert expected == actual
+
+
+def test_autosort3():
+    unsorted = ["smooth_height",
+                "correct_split_approach_retract",
+                "correct_force_offset",
+                "correct_tip_offset",
+                "compute_tip_position",
+                ]
+    expected = ["compute_tip_position",
+                "correct_split_approach_retract",
+                "smooth_height",
+                "correct_force_offset",
+                "correct_tip_offset",
+                ]
+    actual = IndentationPreprocessor.autosort(unsorted)
+    assert expected == actual
+    assert (actual.index("correct_split_approach_retract")
+            > actual.index("compute_tip_position"))
+    assert (actual.index("correct_tip_offset")
+            > actual.index("compute_tip_position"))
+    assert (actual.index("smooth_height")
+            > actual.index("correct_split_approach_retract"))
+
+
+def test_check_order():
+    with pytest.raises(ValueError, match="Wrong optional step order"):
+        IndentationPreprocessor.check_order([
+            "smooth_height",
+            "correct_split_approach_retract"])
+
+
 def test_correct_split_approach_retract():
     fd = IndentationGroup(data_path / "spot3-0192.jpk-force")[0]
 
@@ -37,8 +86,8 @@ def test_correct_split_approach_retract():
     assert fd.appr["segment"].size == 2006
 
 
-def test_get_require_steps():
-    req_act = IndentationPreprocessor.get_require_steps("correct_tip_offset")
+def test_get_steps_required():
+    req_act = IndentationPreprocessor.get_steps_required("correct_tip_offset")
     req_exp = ["compute_tip_position"]
     assert req_act == req_exp
 

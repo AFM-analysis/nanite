@@ -13,7 +13,8 @@ class CannotSplitWarning(UserWarning):
     pass
 
 
-def preprocessing_step(identifier, name, require_steps=None, options=None):
+def preprocessing_step(identifier, name, steps_required=None,
+                       steps_optional=None, options=None):
     """Decorator for Indentation preprocessors
 
     The name and identifier are stored as a property of the wrapped
@@ -26,9 +27,12 @@ def preprocessing_step(identifier, name, require_steps=None, options=None):
     name: str
         human-readble name of the preprocessor
         (e.g. "Estimate contact point")
-    require_steps: list of str
+    steps_required: list of str
         list of preprocessing steps that must be added before this
         step
+    steps_optional: list of str
+        unlike `steps_required`, these steps do not have to be set,
+        but if they are set, they should come before this step
     options: list of dict
         if the preprocessor accepts optional keyword arguments,
         this list yields valid values or dtypes
@@ -44,7 +48,8 @@ def preprocessing_step(identifier, name, require_steps=None, options=None):
         assert isinstance(name, str)
         func.name = name
         func.options = options
-        func.require_steps = require_steps
+        func.steps_required = steps_required
+        func.steps_optional = steps_optional
         return func
 
     return attribute_setter
@@ -86,11 +91,11 @@ class IndentationPreprocessor(object):
         for ii, pid in enumerate(identifiers):
             if pid in IndentationPreprocessor.available():
                 meth = IndentationPreprocessor.get_func(pid)
-                req = meth.require_steps
+                req = meth.steps_required
                 act = identifiers[:ii]
                 if req is not None and ((set(req) & set(act)) != set(req)):
                     raise ValueError(f"The preprocessing step '{pid}' requires"
-                                     f" the steps {meth.require_steps}!")
+                                     f" the steps {meth.steps_required}!")
                 kwargs = options.get(pid, {})  # empty dict if not defined
                 if "ret_details" in inspect.signature(meth).parameters:
                     # only set `ret_details` if method accepts it
@@ -104,20 +109,33 @@ class IndentationPreprocessor(object):
 
     @staticmethod
     def autosort(identifiers):
-        """Automatically sort preprocessing identifiers via require_steps"""
+        """Automatically sort preprocessing identifiers
+
+        This takes into account `steps_required` and `steps_optional`.
+        """
         sorted_identifiers = copy.copy(identifiers)
         for pid in identifiers:
             meth = IndentationPreprocessor.get_func(pid)
-            if meth.require_steps is not None:
+            steps_precursor = []
+            if meth.steps_required is not None:
+                steps_precursor += meth.steps_required
+            if meth.steps_optional is not None:
+                for ostep in meth.steps_optional:
+                    if ostep in identifiers:
+                        steps_precursor.append(ostep)
+            for step in steps_precursor:
                 # We have a requirement, check whether it is fulfilled
                 cix = sorted_identifiers.index(pid)
-                rix = [sorted_identifiers.index(r) for r in meth.require_steps]
-                if np.any(np.array(rix) > cix):
-                    # We change the order by popping the original cix and
-                    # then inserting the step after the largest rix.
-                    sorted_identifiers.remove(pid)
-                    new_cix = np.max(rix) + 1
-                    sorted_identifiers.insert(new_cix, pid)
+                rix = sorted_identifiers.index(step)
+                if rix > cix:
+                    # We pop the wrong requirement and insert it before
+                    # the current pid.
+                    sorted_identifiers.remove(step)
+                    sorted_identifiers.insert(cix, step)
+
+        # Perform a sanity check
+        IndentationPreprocessor.check_order(sorted_identifiers)
+
         return sorted_identifiers
 
     @staticmethod
@@ -130,6 +148,25 @@ class IndentationPreprocessor(object):
             if hasattr(func, "identifier"):
                 av.append(func.identifier)
         return sorted(av)
+
+    @staticmethod
+    def check_order(identifiers):
+        """Check preprocessing steps for correct order"""
+        for cix, pid in enumerate(identifiers):
+            meth = IndentationPreprocessor.get_func(pid)
+            if meth.steps_required:
+                rix = [identifiers.index(r) for r in meth.steps_required]
+                if np.any(np.array(rix) > cix):
+                    raise ValueError(
+                        f"Wrong required step order for {pid}: {identifiers}!")
+            if meth.steps_optional:
+                rio = []
+                for rr in meth.steps_optional:
+                    if rr in identifiers:
+                        rio.append(identifiers.index(rr))
+                if np.any(np.array(rio) > cix):
+                    raise ValueError(
+                        f"Wrong optional step order for {pid}: {identifiers}!")
 
     @staticmethod
     def get_func(identifier):
@@ -148,10 +185,10 @@ class IndentationPreprocessor(object):
         return func.name
 
     @staticmethod
-    def get_require_steps(identifier):
+    def get_steps_required(identifier):
         """Return requirement identifiers for identifier"""
         func = IndentationPreprocessor.get_func(identifier)
-        return func.require_steps
+        return func.steps_required
 
     @staticmethod
     @preprocessing_step(identifier="compute_tip_position",
@@ -207,7 +244,7 @@ class IndentationPreprocessor(object):
     @preprocessing_step(
         identifier="correct_tip_offset",
         name="contact point estimation",
-        require_steps=["compute_tip_position"],
+        steps_required=["compute_tip_position"],
         options=[
             {"name": "method",
              "type": str,
@@ -235,7 +272,7 @@ class IndentationPreprocessor(object):
     @staticmethod
     @preprocessing_step(identifier="correct_split_approach_retract",
                         name="segment discovery",
-                        require_steps=["compute_tip_position"])
+                        steps_required=["compute_tip_position"])
     def correct_split_approach_retract(apret):
         """Split the approach and retract curves (farthest point method)
 
@@ -276,7 +313,14 @@ class IndentationPreprocessor(object):
 
     @staticmethod
     @preprocessing_step(identifier="smooth_height",
-                        name="monotonic height data")
+                        name="monotonic height data",
+                        steps_optional=[
+                            # Otherwise we lose the location of the point
+                            # of deepest indentation:
+                            "correct_split_approach_retract",
+                            # Otherwise it might not be applied to
+                            # "tip position":
+                            "compute_tip_position"])
     def smooth_height(apret):
         """Make height data monotonic
 

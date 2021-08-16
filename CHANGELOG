@@ -5,8 +5,12 @@
    information about the procedure (currently plottable data to
    understand the process)
  - fix: spatial smoothing not working in some cases (#15)
+ - enh: add `steps_optional` in preprocessing to allow fine-grained
+   control about order of application
  - ref: remove "...smoothed" column data (which was never used anyway);
    instead, apply smoothing directly to AFMData subclass
+ - ref: rename `require_steps` to `steps_required` in preprocessing
+   decorator
  - setup: bump afmformats from 0.16.0 to 0.16.3
 3.0.0
  - BREAKING CHANGE: The contact point estimation method "scheme_2020"
