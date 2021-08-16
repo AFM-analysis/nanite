@@ -11,7 +11,7 @@
    instead, apply smoothing directly to AFMData subclass
  - ref: rename `require_steps` to `steps_required` in preprocessing
    decorator
- - setup: bump afmformats from 0.16.0 to 0.16.3
+ - setup: bump afmformats from 0.16.0 to 0.16.4
 3.0.0
  - BREAKING CHANGE: The contact point estimation method "scheme_2020"
    has been removed, although it has been the default for some time.

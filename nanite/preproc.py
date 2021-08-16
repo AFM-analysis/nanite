@@ -89,6 +89,12 @@ class IndentationPreprocessor(object):
                 "Please use 'identifiers' instead of 'preproc_names'!",
                 DeprecationWarning)
         details = {}
+        # Reset all user-defined data of the dataset, because we
+        # probably edited "tip position", "force", etc. If this
+        # is too slow in the future, then we would have to remember
+        # the previous preprocessing pipeline (such code is currently
+        # implemented on the other side in `indent.py` (2021-08-16).
+        apret.reset_data()
         for ii, pid in enumerate(identifiers):
             if pid in IndentationPreprocessor.available():
                 meth = IndentationPreprocessor.get_func(pid)
