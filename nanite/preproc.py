@@ -37,6 +37,7 @@ def preprocessing_step(identifier, name, steps_required=None,
         if the preprocessor accepts optional keyword arguments,
         this list yields valid values or dtypes
     """
+
     def attribute_setter(func):
         """Decorator that sets the necessary attributes
 
@@ -208,14 +209,14 @@ class IndentationPreprocessor(object):
         has_hm = "height (measured)" in apret
         has_fo = "force" in apret
         has_sc = "spring constant" in apret.metadata
-        if "tip position" in apret:
+        if "tip position" in apret.columns_innate:
             # nothing to do
             pass
         elif has_hm and has_fo and has_sc:
             k = apret.metadata["spring constant"]
             force = apret["force"]
             zcant = apret["height (measured)"]
-            apret["tip position"] = zcant + force/k
+            apret["tip position"] = zcant + force / k
         else:
             missing = []
             if not has_hm:
@@ -236,9 +237,9 @@ class IndentationPreprocessor(object):
         idp = poc.compute_poc(force=apret["force"],
                               method="deviation_from_baseline")
         if idp:
-            apret["force"] -= np.average(apret["force"][:idp])
+            apret["force"] = apret["force"] - np.average(apret["force"][:idp])
         else:
-            apret["force"] -= apret["force"][0]
+            apret["force"] = apret["force"] - apret["force"][0]
 
     @staticmethod
     @preprocessing_step(
@@ -251,7 +252,7 @@ class IndentationPreprocessor(object):
              "choices": [p.identifier for p in poc.POC_METHODS],
              "choices_human_readable": [p.name for p in poc.POC_METHODS]}
         ]
-        )
+    )
     def correct_tip_offset(apret, method="deviation_from_baseline",
                            ret_details=False):
         """Estimate the point of contact
@@ -266,7 +267,8 @@ class IndentationPreprocessor(object):
             cpid, details = data
         else:
             cpid, details = data, None
-        apret["tip position"] -= apret["tip position"][cpid]
+        apret["tip position"] = (apret["tip position"]
+                                 - apret["tip position"][cpid])
         return details
 
     @staticmethod
@@ -301,13 +303,13 @@ class IndentationPreprocessor(object):
             y /= y.max()
             y[y < np.std(y[:idp])] = 0
 
-            idmin = np.argmax(x**2+y**2)
+            idmin = np.argmax(x ** 2 + y ** 2)
 
             segment = np.zeros(len(apret), dtype=np.uint8)
             segment[idmin:] = 1
             apret["segment"] = segment
         else:
-            msg = "Cannot correct splitting of approach and retract curve " +\
+            msg = "Cannot correct splitting of approach and retract curve " + \
                   "because the contact point position could not be estimated."
             warnings.warn(msg, CannotSplitWarning)
 
@@ -332,7 +334,7 @@ class IndentationPreprocessor(object):
                 "height (piezo)",
                 "tip position"]
         for col in orig:
-            if col not in apret.columns:
+            if col not in apret:
                 continue
             # Apply smoothing
             sm_app = smooth_axis_monotone(apret.appr[col])
