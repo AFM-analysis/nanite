@@ -147,7 +147,7 @@ class IndentationPreprocessor(object):
             func = getattr(IndentationPreprocessor, key)
             if hasattr(func, "identifier"):
                 av.append(func.identifier)
-        return sorted(av)
+        return IndentationPreprocessor.autosort(av)
 
     @staticmethod
     def check_order(identifiers):
