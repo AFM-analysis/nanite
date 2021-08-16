@@ -9,7 +9,7 @@ from .fit import IndentationFitter, FitProperties, guess_initial_parameters, \
     FP_DEFAULT
 from . import model
 from . import poc
-from .preproc import IndentationPreprocessor
+from . import preproc
 from .rate import get_rater
 
 
@@ -53,8 +53,8 @@ class Indentation(afmformats.AFMForceDistance):
         Parameters
         ----------
         preprocessing: list
-            A list of preprocessing method names that are
-            stored in the `IndentationPreprocessor` class.
+            A list of preprocessing method identifiers that are
+            stored in the `nanite.preproc.PREPROCESSORS` list.
             If set to `None`, `self.preprocessing` will be
             used.
         options: dict of dict
@@ -89,10 +89,10 @@ class Indentation(afmformats.AFMForceDistance):
             self._rating = None
             # Apply preprocessing
             # (This will call `AFMData.reset_data` on self)
-            details = IndentationPreprocessor.apply(apret=self,
-                                                    identifiers=preprocessing,
-                                                    options=options,
-                                                    ret_details=ret_details)
+            details = preproc.apply(apret=self,
+                                    identifiers=preprocessing,
+                                    options=options,
+                                    ret_details=ret_details)
             self._preprocessing_details = details
             # Check availability of axes
             for ax in ["x_axis", "y_axis"]:

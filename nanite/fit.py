@@ -63,6 +63,7 @@ class FitProperties(dict):
 
     Additional attributes:
     """
+
     def __setitem__(self, key, value):
         if key == "segment":
             # Since version 1.8.0, nanite uses an integer to identify

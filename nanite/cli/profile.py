@@ -149,7 +149,7 @@ def setup_profile():
     pf = Profile()
 
     print("\nDefine preprocessing:")
-    steps = preproc.available_preprocessors
+    steps = [pp.identifier for pp in preproc.PREPROCESSORS]
     cur = pf["preprocessing"]
     curid = ",".join([str(steps.index(cc) + 1) for cc in cur])
     for ii, st in enumerate(steps):

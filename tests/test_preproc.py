@@ -5,7 +5,7 @@ import numpy as np
 import pytest
 
 from nanite import IndentationGroup
-from nanite.preproc import IndentationPreprocessor
+from nanite import preproc
 
 
 data_path = pathlib.Path(__file__).resolve().parent / "data"
@@ -19,7 +19,7 @@ def test_autosort():
     expected = ["correct_force_offset",
                 "compute_tip_position",
                 "correct_tip_offset"]
-    actual = IndentationPreprocessor.autosort(unsorted)
+    actual = preproc.autosort(unsorted)
     assert expected == actual
 
 
@@ -34,7 +34,7 @@ def test_autosort2():
                 "correct_force_offset",
                 "correct_tip_offset",
                 ]
-    actual = IndentationPreprocessor.autosort(unsorted)
+    actual = preproc.autosort(unsorted)
     assert (actual.index("correct_split_approach_retract")
             > actual.index("compute_tip_position"))
     assert (actual.index("correct_tip_offset")
@@ -55,7 +55,7 @@ def test_autosort3():
                 "correct_force_offset",
                 "correct_tip_offset",
                 ]
-    actual = IndentationPreprocessor.autosort(unsorted)
+    actual = preproc.autosort(unsorted)
     assert expected == actual
     assert (actual.index("correct_split_approach_retract")
             > actual.index("compute_tip_position"))
@@ -67,7 +67,7 @@ def test_autosort3():
 
 def test_check_order():
     with pytest.raises(ValueError, match="Wrong optional step order"):
-        IndentationPreprocessor.check_order([
+        preproc.check_order([
             "smooth_height",
             "correct_split_approach_retract"])
 
@@ -87,7 +87,7 @@ def test_correct_split_approach_retract():
 
 
 def test_get_steps_required():
-    req_act = IndentationPreprocessor.get_steps_required("correct_tip_offset")
+    req_act = preproc.get_steps_required("correct_tip_offset")
     req_exp = ["compute_tip_position"]
     assert req_act == req_exp
 
