@@ -1,6 +1,7 @@
 """Test preprocessing"""
 import pathlib
 
+import numpy as np
 import pytest
 
 from nanite import IndentationGroup
@@ -55,6 +56,23 @@ def test_process_bad():
                                       "correct_tip_offset",
                                       "correct_split_approach_retract"])
             idnt.fit_model()
+
+
+@pytest.mark.filterwarnings(
+    'ignore::nanite.smooth.DoubledSmoothingWindowWarning:')
+def test_smooth():
+    idnt = IndentationGroup(data_path / "spot3-0192.jpk-force")[0]
+    idnt.apply_preprocessing(["compute_tip_position",
+                              "correct_force_offset",
+                              "correct_tip_offset"])
+    orig = np.array(idnt["tip position"], copy=True)
+    # now apply smoothing filter
+    idnt.apply_preprocessing(["compute_tip_position",
+                              "correct_force_offset",
+                              "correct_tip_offset",
+                              "smooth_height"])
+    new = np.array(idnt["tip position"], copy=True)
+    assert not np.all(orig == new)
 
 
 def test_unknown_method():

@@ -43,7 +43,7 @@ class Indentation(afmformats.AFMForceDistance):
 
     @property
     def data(self):
-        warnings.warn("Please use __getitem__ instead!")
+        warnings.warn("Please use __getitem__ instead!", DeprecationWarning)
         return self
 
     @property

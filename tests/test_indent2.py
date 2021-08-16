@@ -16,13 +16,17 @@ jpkfile = data_path / "spot3-0192.jpk-force"
 def test_app_ret():
     grp = IndentationGroup(jpkfile)
     idnt = grp[0]
+    idnt.apply_preprocessing(["compute_tip_position"])
+    height = np.array(idnt["height (measured)"], copy=True)
+    tip_position = np.array(idnt["tip position"], copy=True)
     idnt.apply_preprocessing(["smooth_height"])
-    hms = np.array(idnt["height (measured, smoothed)"])
+    hms = np.array(idnt["height (measured)"])
+    assert not np.all(height == hms)
     idnt.apply_preprocessing(["compute_tip_position",
                               "smooth_height"])
-    hms2 = np.array(idnt["height (measured, smoothed)"])
+    hms2 = np.array(idnt["height (measured)"])
     assert np.all(hms == hms2)
-    np.array(idnt["tip position (smoothed)"])
+    assert not np.all(idnt["tip position"] == tip_position)
 
 
 def test_tip_sample_separation():

@@ -276,38 +276,27 @@ class IndentationPreprocessor(object):
 
     @staticmethod
     @preprocessing_step(identifier="smooth_height",
-                        name="spatial smoothing")
+                        name="monotonic height data")
     def smooth_height(apret):
-        """Smoothen height data
+        """Make height data monotonic
 
-        For the columns "height (measured)" and "tip position",
-        and for the approach and retract data separately, this
-        method adds the columns "height (measured, smoothed)" and
-        "tip position (smoothed)" to `apret`.
+        For the columns "height (measured)", "height (piezo), and
+        "tip position", this method ensures that the approach and
+        retract segments are monotonic.
         """
         orig = ["height (measured)",
+                "height (piezo)",
                 "tip position"]
-        dest = ["height (measured, smoothed)",
-                "tip position (smoothed)"]
-        for o, d in zip(orig, dest):
-            if o not in apret.columns:
+        for col in orig:
+            if col not in apret.columns:
                 continue
-            # Get approach and retract data
-            app_idx = apret["segment"] == 0
-            app = np.array(apret[o][app_idx])
-            ret_idx = apret["segment"] == np.max(apret["segment"])
-            ret = np.array(apret[o][ret_idx])
             # Apply smoothing
-            sm_app = smooth_axis_monotone(app)
-            sm_ret = smooth_axis_monotone(ret)
+            sm_app = smooth_axis_monotone(apret.appr[col])
+            sm_ret = smooth_axis_monotone(apret.retr[col])
 
-            # Make sure that approach always comes before retract
-            begin = np.where(app_idx)[0]
-            end = np.where(ret_idx)[0]
-            assert(np.all(end-begin > 0)), "Found retract before approach!"
-
-            # If everything is ok, we can add the new columns
-            apret[d] = np.concatenate((sm_app, sm_ret))
+            # Replace the column data
+            apret.appr[col] = sm_app
+            apret.retr[col] = sm_ret
 
 
 #: Available preprocessors
