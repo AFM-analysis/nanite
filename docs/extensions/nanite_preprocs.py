@@ -8,13 +8,17 @@ Table of all preprocessors available in nanite
 
    .. nanite_preproc_table::
 
+Table of all POC methods in nanite
+
+   .. nanite_preproc_poc_table::
+
 """
 from docutils.statemachine import ViewList
 from docutils.parsers.rst import Directive
 from sphinx.util.nodes import nested_parse_with_titles
 from docutils import nodes
 
-from nanite import preproc
+from nanite import poc, preproc
 
 
 class Base(Directive):
@@ -48,11 +52,34 @@ class PreprocTable(Base):
         rst.append("")
 
         for kk in keys:
-            ref = "nanite.preproc.IndentationPreprocessor.{}".format(kk)
+            ref = f"nanite.preproc.IndentationPreprocessor.{kk}"
             details = ":func:`code reference <{}>`".format(ref)
             method = getattr(preproc.IndentationPreprocessor, kk)
             name = method.__doc__.split("\n\n")[0].strip()
-            rst.append("    {}\t {}\t {}".format(kk, name, details))
+            rst.append(f"    {kk}\t {name}\t {details}")
+
+        rst.append("")
+
+        return rst
+
+
+class PreprocPOCTable(Base):
+    def generate_rst(self):
+        rst = []
+
+        pocs = poc.POC_METHODS
+
+        rst.append(".. csv-table::")
+        rst.append("    :header: method, description, details")
+        rst.append("    :delim: tab")
+        rst.append("")
+
+        for pp in pocs:
+            ref = f"nanite.poc.{pp.__name__}"
+            details = ":func:`code reference <{}>`".format(ref)
+            method = pp.identifier
+            name = pp.name
+            rst.append(f"    {method}\t {name}\t {details}")
 
         rst.append("")
 
@@ -61,4 +88,5 @@ class PreprocTable(Base):
 
 def setup(app):
     app.add_directive('nanite_preproc_table', PreprocTable)
-    return {'version': '0.1'}   # identifies the version of our extension
+    app.add_directive('nanite_preproc_poc_table', PreprocPOCTable)
+    return {'version': '0.2'}   # identifies the version of our extension

@@ -8,6 +8,8 @@ This is a summary of the methods used by nanite for fitting
 force-distance data. Examples are given below.
 
 
+.. _sec_fitting_preproc:
+
 Preprocessors
 =============
 Prior to data analysis, a force-distance curve has to be preprocessed.
@@ -17,6 +19,12 @@ recorded piezo height and the cantilever deflection. Other preprocessing
 steps correct for offsets or smoothen the data:
 
 .. nanite_preproc_table::
+
+
+Several methods for estimating the point of contact are implemented in
+nanite:
+
+.. nanite_preproc_poc_table::
 
 
 Models
