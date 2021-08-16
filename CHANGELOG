@@ -1,3 +1,7 @@
+3.1.1
+ - fix: do not modify preprocessing options when applying them (create
+   a copy of the dictionary)
+ - ref: remove `Indentation.reset` in favor of `AFMData.reset_data`
 3.1.0
  - feat: new contact point estimation method "fit_constant_polynomial"
    which applies a piece-wise constant and polynomial fit

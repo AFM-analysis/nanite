@@ -173,6 +173,63 @@ def test_get_model():
     assert md2 is md
 
 
+def test_preprocessing_reset():
+    fd = nanite.IndentationGroup(jpkfile)[0]
+    fd.apply_preprocessing(["compute_tip_position",
+                            "correct_force_offset",
+                            "correct_tip_offset"],
+                           options={"correct_tip_offset": {
+                               "method": "fit_constant_line"}})
+
+    inparams = nanite.model.model_hertz_paraboloidal.get_parameter_defaults()
+    inparams["baseline"].vary = True
+    inparams["contact_point"].set(1.8e-5)
+
+    # Perform fit and make sure that all properties are set
+    fd.fit_model(model_key="hertz_para",
+                 params_initial=inparams,
+                 range_x=(0, 0),
+                 range_type="absolute",
+                 x_axis="tip position",
+                 y_axis="force",
+                 segment="approach",
+                 weight_cp=False)
+    fd.rate_quality(training_set="zef18",
+                    regressor="Extra Trees")
+    assert fd._rating is not None
+    assert fd.preprocessing == ["compute_tip_position",
+                                "correct_force_offset",
+                                "correct_tip_offset"]
+    assert fd.preprocessing_options == {"correct_tip_offset": {
+                                        "method": "fit_constant_line"}}
+    assert not fd._preprocessing_details
+    assert np.allclose(
+        fd._fit_properties["params_fitted"]["contact_point"].value,
+        -3.5147555568064786e-06,
+        atol=0)
+    assert "tip position" in fd
+
+    # Change preprocessing and make sure properties are reset
+    fd.apply_preprocessing(["compute_tip_position",
+                            "correct_force_offset",
+                            "correct_tip_offset"],
+                           options={"correct_tip_offset": {
+                               "method": "fit_constant_polynomial"}})
+    assert fd._rating is None
+    assert fd.preprocessing == ["compute_tip_position",
+                                "correct_force_offset",
+                                "correct_tip_offset"]
+    assert fd.preprocessing_options == {"correct_tip_offset": {
+                                        "method": "fit_constant_polynomial"}}
+    assert not fd._preprocessing_details
+    assert "params_fitted" not in fd._fit_properties
+    assert "tip position" in fd
+
+    # Change preprocessing, removing tip position
+    fd.apply_preprocessing(["correct_force_offset"])
+    assert "tip position" not in fd
+
+
 def test_rate_quality_cache():
     ds1 = nanite.IndentationGroup(jpkfile)
     idnt = ds1[0]

@@ -1,6 +1,5 @@
 from collections import OrderedDict
 import copy
-import inspect
 import warnings
 
 import afmformats
@@ -32,14 +31,6 @@ class Indentation(afmformats.AFMForceDistance):
 
         # Curve rating (see `self.rate_quality`)
         self._rating = None
-
-        # Store initial parameters for reset (see `self.reset`)
-        frame = inspect.currentframe()
-        iargs, _, _, values = inspect.getargvalues(frame)
-        self._init_kwargs = {
-            "data": copy.deepcopy(data),
-            "metadata": copy.deepcopy(metadata)
-        }
 
     @property
     def data(self):
@@ -91,9 +82,10 @@ class Indentation(afmformats.AFMForceDistance):
             fp = self.fit_properties
             fp["preprocessing"] = preprocessing
             fp["preprocessing_options"] = options
-            # Reset all data
-            self.reset()
+            # Reset rating
+            self._rating = None
             # Apply preprocessing
+            # (This will call `AFMData.reset_data` on self)
             details = IndentationPreprocessor.apply(apret=self,
                                                     identifiers=preprocessing,
                                                     options=options,
@@ -380,7 +372,3 @@ class Indentation(afmformats.AFMForceDistance):
             # Use cached rating
             rt = self._rating[-1]
         return rt
-
-    def reset(self):
-        """Resets all data operations"""
-        self.__init__(**self._init_kwargs)

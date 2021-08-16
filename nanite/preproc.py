@@ -75,13 +75,6 @@ class IndentationPreprocessor(object):
             Return preprocessing details dictionary
         preproc_names: list
             Deprecated - use `identifiers` instead
-
-        Notes
-        -----
-        This method is usually called from within the `Indentation`
-        class instance. If you are using this class directly and
-        apply it more than once, you might need to call
-        `apret.reset()` before preprocessing a second time.
         """
         if preproc_names is not None:
             identifiers = preproc_names
@@ -103,7 +96,9 @@ class IndentationPreprocessor(object):
                 if req is not None and ((set(req) & set(act)) != set(req)):
                     raise ValueError(f"The preprocessing step '{pid}' requires"
                                      f" the steps {meth.steps_required}!")
-                kwargs = options.get(pid, {})  # empty dict if not defined
+                # create a copy of the dictionary (if it exists) so that
+                # `ret_details` is not written to it
+                kwargs = copy.deepcopy(options.get(pid, {}))
                 if "ret_details" in inspect.signature(meth).parameters:
                     # only set `ret_details` if method accepts it
                     kwargs["ret_details"] = ret_details
