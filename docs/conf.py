@@ -18,6 +18,7 @@
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 
 # Get version number from nanite._version file
+import pathlib
 import matplotlib
 import mock
 import os.path as op
@@ -90,8 +91,14 @@ master_doc = 'index'
 # General information about the project.
 project = 'nanite'
 github_project = 'AFM-Analysis/' + project
+credits_path = pathlib.Path(__file__).parent.parent / "CREDITS"
+if credits_path.exists():
+    authors = [c.strip() for c in credits_path.read_text().split("\n")
+               if c and not c.startswith("#")]
+else:
+    authors = ["Paul Müller"]
 copyright = '2018, Paul Müller'
-author = 'Paul Müller'
+author = ", ".join(authors)
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -173,7 +180,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (master_doc, 'nanite.tex', 'nanite Documentation',
-     'Paul Müller', 'manual'),
+     author.replace(', ', '\\and '), 'manual'),
 ]
 
 
@@ -183,7 +190,7 @@ latex_documents = [
 # (source start file, name, description, authors, manual section).
 man_pages = [
     (master_doc, 'nanite', 'nanite Documentation',
-     [author], 1)
+     authors, 1)
 ]
 
 

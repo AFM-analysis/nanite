@@ -5,8 +5,8 @@ import sys
 # numpy and cython are installed via pyproject.toml [build-system]
 import numpy as np
 
-author = "Paul Müller"
-authors = [author, "Shada Abuhattum"]
+maintainer = "Paul Müller"
+maintainer_email = "dev@craban.de"
 description = 'Loading, fitting, and rating AFM force-distance data'
 name = 'nanite'
 year = "2018"
@@ -21,8 +21,8 @@ except BaseException:
 
 setup(
     name=name,
-    author=author,
-    author_email='dev@craban.de',
+    maintainer=maintainer,
+    maintainer_email=maintainer_email,
     url='https://github.com/AFM-analysis/nanite',
     version=version,
     packages=find_packages(),
