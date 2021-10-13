@@ -44,8 +44,6 @@ setup(
                            include_dirs=[np.get_include()],
                            )
                  ],
-    setup_requires=["pytest-runner"],
-    tests_require=["pytest"],
     extras_require={
         'CLI':  ["appdirs",
                  "matplotlib>=2.2.2",
