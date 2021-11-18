@@ -44,19 +44,15 @@ class PreprocTable(Base):
     def generate_rst(self):
         rst = []
 
-        keys = preproc.available_preprocessors
-
         rst.append(".. csv-table::")
         rst.append("    :header: preprocessor key, description, details")
         rst.append("    :delim: tab")
         rst.append("")
 
-        for kk in keys:
-            ref = f"nanite.preproc.IndentationPreprocessor.{kk}"
+        for pp in preproc.PREPROCESSORS:
+            ref = f"nanite.preproc.preproc_{pp.identifier}"
             details = ":func:`code reference <{}>`".format(ref)
-            method = getattr(preproc.IndentationPreprocessor, kk)
-            name = method.__doc__.split("\n\n")[0].strip()
-            rst.append(f"    {kk}\t {name}\t {details}")
+            rst.append(f"    {pp.identifier}\t {pp.name}\t {details}")
 
         rst.append("")
 
