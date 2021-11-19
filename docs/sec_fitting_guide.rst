@@ -75,7 +75,7 @@ fine-tuning and straight-forward automation.
 
 Command-line usage
 ------------------
-First, setup up a fitting profile by running (e.g. in a command prompt
+First, set up a fitting profile by running (e.g. in a command prompt
 on Windows).
 
 .. code::
