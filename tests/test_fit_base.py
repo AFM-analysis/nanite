@@ -1,6 +1,8 @@
 """Test basic fitting"""
 import pathlib
 
+import numpy as np
+
 import nanite
 from nanite import IndentationGroup
 
@@ -30,19 +32,26 @@ def test_lmfit_method():
 
     apret.fit_model(**kwargs)
     params1 = apret.fit_properties["params_fitted"]
-    assert params1["contact_point"].value == 1.802931023582261e-05
+    assert np.allclose(params1["contact_point"].value,
+                       1.802931023582261e-05,
+                       rtol=0,
+                       atol=0.000000000005,
+                       )
 
     # make sure leastsq is the default
     apret.fit_model(method="leastsq", **kwargs)
     params2 = apret.fit_properties["params_fitted"]
     assert params2["contact_point"].value == params1["contact_point"]
-    assert params2["contact_point"].value == 1.802931023582261e-05
 
     # use a different method
     apret.fit_model(method="nelder", method_kws={"maxiter": 100}, **kwargs)
     params3 = apret.fit_properties["params_fitted"]
     assert params3["contact_point"].value != params1["contact_point"]
-    assert params3["contact_point"].value == 1.802931043092255e-05
+    assert np.allclose(params3["contact_point"].value,
+                       1.802931043092255e-05,
+                       rtol=0,
+                       atol=0.000000000005,
+                       )
 
 
 if __name__ == "__main__":
