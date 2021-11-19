@@ -1,4 +1,4 @@
-"""Test hashing of fit results"""
+"""Test basic fitting"""
 import pathlib
 import time
 
@@ -10,7 +10,7 @@ data_path = pathlib.Path(__file__).parent / "data"
 jpkfile = data_path / "spot3-0192.jpk-force"
 
 
-def test_hash_time():
+def test_lmfit_method():
     ds1 = IndentationGroup(jpkfile)
     apret = ds1[0]
     apret.apply_preprocessing(["compute_tip_position"])
@@ -28,22 +28,22 @@ def test_hash_time():
                   y_axis="force",
                   segment="approach",
                   weight_cp=False)
-    t0 = time.perf_counter()
-    apret.fit_model(**kwargs)
-    t1 = time.perf_counter()
-    apret.fit_model()
-    t2 = time.perf_counter()
-    kwargs["weight_cp"] = 1e-5
-    apret.fit_model(**kwargs)
-    t3 = time.perf_counter()
-    apret.fit_model()
-    t4 = time.perf_counter()
 
-    assert t1-t0 >= 100 * \
-        (t2-t1), "Consecutive fits with same parameters should be instant"
-    assert t3-t2 >= 100 * \
-        (t2-t1), "Changing parameters again should cause a new fit"
-    assert t3-t2 >= 100*(t4-t3), "And computing the same should be faster"
+    apret.fit_model(**kwargs)
+    params1 = apret.fit_properties["params_fitted"]
+    assert params1["contact_point"].value == 1.802931023582261e-05
+
+    # make sure leastsq is the default
+    apret.fit_model(method="leastsq", **kwargs)
+    params2 = apret.fit_properties["params_fitted"]
+    assert params2["contact_point"].value == params1["contact_point"]
+    assert params2["contact_point"].value == 1.802931023582261e-05
+
+    # use a different method
+    apret.fit_model(method="nelder", method_kws={"maxiter": 100}, **kwargs)
+    params3 = apret.fit_properties["params_fitted"]
+    assert params3["contact_point"].value != params1["contact_point"]
+    assert params3["contact_point"].value == 1.802931043092255e-05
 
 
 if __name__ == "__main__":

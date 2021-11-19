@@ -22,6 +22,8 @@ FP_DEFAULT = dict(model_key="hertz_para",
                   weight_cp=1e-6,
                   x_axis="tip position",
                   y_axis="force",
+                  method="leastsq",
+                  method_kws={},
                   )
 
 FP_RESULTS = ["chi_sqr",
@@ -405,7 +407,12 @@ class IndentationFitter(object):
         if npvaried < x.shape[0] - 1:
             # perform fit
             fit = lmfit.minimize(
-                md.residual, params_initial, args=(x, y, weight_cp))
+                fcn=md.residual,
+                params=params_initial,
+                method=self.fp["method"],
+                args=(x, y, weight_cp),
+                **self.fp["method_kws"],
+                )
             # fitted method
             fit_cur[segid] = md.model(fit.params, xseg)
             # residuals

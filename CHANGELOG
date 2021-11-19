@@ -1,3 +1,5 @@
+3.2.0
+ - feat: allow specifying the minimizer method for fitting (#21)
 3.1.4
  - docs: preprocessing methods not correctly rendered
 3.1.3

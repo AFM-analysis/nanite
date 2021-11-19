@@ -60,6 +60,8 @@ are described in more detail in :class:`nanite.fit.IndentationFitter`.
     weight_cp; Suppression of residuals near contact point
     x_axis; X-data used for fitting (defaults to 'top position')
     y_axis; Y-data used for fitting (defaults to 'force')
+    method; Minimizer method for `lmfit.minimize <https://lmfit.github.io/lmfit-py/fitting.html#lmfit.minimizer.minimize>`_
+    method_kws; Additional arguments (`fit_kws`) for 'method'
 
 
 Workflow

@@ -260,7 +260,7 @@ def load_hdf5(path, meta_only=False):
                     val = parms
                 elif key == "preprocessing":
                     val = val.split(",")
-                elif key.startswith("preprocessing_options"):
+                elif key in ["preprocessing_options", "method_kws"]:
                     val = json.loads(val)
                 elif key == "range_x":
                     val = val.strip("[]() ").split(",")
@@ -331,7 +331,7 @@ def save_hdf5(h5path, indent, user_rate, user_name, user_comment, h5mode="a"):
                     val = val.dumps()
                 elif key == "preprocessing":
                     val = ",".join(val)
-                elif key == "preprocessing_options":
+                elif key in ["preprocessing_options", "method_kws"]:
                     val = json.dumps(val)
                 elif key == "range_x":
                     val = str(val)
