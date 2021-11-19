@@ -1,6 +1,5 @@
 """Test basic fitting"""
 import pathlib
-import time
 
 import nanite
 from nanite import IndentationGroup
