@@ -44,11 +44,11 @@ def test_lmfit_method():
     assert params2["contact_point"].value == params1["contact_point"]
 
     # use a different method
-    apret.fit_model(method="nelder", method_kws={"maxiter": 100}, **kwargs)
+    apret.fit_model(method="nelder", method_kws={"max_nfev": 5}, **kwargs)
     params3 = apret.fit_properties["params_fitted"]
     assert params3["contact_point"].value != params1["contact_point"]
     assert np.allclose(params3["contact_point"].value,
-                       1.802931043092255e-05,
+                       1.8779025e-05,
                        rtol=0,
                        atol=0.000000000005,
                        )
