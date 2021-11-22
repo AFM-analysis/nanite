@@ -144,21 +144,21 @@ def poc_fit_constant_line(force, ret_details=False):
 
     .. math::
 
-       F = \text{max}(m\delta, a)
+       F = \text{max}(d, m\delta + d)
 
     The point of contact is the intersection of a horizontal line
-    at :math:`a` (baseline) and a linear function with slope :math:`m`
+    at :math:`d` (baseline) and a linear function with slope :math:`m`
     for the indentation part.
 
     The point of contact is defined as :math:`\delta=0` (It's another
     fitting parameter).
     """
     def model(params, x):
-        off = params["off"]
+        d = params["d"]
         x0 = params["x0"]
         m = params["m"]
-        one = off
-        two = m * (x - x0) + off
+        one = d
+        two = m * (x - x0) + d
         return np.maximum(one, two)
 
     def residual(params, x, data):
@@ -171,11 +171,11 @@ def poc_fit_constant_line(force, ret_details=False):
         ymin, ymax = np.min(y), np.max(y)
         y = (y - ymin) / (ymax - ymin)
         x = np.arange(y.size)
-        x0 = poc_deviation_from_baseline(force)
+        x0 = poc_frechet_direct_path(force)
         if np.isnan(x0):
             x0 = y.size // 2
         params = lmfit.Parameters()
-        params.add('off', value=np.mean(y[:10]))
+        params.add('d', value=np.mean(y[:10]))
         params.add('x0', value=x0)
         params.add('m', value=1)
 
@@ -199,7 +199,7 @@ def poc_fit_constant_line(force, ret_details=False):
      name="Piecewise fit with constant and polynomial",
      preprocessing=["clip_approach"])
 def poc_fit_constant_polynomial(force, ret_details=False):
-    r"""Piecewise fit with constant and line
+    r"""Piecewise fit with constant and polynomial
 
     Fit a piecewise function (constant + polynomial) to the baseline
     and indentation part.
@@ -218,26 +218,26 @@ def poc_fit_constant_polynomial(force, ret_details=False):
 
     .. math::
 
-       y \approx \delta^3/c
+       y \approx \delta^3/c + d
 
     And for large indentations, this function is linear:
 
     .. math::
 
-       y \approx \delta/a - b/a^2
+       y \approx \delta/a
 
     The point of contact is defined as :math:`\delta=0` (It's another
     fitting parameter).
     """
     def model(params, x):
-        off = params["off"].value
+        d = params["d"].value
         x0 = params["x0"].value
         a = params["a"].value
         b = params["b"].value
         c = params["c"].value
         x1 = x - x0
-        curve = x1**3 / (a*x1**2 + b*x1 + c) + off
-        curve[x1 <= 0] = off
+        curve = x1**3 / (a*x1**2 + b*x1 + c) + d
+        curve[x1 <= 0] = d
         return curve
 
     def residual(params, x, data):
@@ -247,15 +247,15 @@ def poc_fit_constant_polynomial(force, ret_details=False):
     y = np.array(force, copy=True)
     cp = np.nan
     details = {}
-    if y.size > 4:  # 3 fit parameters
+    if y.size > 6:  # 5 fit parameters
         ymin, ymax = np.min(y), np.max(y)
         y = (y - ymin) / (ymax - ymin)
         x = np.arange(y.size)
-        x0 = poc_deviation_from_baseline(force)
+        x0 = poc_frechet_direct_path(force)
         if np.isnan(x0):
             x0 = y.size // 2
         params = lmfit.Parameters()
-        params.add('off', value=np.mean(y[:10]))
+        params.add('d', value=np.mean(y[:10]))
         params.add('x0', value=x0)
         # The polynomial fitting parameters are supposed to be
         # greater than zero (source?). We set the minimum to 1e-3 so
@@ -280,6 +280,145 @@ def poc_fit_constant_polynomial(force, ret_details=False):
                                        [y.min(), y.max()]]
 
     if ret_details:
+        return cp, details
+    else:
+        return cp
+
+
+@poc(identifier="fit_line_polynomial",
+     name="Piecewise fit with line and polynomial",
+     preprocessing=["clip_approach"])
+def poc_fit_line_polynomial(force, ret_details=False):
+    r"""Piecewise fit with line and polynomial
+
+    Fit a piecewise function (line + polynomial) to the baseline
+    and indentation part.
+
+    The linear basline (:math:`\delta<0`) is modeled with:
+
+    .. math::
+
+       F = m \delta + d
+
+    The indentation part (:math:`\delta>0`) is modeled with:
+
+    .. math::
+
+       F = \frac{\delta^3}{a\delta^2 + b\delta + c} + m \delta  + d
+
+    For small indentations, this function exhibits a linear and
+    only slightly cubic behavior:
+
+    .. math::
+
+       y \approx \delta^3/c + m \delta + d
+
+    And for large indentations, this function is linear:
+
+    .. math::
+
+       y \approx \left( \frac{1}{a} + m \right) \delta
+
+    The point of contact is defined as :math:`\delta=0` (It's another
+    fitting parameter).
+
+
+    See Also
+    --------
+    poc_fit_constant_polynomial: polynomial-only version
+    """
+    def model(params, x):
+        d = params["d"].value
+        x0 = params["x0"].value
+        m = params["m"].value
+        a = params["a"].value
+        b = params["b"].value
+        c = params["c"].value
+        x1 = x - x0
+        curve = m * x1 + d
+        curve[x1 > 0] += x1[x1 > 0]**3 / (a*x1[x1 > 0]**2 + b*x1[x1 > 0] + c)
+        return curve
+
+    def residual(params, x, data):
+        curve = model(params, x)
+        return data - curve
+
+    y = np.array(force, copy=True)
+    cp = np.nan
+    details = {}
+    if y.size > 7:  # 6 fit parameters
+        ymin, ymax = np.min(y), np.max(y)
+        y = (y - ymin) / (ymax - ymin)
+        x = np.arange(y.size)
+        x0 = poc_frechet_direct_path(force)
+        if np.isnan(x0):
+            x0 = y.size // 2
+        params = lmfit.Parameters()
+        params.add('d', value=np.mean(y[:10]))
+        params.add('x0', value=x0)
+        # slope
+        params.add('m', value=(y[x0] - y[0]) / x0)
+        # The polynomial fitting parameters are supposed to be
+        # greater than zero (source?). We set the minimum to 1e-3 so
+        # the fitting algorithm becomes more stable. Also, the initial
+        # values for b and c are more or less arbitrary (this is a heuristic
+        # approach).
+        # for larger x, a is something like an inverse slope. Since we
+        # normalized the y-values to 1, we just take the x-difference.
+        params.add('a', value=(y.size-x0), min=1e-3, max=100*(y.size-x0))
+        params.add('b', value=y.size, min=1e-3)
+        params.add('c', value=.5, min=1e-3)
+
+        out = lmfit.minimize(residual, params, args=(x, y), method="leastsq")
+
+        if out.success:
+            cp = int(out.params["x0"])
+            if ret_details:
+                details["plot force"] = [x, y]
+                details["plot fit"] = [np.arange(force.size),
+                                       model(out.params, x)]
+                details["plot poc"] = [[cp, cp],
+                                       [y.min(), y.max()]]
+
+    if ret_details:
+        return cp, details
+    else:
+        return cp
+
+
+@poc(identifier="frechet_direct_path",
+     name="Fréchet distance to direct path",
+     preprocessing=["clip_approach"])
+def poc_frechet_direct_path(force, ret_details=False):
+    """Fréchet distance to direct path
+
+    The indentation part is transformed to normalized coordinates
+    (force and corresponding x in range [0, 1]). The point with the
+    largest distance to the line from (0, 0) to (1, 1) is the contact
+    point.
+
+    This method is robust with regard to tilted baselines and is a
+    good initial guess for fitting-based POC estimation approaches.
+
+    Note that the length of the baseline influences the returned
+    contact point. For shorter baselines, the contact point will
+    be closer to the point of maximum indentation.
+    """
+    x = np.linspace(0, 1, len(force), endpoint=True)
+    y = (force - force.min()) / (force.max() - force.min())
+
+    # rotate the curve towards x
+    # (computation of Frechet distance with curve is now just distance
+    # from x-axis, i.e. minimum)
+    alpha = - np.pi / 4
+    yr = x * np.sin(alpha) + y * np.cos(alpha)
+    cp = np.argmin(yr)
+
+    if ret_details:
+        details = {"plot normalized rotated force": [np.arange(len(force)),
+                                                     yr],
+                   "plot poc": [[cp, cp],
+                                [yr.min(), yr.max()]]}
         return cp, details
     else:
         return cp

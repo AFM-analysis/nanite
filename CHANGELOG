@@ -1,5 +1,9 @@
 3.2.0
  - feat: allow specifying the minimizer method for fitting (#21)
+ - feat: new contact point estimation with linear fit for baseline
+   and polynomial fit for indentation part
+ - feat: new contact point estimation with Fréchet distance between
+   curve and direct path in normalized coordinates
  - tests: rename experimental test data files according to
    afmformats scheme (#20)
 3.1.4
