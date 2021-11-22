@@ -61,7 +61,7 @@ are described in more detail in :class:`nanite.fit.IndentationFitter`.
     x_axis; X-data used for fitting (defaults to 'top position')
     y_axis; Y-data used for fitting (defaults to 'force')
     method; Minimizer method for `lmfit.minimize <https://lmfit.github.io/lmfit-py/fitting.html#lmfit.minimizer.minimize>`_
-    method_kws; Additional arguments (`fit_kws`) for 'method'
+    method_kws; Additional arguments (`fit_kws`) for the underlying scipy minimizer function
 
 
 Workflow
