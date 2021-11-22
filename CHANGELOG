@@ -1,3 +1,5 @@
+3.2.1
+ - enh: more sensible default parameters for POC estimation fits
 3.2.0
  - feat: allow specifying the minimizer method for fitting (#21)
  - feat: new contact point estimation with linear fit for baseline

@@ -177,9 +177,9 @@ def poc_fit_constant_line(force, ret_details=False):
         params = lmfit.Parameters()
         params.add('d', value=np.mean(y[:10]))
         params.add('x0', value=x0)
-        params.add('m', value=1)
+        params.add('m', value=(1 - y[x0])/(x.size - x0))
 
-        out = lmfit.minimize(residual, params, args=(x, y))
+        out = lmfit.minimize(residual, params, args=(x, y), method="nelder")
         if out.success:
             cp = int(out.params["x0"])
             if ret_details:
@@ -268,7 +268,7 @@ def poc_fit_constant_polynomial(force, ret_details=False):
         params.add('b', value=y.size, min=1e-3)
         params.add('c', value=.5, min=1e-3)
 
-        out = lmfit.minimize(residual, params, args=(x, y), method="leastsq")
+        out = lmfit.minimize(residual, params, args=(x, y), method="nelder")
 
         if out.success:
             cp = int(out.params["x0"])
@@ -357,7 +357,7 @@ def poc_fit_line_polynomial(force, ret_details=False):
         params.add('d', value=np.mean(y[:10]))
         params.add('x0', value=x0)
         # slope
-        params.add('m', value=(y[x0] - y[0]) / x0)
+        params.add('m', value=y[x0]/x0)
         # The polynomial fitting parameters are supposed to be
         # greater than zero (source?). We set the minimum to 1e-3 so
         # the fitting algorithm becomes more stable. Also, the initial
@@ -369,7 +369,7 @@ def poc_fit_line_polynomial(force, ret_details=False):
         params.add('b', value=y.size, min=1e-3)
         params.add('c', value=.5, min=1e-3)
 
-        out = lmfit.minimize(residual, params, args=(x, y), method="leastsq")
+        out = lmfit.minimize(residual, params, args=(x, y), method="nelder")
 
         if out.success:
             cp = int(out.params["x0"])

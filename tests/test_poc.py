@@ -13,8 +13,8 @@ data_path = pathlib.Path(__file__).resolve().parent / "data"
 @pytest.mark.parametrize("method,contact_point", [
     ["gradient_zero_crossing", 1895],
     ["fit_constant_line", 1919],
-    ["fit_constant_polynomial", 1885],
-    ["fit_line_polynomial", 1887],
+    ["fit_constant_polynomial", 1898],
+    ["fit_line_polynomial", 1899],
     ["frechet_direct_path", 1903],
     ["deviation_from_baseline", 1908],
 ])
@@ -28,8 +28,8 @@ def test_poc_estimation(method, contact_point):
 @pytest.mark.parametrize("method,contact_point", [
     ["gradient_zero_crossing", 1895],
     ["fit_constant_line", 1919],
-    ["fit_constant_polynomial", 1885],
-    ["fit_line_polynomial", 1887],
+    ["fit_constant_polynomial", 1898],
+    ["fit_line_polynomial", 1899],
     ["frechet_direct_path", 1903],
     ["deviation_from_baseline", 1908],
 ])
@@ -44,8 +44,8 @@ def test_poc_estimation_details(method, contact_point):
 @pytest.mark.parametrize("method,contact_point", [
     ["gradient_zero_crossing", 1895],
     ["fit_constant_line", 1919],
-    ["fit_constant_polynomial", 1885],
-    ["fit_line_polynomial", 1887],
+    ["fit_constant_polynomial", 1898],
+    ["fit_line_polynomial", 1899],
     ["frechet_direct_path", 1903],
     ["deviation_from_baseline", 1908],
 ])
