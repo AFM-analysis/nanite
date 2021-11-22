@@ -10,7 +10,8 @@ data_path = pathlib.Path(__file__).resolve().parent / "data"
 def test_process_flipsign():
     # This is a curve extracted from a map file. When loading it
     # with nanite, the sign of the force curve was flipped.
-    flipped = data_path / "fmt-jpk-fd_flipsign_2015.05.22-15.31.49.352.jpk-force"
+    flipped = (data_path
+               / "fmt-jpk-fd_flipsign_2015.05.22-15.31.49.352.jpk-force")
     idnt = IndentationGroup(flipped)[0]
     idnt.apply_preprocessing(["compute_tip_position",
                               "correct_force_offset",

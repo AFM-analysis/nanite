@@ -16,9 +16,12 @@ def test_recursive_callback():
     td3 = td / "data3" / "data4"
     td3.mkdir(parents=True)
 
-    shutil.copy2(data_path / "fmt-jpk-fd_spot3-0192.jpk-force", td2 / "spot1.jpk-force")
-    shutil.copy2(data_path / "fmt-jpk-fd_spot3-0192.jpk-force", td2 / "spot2.jpk-force")
-    shutil.copy2(data_path / "fmt-jpk-fd_spot3-0192.jpk-force", td3 / "spot3.jpk-force")
+    shutil.copy2(data_path / "fmt-jpk-fd_spot3-0192.jpk-force",
+                 td2 / "spot1.jpk-force")
+    shutil.copy2(data_path / "fmt-jpk-fd_spot3-0192.jpk-force",
+                 td2 / "spot2.jpk-force")
+    shutil.copy2(data_path / "fmt-jpk-fd_spot3-0192.jpk-force",
+                 td3 / "spot3.jpk-force")
 
     # trace the callback calls
     calls = []
