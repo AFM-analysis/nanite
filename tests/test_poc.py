@@ -29,7 +29,7 @@ def test_poc_estimation(method, contact_point):
     ["gradient_zero_crossing", 1895],
     ["fit_constant_line", 1919],
     ["fit_constant_polynomial", 1885],
-    ["fit_line_polynomial", 1887,],
+    ["fit_line_polynomial", 1887],
     ["frechet_direct_path", 1903],
     ["deviation_from_baseline", 1908],
 ])
