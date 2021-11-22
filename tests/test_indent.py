@@ -11,7 +11,7 @@ import nanite.model
 
 
 data_path = pathlib.Path(__file__).parent / "data"
-jpkfile = data_path / "spot3-0192.jpk-force"
+jpkfile = data_path / "fmt-jpk-fd_spot3-0192.jpk-force"
 
 
 def test_apply_preprocessing():
@@ -292,9 +292,9 @@ def test_repr_str():
     idnt = ds1[0]
     assert "AFMForceDistance" not in str(idnt)
     assert "Indentation" in str(idnt)
-    assert "spot3-0192.jpk-force" in str(idnt)
+    assert "fmt-jpk-fd_spot3-0192.jpk-force" in str(idnt)
     assert "Indentation" in repr(idnt)
-    assert "spot3-0192.jpk-force" in repr(idnt)
+    assert "fmt-jpk-fd_spot3-0192.jpk-force" in repr(idnt)
 
 
 if __name__ == "__main__":

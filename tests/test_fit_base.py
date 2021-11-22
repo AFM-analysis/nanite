@@ -8,7 +8,7 @@ from nanite import IndentationGroup
 
 
 data_path = pathlib.Path(__file__).parent / "data"
-jpkfile = data_path / "spot3-0192.jpk-force"
+jpkfile = data_path / "fmt-jpk-fd_spot3-0192.jpk-force"
 
 
 def test_lmfit_method():

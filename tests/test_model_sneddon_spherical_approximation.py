@@ -9,7 +9,7 @@ from nanite.model import model_sneddon_spherical_approximation as mod_ssa
 
 
 data_path = pathlib.Path(__file__).resolve().parent / "data"
-jpkfile = data_path / "spot3-0192.jpk-force"
+jpkfile = data_path / "fmt-jpk-fd_spot3-0192.jpk-force"
 
 
 def test_app_ret():

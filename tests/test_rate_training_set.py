@@ -9,7 +9,7 @@ from nanite.rate import IndentationRater
 
 
 data_path = pathlib.Path(__file__).parent / "data"
-jpkfile = data_path / "map-data-reference-points.jpk-force-map"
+jpkfile = data_path / "fmt-jpk-fd_map-data-reference-points.jpk-force-map"
 
 
 def setup_training_set(n=300):

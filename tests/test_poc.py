@@ -17,7 +17,7 @@ data_path = pathlib.Path(__file__).resolve().parent / "data"
     ["deviation_from_baseline", 1908],
 ])
 def test_poc_estimation(method, contact_point):
-    fd = IndentationGroup(data_path / "spot3-0192.jpk-force")[0]
+    fd = IndentationGroup(data_path / "fmt-jpk-fd_spot3-0192.jpk-force")[0]
     fd.apply_preprocessing(["compute_tip_position",
                             "correct_force_offset"])
     assert poc.compute_poc(fd["force"], method) == contact_point
@@ -30,7 +30,7 @@ def test_poc_estimation(method, contact_point):
     ["deviation_from_baseline", 1908],
 ])
 def test_poc_estimation_details(method, contact_point):
-    fd = IndentationGroup(data_path / "spot3-0192.jpk-force")[0]
+    fd = IndentationGroup(data_path / "fmt-jpk-fd_spot3-0192.jpk-force")[0]
     fd.apply_preprocessing(["compute_tip_position",
                             "correct_force_offset"])
     _, details = poc.compute_poc(fd["force"], method, ret_details=True)
@@ -44,7 +44,7 @@ def test_poc_estimation_details(method, contact_point):
     ["deviation_from_baseline", 1908],
 ])
 def test_poc_estimation_via_indent(method, contact_point):
-    fd = IndentationGroup(data_path / "spot3-0192.jpk-force")[0]
+    fd = IndentationGroup(data_path / "fmt-jpk-fd_spot3-0192.jpk-force")[0]
     fd.apply_preprocessing(["compute_tip_position",
                             "correct_force_offset",
                             "correct_tip_offset"],
@@ -53,7 +53,7 @@ def test_poc_estimation_via_indent(method, contact_point):
 
 
 def test_poc_details_deviation_from_baseline():
-    fd = IndentationGroup(data_path / "spot3-0192.jpk-force")[0]
+    fd = IndentationGroup(data_path / "fmt-jpk-fd_spot3-0192.jpk-force")[0]
     details = fd.apply_preprocessing(
         ["compute_tip_position", "correct_force_offset", "correct_tip_offset"],
         options={"correct_tip_offset": {"method": "deviation_from_baseline"}},

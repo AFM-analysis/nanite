@@ -73,7 +73,7 @@ def test_check_order():
 
 
 def test_correct_split_approach_retract():
-    fd = IndentationGroup(data_path / "spot3-0192.jpk-force")[0]
+    fd = IndentationGroup(data_path / "fmt-jpk-fd_spot3-0192.jpk-force")[0]
 
     fd.apply_preprocessing(["compute_tip_position",
                             "correct_force_offset",
@@ -110,7 +110,7 @@ def test_process_bad():
 @pytest.mark.filterwarnings(
     'ignore::nanite.smooth.DoubledSmoothingWindowWarning:')
 def test_smooth():
-    idnt = IndentationGroup(data_path / "spot3-0192.jpk-force")[0]
+    idnt = IndentationGroup(data_path / "fmt-jpk-fd_spot3-0192.jpk-force")[0]
     idnt.apply_preprocessing(["compute_tip_position",
                               "correct_force_offset",
                               "correct_tip_offset"])
@@ -125,14 +125,14 @@ def test_smooth():
 
 
 def test_unknown_method():
-    idnt = IndentationGroup(data_path / "spot3-0192.jpk-force")[0]
+    idnt = IndentationGroup(data_path / "fmt-jpk-fd_spot3-0192.jpk-force")[0]
     with pytest.raises(KeyError, match="unknown_method"):
         idnt.apply_preprocessing(["compute_tip_position",
                                   "unknown_method"])
 
 
 def test_wrong_order():
-    idnt = IndentationGroup(data_path / "spot3-0192.jpk-force")[0]
+    idnt = IndentationGroup(data_path / "fmt-jpk-fd_spot3-0192.jpk-force")[0]
     with pytest.raises(ValueError, match="requires the steps"):
         # order matters
         idnt.apply_preprocessing(["correct_tip_offset",
@@ -140,7 +140,7 @@ def test_wrong_order():
 
 
 def test_wrong_order_2():
-    idnt = IndentationGroup(data_path / "spot3-0192.jpk-force")[0]
+    idnt = IndentationGroup(data_path / "fmt-jpk-fd_spot3-0192.jpk-force")[0]
     with pytest.raises(ValueError, match="requires the steps"):
         # order matters
         idnt.apply_preprocessing(["correct_split_approach_retract",

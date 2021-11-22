@@ -10,7 +10,7 @@ from nanite import Indentation, IndentationGroup, load_group
 
 
 data_path = pathlib.Path(__file__).resolve().parent / "data"
-jpkfile = data_path / "spot3-0192.jpk-force"
+jpkfile = data_path / "fmt-jpk-fd_spot3-0192.jpk-force"
 
 
 def test_base():
@@ -34,12 +34,12 @@ def test_base():
 
 def test_subgroup():
     tmp = tempfile.mkdtemp(prefix="test_nanite_group")
-    shutil.copy(data_path / "map-data-reference-points.jpk-force-map", tmp)
-    shutil.copy(data_path / "map2x2_extracted.jpk-force-map", tmp)
-    shutil.copy(data_path / "flipsign_2015.05.22-15.31.49.352.jpk-force", tmp)
+    shutil.copy(data_path / "fmt-jpk-fd_map-data-reference-points.jpk-force-map", tmp)
+    shutil.copy(data_path / "fmt-jpk-fd_map2x2_extracted.jpk-force-map", tmp)
+    shutil.copy(data_path / "fmt-jpk-fd_flipsign_2015.05.22-15.31.49.352.jpk-force", tmp)
 
     grp = load_group(tmp)
-    exp = pathlib.Path(tmp) / "map2x2_extracted.jpk-force-map"
+    exp = pathlib.Path(tmp) / "fmt-jpk-fd_map2x2_extracted.jpk-force-map"
     subgrp = grp.subgroup_with_path(path=exp)
     assert len(grp) == 8
     assert len(subgrp) == 4

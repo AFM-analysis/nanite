@@ -9,8 +9,8 @@ from nanite.fit import FitDataError
 
 
 data_path = pathlib.Path(__file__).parent / "data"
-jpkfile = data_path / "spot3-0192.jpk-force"
-badjpk = data_path / "bad_GWATspot1-data-2017.10.17-16.39.42.396-5.jpk-force"
+jpkfile = data_path / "fmt-jpk-fd_spot3-0192.jpk-force"
+badjpk = data_path / "fmt-jpk-fd_single_bad_GWAT_2017-10-17.jpk-force"
 
 
 def test_emodulus_search():

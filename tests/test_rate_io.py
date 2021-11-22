@@ -12,7 +12,7 @@ from nanite.rate.io import RateManager, hdf5_rated, load_hdf5, save_hdf5
 from nanite.rate.rater import IndentationRater
 
 data_path = pathlib.Path(__file__).resolve().parent / "data"
-jpkfile = data_path / "spot3-0192.jpk-force"
+jpkfile = data_path / "fmt-jpk-fd_spot3-0192.jpk-force"
 
 
 def setuph5(ret_idnt=False, path=jpkfile):
@@ -85,7 +85,7 @@ def test_rate_manager_basic():
 
 
 def test_rate_manager_crossval():
-    path = data_path / "map-data-reference-points.jpk-force-map"
+    path = data_path / "fmt-jpk-fd_map-data-reference-points.jpk-force-map"
     tdir, h5path = setuph5(path=path)
     rmg = RateManager(h5path)
     cv = rmg.get_cross_validation_score(regressor="Extra Trees",
@@ -126,7 +126,7 @@ def test_rate_manager_import():
 
 
 def test_rate_manager_get_ts():
-    path = data_path / "map-data-reference-points.jpk-force-map"
+    path = data_path / "fmt-jpk-fd_map-data-reference-points.jpk-force-map"
     tdir, h5path = setuph5(path=path)
     rmg = RateManager(h5path)
     x2, _ = rmg.get_training_set(which_type="binary")
@@ -139,7 +139,7 @@ def test_rate_manager_get_ts():
 
 @pytest.mark.filterwarnings('ignore::RuntimeWarning')
 def test_rate_manager_get_ts_bad():
-    path = data_path / "bad_map-data-2013.05.27-13.50.21.jpk-force-map"
+    path = data_path / "fmt-jpk-fd_map_bad_2013-05-27_2.jpk-force-map"
     tdir, h5path = setuph5(path=path)
     rmg = RateManager(h5path)
     x2, _ = rmg.get_training_set(which_type="binary")

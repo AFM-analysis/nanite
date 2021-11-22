@@ -1,5 +1,7 @@
 3.2.0
  - feat: allow specifying the minimizer method for fitting (#21)
+ - tests: rename experimental test data files according to
+   afmformats scheme (#20)
 3.1.4
  - docs: preprocessing methods not correctly rendered
 3.1.3
