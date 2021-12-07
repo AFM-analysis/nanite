@@ -97,14 +97,32 @@ Methods and constants
    :undoc-members:
 
 
+Modeling core class
+-------------------
+.. automodule:: nanite.model.core
+   :members:
+   :undoc-members:
+
+
+Residuals and weighting
+-----------------------
+.. automodule:: nanite.model.residuals
+   :members:
+   :undoc-members:
+
+
+.. automodule:: nanite.model.weight
+   :members:
+   :undoc-members:
+
+
 Models
 ------
-Each model is implemented as a submodule in `nanite.model`. For instance
+Each model is implemented as a submodule in ``nanite.model``. For instance
 :mod:`nanite.model.model_hertz_parabolic`. Each of these modules implements
 the following functions (which are not listed for each model in the
-subsections below):
-
-
+subsections below), here with the (non-existent) example module
+``model_submodule``:
 
 .. function:: nanite.model.model_submodule.get_parameter_defaults
 
@@ -116,7 +134,7 @@ subsections below):
 
 .. function:: nanite.model.model_submodule.residual
 
-    Compute the residuals during fitting.
+    Compute the residuals during fitting (optional).
 
 
 In addition, each submodule contains the following attributes:
@@ -135,7 +153,7 @@ In addition, each submodule contains the following attributes:
 
 .. attribute:: nanite.model.model_submodule.parameter_keys
 
-    Parameter keywords of the model for higher-level applications.
+    Parameter keys of the model for higher-level applications.
 
 .. attribute:: nanite.model.model_submodule.parameter_names
 
@@ -144,6 +162,27 @@ In addition, each submodule contains the following attributes:
 .. attribute:: nanite.model.model_submodule.parameter_units
 
     Parameter units for higher-level applications.
+
+
+Ancillary parameters may also be defined like so:
+
+.. function:: nanite.model.model_submodule.compute_ancillaries
+
+    Function that returns a dictionary with ancillary parameters
+    computed from an `Indentation` instance.
+
+.. attribute:: nanite.model.model_submodule.parameter_anc_keys
+
+    Ancillary parameter keys
+
+.. attribute:: nanite.model.model_submodule.parameter_anc_names
+
+    Ancillary parameter names
+
+.. attribute:: nanite.model.model_submodule.parameter_anc_units
+
+    Ancillary parameter units
+
 
 
 .. nanite_model_doc::

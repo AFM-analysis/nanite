@@ -25,6 +25,10 @@ def get_default_modeling_wrapper(model_function):
 
 
 def model_direction_agnostic(model_function, params, delta):
+    """Call `model_function` while making sure that data are in correct order
+
+    TODO: Re-evaluate usefulness of this method.
+    """
     if delta[0] < delta[-1]:
         revert = True
     else:
@@ -60,7 +64,7 @@ def residual(params, delta, force, model, weight_cp=5e-7):
         disable weighting.
     """
     md = model(params, delta)
-    resid = force-md
+    resid = force - md
 
     if weight_cp:
         # weight the curve so that the data around the contact_point do

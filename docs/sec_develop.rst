@@ -60,9 +60,33 @@ in PyJibe as well.
 Getting started
 ---------------
 First, create a Python file ``model_unique_name.py`` which will be the home of your
-new model (make sure the name starts with ``model_``). Place the file in the
-following location: ``nanite/model/model_unique_name.py``. You file should at least
-contain the following:
+new model (make sure the name starts with ``model_``).
+You have two options (**1 or 2**) to make your model available in nanite:
+
+1. Place the file in the following location: ``nanite/model/model_unique_name.py``.
+   Once you have created this file, you have to register it in nanite by
+   adding the line
+
+   .. code:: python
+
+       from . import model_unique_name  # noqa: F401
+
+   at the top in the file ``nanite/model/__init__.py``. This is the procedure
+   when you create a pull request.
+
+2. Or place the file in another location from where you can import it. This can
+   be a submodule in a different package, or just the script in your ``PATH``.
+   The only thing you need is to import the script and register it.
+
+   .. code:: python
+
+       import model_unique_name
+       from nanite.model import register_model
+
+       register_model(model_unique_name)
+
+
+Your file should at least contain the following:
 
 .. code:: python
 
@@ -139,28 +163,29 @@ contain the following:
     valid_axes_x = ["tip position"]
     valid_axes_y = ["force"]
 
-Once you have created this file, you have to register it in nanite by
-adding the line
-
-.. code:: python
-
-    from . import model_unique_name  # noqa: F401
-
-at the top in the file ``nanite/model/__init__.py``. That's it!
-
 A few things should be noted:
 
 - When designing your model parameters, always use SI units.
-- Always include a model formula. You can test whether it renders
-  correctly by building the documentation (see above) and checking
+- Always include a model formula in the doc string. You can test whether it
+  renders correctly by building the documentation (see above) and checking
   whether your model shows up properly in the code reference.
 - Fitting parameters should not contain spaces. Only use characters that
   are allowed in Python variable names.
 - Since fitting is based on `lmfit <https://pypi.org/project/lmfit/>`_, you may define
   `mathematical constraints <https://lmfit.github.io/lmfit-py/constraints.html>`_
-  in ``get_parameter_defaults``. However, if possible, try to solve your
-  particular problem with ancillaries (see below), a concept that is easier
-  to understand.
+  in ``get_parameter_defaults``. This includes
+  `algebraic constraints <https://lmfit.github.io/lmfit-py/constraints.html#using-inequality-constraints>`_.
+  However, if possible, try to solve your particular problem with ancillaries
+  (see below), a concept that is easier to debug.
+- If you would like to define "helper" parameters that should be hidden from
+  users in PyJibe, you can prepend an underscore (`_`) to the parameter
+  name.
+- By default, nanite uses the method
+  :func:`nanite.model.residuals.residual` to compute fit residuals. This
+  method also implements the "reduce residuals near contact point" feature.
+  You may define your own ``residual`` function in your model file, but this
+  is discouraged. The same is true for the ``model`` function, which defaults
+  to :func:`nanite.model.residuals.model_direction_agnostic`.
 
 Now it is time for a quick sanity check:
 

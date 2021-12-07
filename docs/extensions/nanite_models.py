@@ -60,10 +60,10 @@ class ModelDoc(Base):
             rst.append("")
             rst.append("    model key\t {}".format(mod.model_key))
             rst.append("    model name\t {}".format(mod.model_name))
-            rst.append("    model location\t {}".format(mod.__name__))
+            rst.append("    model location\t {}".format(mod.module.__name__))
             rst.append("")
 
-            rst.append(".. automodule:: {}".format(mod.__name__))
+            rst.append(".. automodule:: {}".format(mod.module.__name__))
             rst.append("    :members:")
             rst.append("    :undoc-members:")
             rst.append("    :exclude-members: model, residual, "
