@@ -1,6 +1,7 @@
 3.3.0
  - feat: introduce new NaniteFitModel class
  - ref: deprecated get_anc_parms in favor of compute_anc_parms
+ - docs: add more information on how to write own model functions
 3.2.1
  - enh: more sensible default parameters for POC estimation fits
 3.2.0
