@@ -16,7 +16,7 @@ class MockModelModule:
         self.model_key = model_key
 
     def __enter__(self):
-        nanite.model.register_model(self)
+        return nanite.model.register_model(self)
 
     def __exit__(self, a, b, c):
         nanite.model.models_available.pop(self.model_key)
@@ -38,6 +38,13 @@ class MockModelModuleExpr:
         self.parameter_units = ["Pa", "m", "", "Pa", "Pa", "m", "N"]
         self.valid_axes_x = ["tip position"]
         self.valid_axes_y = ["force"]
+
+    def __enter__(self):
+        nanite.model.register_model(self)
+        return self
+
+    def __exit__(self, a, b, c):
+        nanite.model.models_available.pop(self.model_key)
 
     @staticmethod
     def get_parameter_defaults():
@@ -116,10 +123,3 @@ class MockModelModuleExpr:
                 weight_dist=weight_cp)
             resid *= weights
         return resid
-
-    def __enter__(self):
-        nanite.model.register_model(self)
-        return self
-
-    def __exit__(self, a, b, c):
-        nanite.model.models_available.pop(self.model_key)

@@ -39,9 +39,12 @@ class NaniteFitModel:
         self.valid_axes_y = self.module.valid_axes_y
         # optional ancillary parameters
         if hasattr(self.module, "compute_ancillaries"):
+            self.has_module_ancillaries = True
             self.parameter_anc_keys = self.module.parameter_anc_keys
             self.parameter_anc_names = self.module.parameter_anc_names
             self.parameter_anc_units = self.module.parameter_anc_units
+        else:
+            self.has_module_ancillaries = False
         # model function
         self.model = self.module.model
         # residuals
@@ -86,7 +89,7 @@ class NaniteFitModel:
                 missing.append(attr)
         if missing:
             raise ModelIncompleteError(
-                f"Model `{self.module.__path__}` is missing the following "
+                f"Model `{self.module}` is missing the following "
                 + f"attributes: {', '.join(missing)}")
 
         model_key = self.module.model_key
@@ -180,7 +183,7 @@ class NaniteFitModel:
             gmeth = ANCILLARY_COMMON[key][2]
             anc_ord[key] = gmeth(fd)
         # from module
-        if hasattr(self.module, "compute_ancillaries"):
+        if self.has_module_ancillaries:
             anc_md = self.module.compute_ancillaries(fd)
             for kk in self.parameter_anc_keys:
                 anc_ord[kk] = anc_md[kk]
@@ -189,7 +192,7 @@ class NaniteFitModel:
     def get_anc_parm_keys(self):
         """Return the key names of a model's ancillary parameters"""
         akeys = list(ANCILLARY_COMMON.keys())
-        if self.compute_ancillaries is not None:
+        if self.has_module_ancillaries:
             akeys += self.parameter_anc_keys
         return akeys
 
@@ -209,7 +212,7 @@ class NaniteFitModel:
         if key in self.parameter_keys:
             idx = self.parameter_keys.index(key)
             return self.parameter_names[idx]
-        elif (self.compute_ancillaries is not None
+        elif (self.has_module_ancillaries
               and key in self.parameter_anc_keys):
             idx = self.parameter_anc_keys.index(key)
             return self.parameter_anc_names[idx]
@@ -235,7 +238,7 @@ class NaniteFitModel:
         if key in self.parameter_keys:
             idx = self.parameter_keys.index(key)
             return self.parameter_units[idx]
-        elif (self.compute_ancillaries is not None
+        elif (self.has_module_ancillaries
               and key in self.parameter_anc_keys):
             idx = self.parameter_anc_keys.index(key)
             return self.parameter_anc_units[idx]

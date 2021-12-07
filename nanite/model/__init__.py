@@ -119,11 +119,16 @@ def get_parm_unit(model_key, parm_key):
     return md.get_parm_unit(parm_key)
 
 
-def register_model(module):
+def register_model(module, *args):
     """Register a fitting model"""
+    if args:
+        warnings.warn("Please only pass the module to `register_model`!",
+                      DeprecationWarning)
     global models_available  # this is not necessary, but clarifies things
     # add model
-    models_available[module.model_key] = NaniteFitModel(module)
+    md = NaniteFitModel(module)
+    models_available[module.model_key] = md
+    return md
 
 
 models_available = {}
