@@ -6,26 +6,11 @@ import numpy as np
 import nanite
 import nanite.model
 
+from common import MockModelModule
+
 
 data_path = pathlib.Path(__file__).parent / "data"
 jpkfile = data_path / "fmt-jpk-fd_spot3-0192.jpk-force"
-
-
-class MockModel:
-    def __init__(self, model_key, **kwargs):
-        # rebase on hertz model
-        md = nanite.model.models_available["hertz_para"]
-        for akey in dir(md):
-            setattr(self, akey, getattr(md, akey))
-        for kw in kwargs:
-            setattr(self, kw, kwargs[kw])
-        self.model_key = model_key
-
-    def __enter__(self):
-        nanite.model.register_model(self, self.__repr__())
-
-    def __exit__(self, a, b, c):
-        nanite.model.models_available.pop(self.model_key)
 
 
 def test_simple_ancillary_override():
@@ -33,7 +18,7 @@ def test_simple_ancillary_override():
     ds1 = nanite.IndentationGroup(jpkfile)
     idnt = ds1[0]
 
-    with MockModel(
+    with MockModelModule(
         compute_ancillaries=lambda x: {"E": 1580},
         parameter_anc_keys=["E"],
         parameter_anc_names=["ancillary E guess"],
@@ -59,7 +44,7 @@ def test_simple_ancillary_override_nan():
     ds1 = nanite.IndentationGroup(jpkfile)
     idnt = ds1[0]
 
-    with MockModel(
+    with MockModelModule(
         compute_ancillaries=lambda x: {"E": np.nan},
         parameter_anc_keys=["E"],
         parameter_anc_names=["ancillary E guess"],

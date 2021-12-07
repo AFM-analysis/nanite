@@ -169,7 +169,7 @@ def test_get_initial_fit_parameters():
 def test_get_model():
     md = nanite.model.model_hertz_paraboloidal
     model_name = "parabolic indenter (Hertz)"
-    md2 = nanite.model.get_model_by_name(model_name)
+    md2 = nanite.model.get_model_by_name(model_name).module
     assert md2 is md
 
 

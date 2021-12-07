@@ -261,8 +261,8 @@ class Indentation(afmformats.AFMForceDistance):
                 model_key = self.fit_properties["model_key"]
             else:
                 model_key = FP_DEFAULT["model_key"]
-        return model.get_anc_parms(idnt=self,
-                                   model_key=model_key)
+        return model.compute_anc_parms(idnt=self,
+                                       model_key=model_key)
 
     def get_initial_fit_parameters(self, model_key=None,
                                    common_ancillaries=True,
