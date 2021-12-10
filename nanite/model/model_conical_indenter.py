@@ -61,7 +61,8 @@ def hertz_conical(delta, E, alpha, nu, contact_point=0, baseline=0):
 
     References
     ==========
-    Love (1939) :cite:`Love1939`
+    Love (1939) :cite:`Love1939`,
+    Sneddon (1965) :cite:`Sneddon1965` (equation 6.4)
     """
     aa = 2*np.tan(alpha*pi/180)/pi * E/(1-nu**2)
     root = contact_point-delta
