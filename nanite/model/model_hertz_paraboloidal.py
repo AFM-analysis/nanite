@@ -72,11 +72,13 @@ def hertz_paraboloidal(delta, E, R, nu, contact_point=0, baseline=0):
 
     Additional assumptions:
 
-    - radius of spherical cell is larger than the indentation
+    - no surface forces
+    - If the indenter is spherical, then its radius :math:`R` is much
+      larger than the indentation depth :math:`\delta`.
 
     References
     ----------
-    Sneddon (1965) :cite:`Sneddon1965`
+    Sneddon (1965) :cite:`Sneddon1965` (equation 6.9)
     """
     aa = 4/3 * E/(1-nu**2)*np.sqrt(R)
     root = contact_point-delta

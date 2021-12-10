@@ -69,7 +69,7 @@ def hertz_spherical(delta, double E, double R, double nu,
 
     References
     ----------
-    Sneddon (1965) :cite:`Sneddon1965`
+    Sneddon (1965) :cite:`Sneddon1965` (equations 6.13 and 6.15)
     """
     cdef double a
     cdef int ii
