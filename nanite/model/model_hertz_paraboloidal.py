@@ -47,7 +47,7 @@ def hertz_paraboloidal(delta, E, R, nu, contact_point=0, baseline=0):
 
     Notes
     -----
-    The original model reads
+    The derivation in :cite:`Sneddon1965` reads
 
     .. math::
 
@@ -61,6 +61,16 @@ def hertz_paraboloidal(delta, E, R, nu, contact_point=0, baseline=0):
     .. math::
 
         \rho^2 = 4kz.
+
+    As follows from the derivations in :cite:`LandauLifshitz`, this
+    model is valid for either of the two cases:
+
+    - Indentation of a plane (infinite radius) with Young's modulus
+      :math:`E` by a sphere with infinite Young's modulus and radius
+      :math:`R`, or
+    - Indentation of a sphere with radius :math:`R` and Young's modulus
+      :math:`E` by a plane (infinite radius) with infinite Young's modulus.
+
 
     These approximations are made by the Hertz model:
 
@@ -78,7 +88,9 @@ def hertz_paraboloidal(delta, E, R, nu, contact_point=0, baseline=0):
 
     References
     ----------
-    Sneddon (1965) :cite:`Sneddon1965` (equation 6.9)
+    Sneddon (1965) :cite:`Sneddon1965` (equation 6.9),
+    Theory of Elasticity by Landau and Lifshitz (1959)
+    :cite:`LandauLifshitz` (§9 Solid bodies in contact, equation 9.14)
     """
     aa = 4/3 * E/(1-nu**2)*np.sqrt(R)
     root = contact_point-delta
