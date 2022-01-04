@@ -130,6 +130,12 @@ class NaniteFitModel:
                     "The `parameter_anc_units` should not contain leading "
                     + f"or trailing spaces. Please check {model_key}!")
 
+        # check for label uniqueness
+        if len(self.module.parameter_names) \
+                != len(set(self.module.parameter_names)):
+            raise ModelImplementationError(
+                f"'parameter_names' should be unique for '{model_key}'!")
+
         # checks for model parameters
         p_def = list(self.module.get_parameter_defaults().keys())
         p_arg = list(inspect.signature(
