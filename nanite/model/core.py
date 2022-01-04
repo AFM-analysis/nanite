@@ -121,14 +121,16 @@ class NaniteFitModel:
         if [u.strip() for u in self.module.parameter_units] \
                 != self.module.parameter_units:
             warnings.warn("The `parameter_units` should not contain leading "
-                          + f"or trailing spaces. Please check {model_key}!")
+                          + f"or trailing spaces. Please check {model_key}!",
+                          ModelImplementationWarning)
 
         if hasattr(self.module, "parameter_anc_units"):
             if [u.strip() for u in self.module.parameter_anc_units] \
                     != self.module.parameter_anc_units:
                 warnings.warn(
                     "The `parameter_anc_units` should not contain leading "
-                    + f"or trailing spaces. Please check {model_key}!")
+                    + f"or trailing spaces. Please check {model_key}!",
+                    ModelImplementationWarning)
 
         # check for label uniqueness
         if len(self.module.parameter_names) \

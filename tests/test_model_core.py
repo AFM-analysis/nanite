@@ -30,7 +30,7 @@ def test_compute_anc_max_indent():
     assert np.allclose(max_indent, 1.2950734601921855e-07, atol=0, rtol=1e-8)
 
 
-def test_model_incomplete():
+def test_model_bad_incomplete():
     class BadModel:
         model_key = "peterpan"
     bad_mod = BadModel()
@@ -39,11 +39,42 @@ def test_model_incomplete():
         nanite.model.core.NaniteFitModel(bad_mod)
 
 
-def test_model_incomplete_anc():
+def test_model_bad_incomplete_anc():
     bad_mod = MockModelModule(model_key="peterpan",
                               compute_ancillaries=lambda x: {"peter": 1.2})
     with pytest.raises(nanite.model.core.ModelIncompleteError,
                        match="parameter_anc_keys"):
+        nanite.model.core.NaniteFitModel(bad_mod)
+
+
+def test_model_bad_labels_not_unique():
+    parameter_names_wrong = [
+        "SAME", "SAME", "Two", "Three", "Four"]
+    bad_mod = MockModelModule(model_key="peterpan",
+                              parameter_names=parameter_names_wrong)
+    with pytest.raises(nanite.model.core.ModelImplementationError,
+                       match="'parameter_names' should be unique for"):
+        nanite.model.core.NaniteFitModel(bad_mod)
+
+
+def test_model_bad_spaces_in_units():
+    parameter_units_wrong = ["Pa", "m", " ", "m", "N"]
+    bad_mod = MockModelModule(model_key="peterpan",
+                              parameter_units=parameter_units_wrong)
+    with pytest.warns(nanite.model.core.ModelImplementationWarning,
+                      match="should not contain leading or trailing spaces"):
+        nanite.model.core.NaniteFitModel(bad_mod)
+
+
+def test_model_bad_spaces_in_units_anc():
+    bad_mod = MockModelModule(
+                compute_ancillaries=lambda x: {"E": np.nan},
+                parameter_anc_keys=["E"],
+                parameter_anc_names=["ancillary E guess"],
+                parameter_anc_units=["Pa "],
+                model_key="test2")
+    with pytest.warns(nanite.model.core.ModelImplementationWarning,
+                      match="should not contain leading or trailing spaces"):
         nanite.model.core.NaniteFitModel(bad_mod)
 
 
