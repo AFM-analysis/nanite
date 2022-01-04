@@ -1,5 +1,6 @@
 3.3.1
  - docs: added some clarifications in the model docs
+ - enh: check for leading/trailing spaces in models
 3.3.0
  - feat: introduce new NaniteFitModel class
  - ref: deprecated get_anc_parms in favor of compute_anc_parms

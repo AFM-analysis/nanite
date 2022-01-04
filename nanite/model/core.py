@@ -117,6 +117,19 @@ class NaniteFitModel:
                 "'parameter_keys' and 'parameter_units' have different "
                 + f"lengths for model '{model_key}'!")
 
+        # check for spaces in units
+        if [u.strip() for u in self.module.parameter_units] \
+                != self.module.parameter_units:
+            warnings.warn("The `parameter_units` should not contain leading "
+                          + f"or trailing spaces. Please check {model_key}!")
+
+        if hasattr(self.module, "parameter_anc_units"):
+            if [u.strip() for u in self.module.parameter_anc_units] \
+                    != self.module.parameter_anc_units:
+                warnings.warn(
+                    "The `parameter_anc_units` should not contain leading "
+                    + f"or trailing spaces. Please check {model_key}!")
+
         # checks for model parameters
         p_def = list(self.module.get_parameter_defaults().keys())
         p_arg = list(inspect.signature(

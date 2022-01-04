@@ -72,7 +72,6 @@ class Indentation(afmformats.AFMForceDistance):
         if "preprocessing" in self.fit_properties:
             preproc_past = [self.fit_properties["preprocessing"],
                             self.fit_properties["preprocessing_options"]]
-
         else:
             preproc_past = []
 
