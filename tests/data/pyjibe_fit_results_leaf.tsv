@@ -1,2 +1,0 @@
-﻿Young's Modulus of Kelvin [Pa]	Young's Modulus of Maxwell [Pa]	Constraint [ ]	Contact Point [nm]	Force Baseline [pN]	Fit interval minimum [µm]	Fit interval maximum [µm]	Fit segment	Fit weight contact point [µm]	Fit model	Regressor	Training set	Rating
-1536.2	758.06	0.20931	-34.233	-38.72	-0.60648	0.29991	0	0	hertz_corr_visco_KVM	Extra Trees	/Users/sabuhat/Documents/PhD/Project2Simulations/nanite_repos/nanite-model-patch/venv/lib/python3.8/site-packages/nanite/rate/ts_zef18	6.0847

@@ -1,2 +1,0 @@
-﻿Young's Modulus [Pa]	Contact Point [nm]	Force Baseline [pN]	Fit interval minimum [µm]	Fit interval maximum [µm]	Fit segment	Fit weight contact point [µm]	Fit model	Regressor	Training set	Rating
-1535.7	-3.5505	-28.374	-0.60648	4.3771	0	0	hertz_para	Extra Trees	/Users/sabuhat/Documents/PhD/Project2Simulations/nanite_repos/nanite/venv/lib/python3.8/site-packages/nanite/rate/ts_zef18	4.6552
