@@ -7,9 +7,10 @@ def get_parameter_defaults():
     # The order of the parameters must match the order
     # of ´parameter_names´ and ´parameter_keys´.
     params = lmfit.Parameters()
-    params.add("E", value=1e3, min=0, max=20e3, vary=True)
-    params.add("E1", value=1e3, min=0, max=20e3, vary=True)
-    params.add("time_ind", value=1, min=0.0, max=10, vary=False)
+    params.add("_mod_constraint", value=1e2, min=0, max=20e3, vary=True)
+    params.add("Eu", value=1e3, min=0, max=20e3, vary=True)
+    params.add("Eapp", expr='Eu-_mod_constraint')
+    params.add("time_ind", value=1, min=1e-10, max=10, vary=False)
     params.add("R", value=2.5e-6, vary=False)
     params.add("eta", value=.5, min=0, vary=False)
     params.add("nu", value=.5, vary=False)
@@ -21,7 +22,8 @@ def get_parameter_defaults():
     return params
 
 
-def hertz_corrected_viscelasticity_KVM(delta, E, E1, time_ind, R, eta, nu,
+def hertz_corrected_viscelasticity_KVM(delta, _mod_constraint, Eu, Eapp,
+                                       time_ind, R, eta, nu,
                                        _constraint, lmd, velocity,
                                        contact_point,
                                        baseline):
@@ -45,10 +47,13 @@ def hertz_corrected_viscelasticity_KVM(delta, E, E1, time_ind, R, eta, nu,
 
     Parameters
     ----------
-    E: float
-        Young's modulus of Hertz theory [N/m²]
-    E1: float
-        Young's modulus of Maxwell element [N/m²]
+    _mod_constraint: float
+        Constraint for Eu > Eapp
+    Eu: float
+        Unrelaxed Young's modulus = E0 + E1[N/m²]
+    Eapp: float
+        Apparent Young's modulus = E0 + E1*exp(
+        -0.365*time_indentation/lambda) [N/m²]
     delta: 1d ndarray
         Indentation [m]
     time_ind: float
@@ -97,14 +102,14 @@ def hertz_corrected_viscelasticity_KVM(delta, E, E1, time_ind, R, eta, nu,
     Sneddon (1965) :cite:`Sneddon1965`,
     Dobler (personal communication, 2018) :cite:`Dobler`
     Ding et. al (2017) :cite:'Ding'
-    Abuhattum et al. (2021) :cite:'Abuhattum'
+    Abuhattum et al. (2022) :cite:'Abuhattum'
     """
     root = (contact_point - delta)
     pos = root > 0
     D = (1 - nu ** 2)
+    aa0 = 4 / 3 * np.sqrt(R) * (Eu - (Eu-Eapp)/(1-np.exp(-0.365 * time_ind/lmd)))/ D
 
-    aa0 = 4 / 3 * np.sqrt(R) * E / D
-    aa1 = 4 / 3 * np.sqrt(R) * E1 / D
+    aa1 = 4 / 3 * np.sqrt(R) * ((Eu-Eapp)/(1-np.exp(-0.365 * time_ind/lmd)))/ D
 
     bb = np.zeros_like(delta)
     bb[pos] = (root[pos]) ** (3 / 2)
@@ -113,7 +118,7 @@ def hertz_corrected_viscelasticity_KVM(delta, E, E1, time_ind, R, eta, nu,
     cc[pos] = 1 - 0.15 * root[pos] / R
 
     dd = np.zeros_like(delta)
-    dd[pos] = (np.exp(-0.365 * root[pos] / (velocity * (lmd))))
+    dd[pos] = (np.exp(-0.365 * root[pos] / (velocity * lmd)))
 
     ee = np.zeros_like(delta)
     ee[pos] = 7.25 * (root[pos]) ** (1 / 2) * R ** (1 / 2) * eta * velocity
@@ -129,8 +134,10 @@ def model(params, x):
         x = x[::-1]
 
     mf = hertz_corrected_viscelasticity_KVM(delta=x,
-                                            E=params["E"],
-                                            E1=params["E1"].value,
+                                            _mod_constraint=params[
+                                                "_mod_constraint"].value,
+                                            Eu=params["Eu"].value,
+                                            Eapp=params["Eapp"].value,
                                             time_ind=params["time_ind"].value,
                                             R=params["R"].value,
                                             eta=params["eta"].value,
@@ -390,19 +397,20 @@ model_doc = hertz_corrected_viscelasticity_KVM.__doc__
 model_func = hertz_corrected_viscelasticity_KVM
 model_key = "hertz_corr_visco_KVM"
 model_name = "Hertz model corrected for viscoelasticity using KVM model"
-parameter_keys = ["E", "E1", "time_ind", "R", "eta", "nu",
+parameter_keys = ["_mod_constraint", "Eu", "Eapp", "time_ind", "R", "eta",
+                  "nu",
                   "_constraint", "lmd", "velocity", "contact_point",
                   "baseline"]
-parameter_names = ["Young's Modulus of Kelvin",
-                   "Young's Modulus of Maxwell",
+parameter_names = ["Constraint Modulus", "Young's Modulus unrelaxed",
+                   "Young's Modulus apparent",
                    "Time to indent",
                    "Tip Radius", "viscosity", "Poisson's Ratio",
                    "Constraint",
                    "Maxwell element relaxation",
                    "Velocity of indenter",
                    "Contact Point", "Force Baseline"]
-parameter_units = ["Pa", "Pa", "s", "m", "Pa·s", " ", " ", "s", "m/s", "m",
-                   "N"]
+parameter_units = ["Pa", "Pa", "Pa", "s", "m", "Pa·s", " ", " ", "s", "m/s",
+                   "m", "N"]
 parameter_anc_keys = ["force_jump_max_indent", "eta",
                       "time_ind"]
 parameter_anc_names = ["Force jump at max indent", "viscosity",
