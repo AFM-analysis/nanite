@@ -7,11 +7,19 @@ import numpy as np
 from . import residuals
 
 
-class ModelIncompleteError(BaseException):
+class ModelError(BaseException):
     pass
 
 
-class ModelImplementationError(BaseException):
+class ModelIncompleteError(ModelError):
+    pass
+
+
+class ModelImplementationError(ModelError):
+    pass
+
+
+class ModelImportError(ModelError):
     pass
 
 

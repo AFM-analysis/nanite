@@ -1,3 +1,6 @@
+3.4.0
+ - feat: allow to load fitting models from external Python files
+ - enh: add method to deregister NaniteFitModels
 3.3.1
  - docs: added some clarifications in the model docs
  - enh: check for leading/trailing spaces in models

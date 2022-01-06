@@ -6,8 +6,10 @@ from . import model_hertz_three_sided_pyramid  # noqa: F401
 from . import model_sneddon_spherical  # noqa: F401
 from . import model_sneddon_spherical_approximation  # noqa: F401
 
-from .core import NaniteFitModel
+from .core import NaniteFitModel  # noqa: F401
 from . import residuals  # noqa: F401
+from .logic import models_available, register_model
+from .logic import deregister_model, load_model_from_file  # noqa: F401
 
 
 def compute_anc_parms(idnt, model_key):
@@ -118,20 +120,6 @@ def get_parm_unit(model_key, parm_key):
     md = models_available[model_key]
     return md.get_parm_unit(parm_key)
 
-
-def register_model(module, *args):
-    """Register a fitting model"""
-    if args:
-        warnings.warn("Please only pass the module to `register_model`!",
-                      DeprecationWarning)
-    global models_available  # this is not necessary, but clarifies things
-    # add model
-    md = NaniteFitModel(module)
-    models_available[module.model_key] = md
-    return md
-
-
-models_available = {}
 
 # Populate list of available fit models
 _loc = locals().copy()

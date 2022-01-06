@@ -61,9 +61,21 @@ Getting started
 ---------------
 First, create a Python file ``model_unique_name.py`` which will be the home of your
 new model (make sure the name starts with ``model_``).
-You have two options (**1 or 2**) to make your model available in nanite:
+You have three options (**1, 2 or 3**) to make your model available in nanite:
 
-1. Place the file in the following location: ``nanite/model/model_unique_name.py``.
+1. Place the file anywhere in your file system (e.g.
+   ``/home/peter/model_unique_name.py``) and run:
+
+   .. code:: python
+
+       from nanite.model import load_model_from_file
+
+       load_model_from_file("/home/peter/model_unique_name.py", register=True)
+
+   This is probably the most convenient method when prototyping. Note that
+   you can also import model scritps in PyJibe (via the Preferences menu).
+
+2. Place the file in the following location: ``nanite/model/model_unique_name.py``.
    Once you have created this file, you have to register it in nanite by
    adding the line
 
@@ -74,7 +86,7 @@ You have two options (**1 or 2**) to make your model available in nanite:
    at the top in the file ``nanite/model/__init__.py``. This is the procedure
    when you create a pull request.
 
-2. Or place the file in another location from where you can import it. This can
+3. Or place the file in another location from where you can import it. This can
    be a submodule in a different package, or just the script in your ``PATH``.
    The only thing you need is to import the script and register it.
 

@@ -1,5 +1,6 @@
 import lmfit
 import nanite
+import nanite.model.logic
 from nanite.model import residuals
 import numpy as np
 
@@ -16,7 +17,7 @@ class MockModelModule:
         self.model_key = model_key
 
     def __enter__(self):
-        return nanite.model.register_model(self)
+        return nanite.model.logic.register_model(self)
 
     def __exit__(self, a, b, c):
         nanite.model.models_available.pop(self.model_key)
@@ -40,11 +41,11 @@ class MockModelModuleExpr:
         self.valid_axes_y = ["force"]
 
     def __enter__(self):
-        nanite.model.register_model(self)
+        nanite.model.logic.register_model(self)
         return self
 
     def __exit__(self, a, b, c):
-        nanite.model.models_available.pop(self.model_key)
+        nanite.model.logic.deregister_model(self)
 
     @staticmethod
     def get_parameter_defaults():
