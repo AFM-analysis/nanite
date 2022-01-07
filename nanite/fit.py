@@ -20,6 +20,7 @@ FP_DEFAULT = dict(model_key="hertz_para",
                   range_x=[0, 0],
                   segment=0,
                   weight_cp=1e-6,
+                  gcf_k=1.0,
                   x_axis="tip position",
                   y_axis="force",
                   method="leastsq",
@@ -157,6 +158,11 @@ class IndentationFitter(object):
         weight_cp: float
             Weight the contact point region which shows artifacts
             that are difficult to model with e.g. Hertz.
+        gcf_k: float
+            Geometrical correction factor :math:`k` for non-single-contact
+            data. The measured indentation is multiplied by this factor to
+            correct for experimental geometries during fitting,
+            e.g. ``gcf_k=0.5`` for parallel-place compression.
         optimal_fit_edelta: bool
             Search for the optimal fit by varying the maximal
             indentation depth and determining a plateau in the
@@ -378,6 +384,9 @@ class IndentationFitter(object):
         """
         model_key = self.fp["model_key"]
         params_initial = self.fp["params_initial"]
+        # modify contact point with gcf_k
+        cpi = params_initial["contact_point"].value
+        params_initial["contact_point"].set(value=cpi * self.fp["gcf_k"])
         weight_cp = self.fp["weight_cp"]
 
         # boolean array indexing the segment
@@ -386,8 +395,8 @@ class IndentationFitter(object):
         xseg = self.x_axis[segid]
         # y: the entire segment
         yseg = self.y_axis[segid]
-        # x: the values being fitted
-        x = self.x_axis[self.fit_range]
+        # x: the values being fitted (correct with gcf_k)
+        x = self.x_axis[self.fit_range] * self.fp["gcf_k"]
         # y: the values being fitted
         y = self.y_axis[self.fit_range]
 
@@ -417,11 +426,14 @@ class IndentationFitter(object):
             fit_cur[segid] = md.model(fit.params, xseg)
             # residuals
             fit_res[segid] = md.residual(fit.params, xseg, yseg, weight_cp)
+            # inverse contact point correction with gcf_k
+            cpf = fit.params["contact_point"].value
+            fit.params["contact_point"].set(value=cpf / self.fp["gcf_k"])
             # add fit results to fp dictionary
             self.fp.update({"params_fitted": fit.params,
                             "chi_sqr": fit.chisqr,
-                            "xmin": x.min(),
-                            "xmax": x.max(),
+                            "xmin": x.min() / self.fp["gcf_k"],
+                            "xmax": x.max() / self.fp["gcf_k"],
                             "success": True,
                             })
         else:

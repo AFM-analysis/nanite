@@ -198,6 +198,15 @@ A few things should be noted:
   You may define your own ``residual`` function in your model file, but this
   is discouraged. The same is true for the ``model`` function, which defaults
   to :func:`nanite.model.residuals.model_direction_agnostic`.
+- You should always name the contact point parameter ``contact_point``.
+  Otherwise fitting will not work. If the :ref:`geometric correction factor
+  <sec_fitting_gcfk>` :math:`k` is used, the ``contact_point`` parameter is modified
+  internally before and after the fit. If you don't use ``contact_point``,
+  then your fit results will be wrong when using :math:`k \ne 1`.
+- You should always name the parameter describing the Young's modulus ``E``.
+  This is important for higher-level functionalities in e.g. PyJibe and for
+  plotting the Young's modulus over the indentation depth.
+
 
 Now it is time for a quick sanity check:
 

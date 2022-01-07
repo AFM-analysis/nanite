@@ -1,3 +1,7 @@
+3.5.0
+ - feat: allow to specify geometric correction factor k during fit
+   (tip position is multiplied by k and contact point is modified
+   directly before and after fit)
 3.4.0
  - feat: allow to load fitting models from external Python files
  - enh: add method to deregister NaniteFitModels

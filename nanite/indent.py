@@ -204,6 +204,11 @@ class Indentation(afmformats.AFMForceDistance):
         weight_cp: float
             Weight the contact point region which shows artifacts
             that are difficult to model with e.g. Hertz.
+        gcf_k: float
+            Geometrical correction factor :math:`k` for non-single-contact
+            data. The measured indentation is multiplied by this factor to
+            correct for experimental geometries during fitting,
+            e.g. ``gcf_k=0.5`` for parallel-place compression.
         optimal_fit_edelta: bool
             Search for the optimal fit by varying the maximal
             indentation depth and determining a plateau in the
