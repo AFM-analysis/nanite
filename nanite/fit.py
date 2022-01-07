@@ -391,8 +391,8 @@ class IndentationFitter(object):
 
         # boolean array indexing the segment
         segid = self.segment
-        # x: the entire segment
-        xseg = self.x_axis[segid]
+        # x: the entire segment (correct with gcf_k)
+        xseg = self.x_axis[segid] * self.fp["gcf_k"]
         # y: the entire segment
         yseg = self.y_axis[segid]
         # x: the values being fitted (correct with gcf_k)
