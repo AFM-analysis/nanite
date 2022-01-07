@@ -151,6 +151,9 @@ the geometric correction factor computes to :math:`k=0.6135`. Note that during
 fitting with the single-contact model, you now have to set the radius to
 the effective radius :math:`R_{12}=1.875\,\text{µm}`.
 
+For a more general description of this problem, please have a look at
+:cite:`Glaubitz2014`.
+
 
 Workflow
 ========
