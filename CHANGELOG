@@ -1,3 +1,5 @@
+3.5.1
+ - docs: minor update
 3.5.0
  - feat: allow to specify geometric correction factor k during fit
    (tip position is multiplied by k and contact point is modified
