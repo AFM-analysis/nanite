@@ -145,9 +145,9 @@ Finally, we arrive at
 
     \text{with}~~ k &= \frac{R_{2}^{1/3}}{R_2^{1/3} + R_{12}^{1/3}}.
 
-The parameter :math:`k` is the geometric correction factor. For an indenter
+The parameter :math:`k` is the geometrical correction factor. For an indenter
 with :math:`R_1 = 2.5\,\text{µm}` and a cell with :math:`R_2 = 7.5\,\text{µm}`,
-the geometric correction factor computes to :math:`k=0.6135`. Note that during
+the geometrical correction factor computes to :math:`k=0.6135`. Note that during
 fitting with the single-contact model, you now have to set the radius to
 the effective radius :math:`R_{12}=1.875\,\text{µm}`.
 
