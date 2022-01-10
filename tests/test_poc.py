@@ -70,14 +70,38 @@ def test_poc_details_deviation_from_baseline():
                 "plot baseline threshold",
                 "plot poc"]:
         assert key in pocd
-        assert np.allclose(
-            np.mean(pocd["plot baseline threshold"][1]),
-            8.431890003513514e-11,
-            atol=0)
-        assert np.allclose(
-            np.mean(pocd["plot baseline mean"][1]),
-            -7.573822405258677e-12,
-            atol=0)
+    assert np.allclose(
+        np.mean(pocd["plot baseline threshold"][1]),
+        8.431890003513514e-11,
+        atol=0)
+    assert np.allclose(
+        np.mean(pocd["plot baseline mean"][1]),
+        -7.573822405258677e-12,
+        atol=0)
+
+
+def test_poc_details_fit_line_polynomial():
+    fd = IndentationGroup(
+        data_path
+        / "fmt-jpk-fd_single_tilted-baseline-mitotic_2021-01-29.jpk-force")[0]
+    details = fd.apply_preprocessing(
+        ["compute_tip_position", "correct_tip_offset"],
+        options={"correct_tip_offset": {"method": "fit_line_polynomial"}},
+        ret_details=True)
+    pocd = details["correct_tip_offset"]
+    for key in ["plot force",
+                "plot fit",
+                "plot poc"]:
+        assert key in pocd
+    assert np.allclose(
+        pocd["plot poc"][0][0],
+        15602,
+        atol=0)
+    assert np.allclose(
+        fd["force"][15602],
+        1.7313584441928315e-09,
+        atol=0,
+    )
 
 
 def test_poc_frechet_direct_path():
