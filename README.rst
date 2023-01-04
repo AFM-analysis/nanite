@@ -23,7 +23,7 @@ To install the latest release, simply run:
 
 .. |PyPI Version| image:: https://img.shields.io/pypi/v/nanite.svg
    :target: https://pypi.python.org/pypi/nanite
-.. |Build Status| image:: https://img.shields.io/github/workflow/status/AFM-analysis/nanite/Checks
+.. |Build Status| image:: https://img.shields.io/github/actions/workflow/status/AFM-analysis/nanite/check.yml
    :target: https://github.com/AFM-analysis/nanite/actions?query=workflow%3AChecks
 .. |Coverage Status| image:: https://img.shields.io/codecov/c/github/AFM-analysis/nanite/master.svg
    :target: https://codecov.io/gh/AFM-analysis/nanite
