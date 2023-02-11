@@ -1,7 +1,7 @@
 import inspect
 
 import numpy as np
-import scipy.ndimage.filters as spfilt
+from scipy import ndimage
 
 #: Valid keyword arguments for feature types
 VALID_FEATURE_TYPES = ["all", "binary", "continuous"]
@@ -205,9 +205,9 @@ class IndentationFeatures(object):
             diff = diff[~np.isnan(diff)]
             if len(diff) > 50:
                 # find regions with peaks
-                diff_smooth = spfilt.gaussian_filter1d(diff, sigma=11)
+                diff_smooth = ndimage.gaussian_filter1d(diff, sigma=11)
                 delta1 = diff - diff_smooth
-                diff_smooth2 = spfilt.gaussian_filter1d(diff, sigma=1)
+                diff_smooth2 = ndimage.gaussian_filter1d(diff, sigma=1)
                 delta2 = diff_smooth2 - diff_smooth
                 std = np.std(delta1)
                 peakarray = np.diff(np.abs(delta2) > 3*std)
@@ -266,7 +266,7 @@ class IndentationFeatures(object):
             r_bl = r_bl[~np.isnan(r_bl)]
             # perform gaussian blur
             sigma = max(5, (int(r_bl.shape[0]/120)//2)*2+1)
-            y = spfilt.gaussian_filter1d(r_bl, sigma=sigma)
+            y = ndimage.gaussian_filter1d(r_bl, sigma=sigma)
             if len(y) > 2:
                 grad = np.gradient(y)
                 pos = np.sum(grad > 0)
@@ -441,7 +441,7 @@ class IndentationFeatures(object):
             if idmin != idmax:
                 # find zeros
                 idcen = idmin + (idmax - idmin) // 2
-                smooth = spfilt.gaussian_filter1d(yin-fit, sigma=11)
+                smooth = ndimage.gaussian_filter1d(yin - fit, sigma=11)
                 idzero1 = idmin + np.argmin(np.abs(smooth[idmin:idcen]))
                 idzero2 = idcen + np.argmin(np.abs(smooth[idcen:idmax]))
                 # change of sign in 1st, 2nd, and 3rd part of indentation
@@ -480,7 +480,7 @@ class IndentationFeatures(object):
             # get approach curve
             a_ind = self.datay_apr[indidx]
             # perform gaussian blur
-            y = spfilt.gaussian_filter1d(a_ind, sigma=2)
+            y = ndimage.gaussian_filter1d(a_ind, sigma=2)
             if len(y) > 2:
                 grad = np.gradient(y)
                 gz = np.abs(np.sum(grad[grad > 0]))
@@ -555,9 +555,9 @@ class IndentationFeatures(object):
             diff = diff[~np.isnan(diff)]
             if len(diff) > 20:
                 # find regions with peaks
-                diff_smooth = spfilt.gaussian_filter1d(diff, sigma=11)
+                diff_smooth = ndimage.gaussian_filter1d(diff, sigma=11)
                 delta1 = diff - diff_smooth
-                diff_smooth2 = spfilt.gaussian_filter1d(diff, sigma=1)
+                diff_smooth2 = ndimage.gaussian_filter1d(diff, sigma=1)
                 delta2 = np.abs(diff_smooth2 - diff_smooth)
                 std = np.std(delta1)
                 peaks = np.sum(delta2[delta1 > 3*std])

@@ -1,5 +1,6 @@
 3.5.2
  - build: add wheels for Python up to 3.11
+ - ref: fix DeprecationWarnings
  - docs: make docs build on Windows
  - docs: update GH actions badge
  - tests: loosen np.allclose calls

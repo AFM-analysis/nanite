@@ -1,7 +1,7 @@
 """Methods for estimating the point of contact (POC)"""
 import lmfit
 import numpy as np
-from scipy.ndimage.filters import uniform_filter1d
+from scipy.ndimage import uniform_filter1d
 
 
 #: List of all methods available for contact point estimation
