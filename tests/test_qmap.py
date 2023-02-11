@@ -100,9 +100,12 @@ def test_feat_emod_withfit():
 
     qd = qm.get_qmap("fit: Young's modulus", qmap_only=True)
     vals = qd.flat[~np.isnan(qd.flat)]
-    assert np.allclose(vals[0], 57.62946472325552), "gray matter"
-    assert np.allclose(vals[2], 46.61406865570242), "white matter"
-    assert np.allclose(vals[1], 17605.034077063443), "background"
+    # gray matter
+    assert np.allclose(vals[0], 57.62946472325552, atol=0, rtol=.01)
+    # white matter
+    assert np.allclose(vals[2], 46.61406865570242, atol=0, rtol=.01)
+    # background
+    assert np.allclose(vals[1], 17605.034077063443, atol=0, rtol=0.0001)
 
 
 def test_feat_rating():

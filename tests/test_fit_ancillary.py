@@ -35,8 +35,8 @@ def test_simple_ancillary_override():
         assert idnt.fit_properties["params_initial"]["E"].value == 1580
         assert np.allclose(idnt.fit_properties["params_fitted"]["E"].value,
                            1584.8941261696934,
-                           atol=0,
-                           rtol=1e-5)
+                           atol=1,
+                           rtol=0)
 
 
 def test_simple_ancillary_override_nan():

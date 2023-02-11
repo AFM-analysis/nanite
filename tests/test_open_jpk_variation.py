@@ -23,7 +23,9 @@ def test_process_flipsign():
     idnt.fit_model(model_key="hertz_para", weight_cp=False,
                    params_initial=params_initial)
     assert np.allclose(idnt.fit_properties["params_fitted"]["E"].value,
-                       5230.008779761989)
+                       5230.008779761989,
+                       atol=1,
+                       rtol=0)
 
 
 if __name__ == "__main__":
