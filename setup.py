@@ -50,7 +50,7 @@ setup(
                  "tifffile>=0.15.0",
                  ],
     },
-    python_requires='>=3.6, <4',
+    python_requires='>=3.8, <4',
     entry_points={
         "console_scripts": [
             "nanite-setup-profile = nanite.cli:setup_profile [CLI]",
