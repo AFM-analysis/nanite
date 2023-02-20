@@ -1,3 +1,5 @@
+3.5.3
+ - setup: bump numpy to 1.22.0
 3.5.2
  - build: add wheels for Python up to 3.11
  - ref: fix DeprecationWarnings

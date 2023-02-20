@@ -34,7 +34,7 @@ setup(
     install_requires=["afmformats>=0.16.4",
                       "h5py>=2.8.0",
                       "lmfit>=1",
-                      "numpy>=1.16.0",  # cython build
+                      "numpy>=1.22.0",  # cython build
                       "scikit-learn>=0.23.0",  # rating tests
                       "scipy",
                       ],
