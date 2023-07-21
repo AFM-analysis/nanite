@@ -3,6 +3,7 @@
  - setup: drop support for Python 3.8 and 3.9
  - setup: bump h5py from 2.8.0 to 3.9.0
  - build: migrate to pyproject.toml
+ - ci: use cibuildwheel for releases
 3.5.4
  - setup: drop support for Python 3.7
 3.5.3

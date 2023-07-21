@@ -1,34 +1,50 @@
 name: Release to PyPI
 
-on:  
+on:
   push:
     tags:
       - '*'
 
 jobs:
-  deploy:
-
+  build_wheels:
+    name: Build wheels on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        python-version: ['3.8', '3.9', '3.10', '3.11']
-        os: [macos-latest, windows-latest]
+        python-version: ['3.10', '3.11']
+        os: [ubuntu-20.04, windows-2019, macos-11]
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install setuptools wheel twine
-        pip install -e .
-    - name: Build and publish
-      env:
-        TWINE_USERNAME: ci_afm
-        TWINE_PASSWORD: ${{ secrets.PYPI_PWD }}
-      run: |
-        python setup.py sdist bdist_wheel
-        twine upload --skip-existing dist/*
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Build wheels
+        uses: pypa/cibuildwheel@v2.12.1
+
+      - name: publish
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_PWD }}
+        run: |
+          pipx install twine
+          twine upload --skip-existing wheelhouse/*
+
+  build_sdist:
+    name: Build source distribution
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Build sdist
+        run: pipx run build --sdist
+
+      - name: publish
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_PWD }}
+        run: |
+          pipx install twine
+          twine upload --skip-existing dist/*

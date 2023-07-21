@@ -17,13 +17,6 @@ The appendix ``[CLI]`` makes sure that all dependencies for the
 :ref:`command line interface <sec_cli>` are installed. If you are
 only using nanite as a Python module, you may safely omit it.
 
-Note that if you are installing from source or if no binary wheel is
-available for your platform and Python version, `Cython <http://cython.org/>`_
-will be installed to build the required nanite extensions. If this process
-fails, please request a binary wheel for your platform (e.g. Windows 64bit)
-and Python version (e.g. 3.6) by creating a new
-`issue <https://github.com/AFM-Analysis/nanite/issues>`_.
-
 
 What is nanite?
 ===============
