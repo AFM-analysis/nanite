@@ -2,6 +2,10 @@ include CHANGELOG
 include LICENSE
 include README.rst
 include pyproject.toml
-recursive-include tests *.jpk-force *.jpk-force-map *.py
 recursive-include nanite *.txt
-
+recursive-include docs *.py *.md *.txt *.rst *.bib *.gif *.jpg
+recursive-include examples *.py *.jpg *.npy *.npz
+recursive-include tests *.jpk-force *.jpk-force-map *.py
+prune docs/_build
+prune .*
+prune .*/

@@ -1,3 +1,67 @@
 [build-system]
 # Defined by PEP 518:
-requires = ["cython", "oldest-supported-numpy", "setuptools", "wheel"]
+# use oldest-supported-numpy (https://github.com/pypa/pip/issues/9542#issuecomment-771200755)
+requires = [
+    # for building Cython extensions
+    "cython", "oldest-supported-numpy", "setuptools", "wheel",
+    # for version management
+    "setuptools>=45", "setuptools_scm[toml]>=6.2"
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nanite"
+authors = [
+    # In alphabetical order.
+    {name = "Paul Müller"},
+    {name = "Shada Abuhattum"},
+]
+maintainers = [
+    {name = "Paul Müller", email="dev@craban.de"},
+]
+description = "Loading, fitting, and rating AFM force-distance data"
+readme = "README.rst"
+requires-python = ">=3.10, <4"
+keywords = ["atomic force microscopy",
+            "mechanical phenotyping",
+            "tissue analysis"]
+classifiers = [
+    'Operating System :: OS Independent',
+    'Programming Language :: Python :: 3',
+    'Topic :: Scientific/Engineering :: Visualization',
+    'Intended Audience :: Science/Research',
+]
+license = {text = "GPL version 3"}
+dependencies = [
+    "afmformats>=0.16.4",
+    "h5py>=3.9.0",
+    "lmfit>=1",
+    "numpy>=1.22.0",  # cython build
+    "scikit-learn>=0.23.0",  # rating tests
+    "scipy",
+  ]
+dynamic = ["version"]
+[project.optional-dependencies]
+CLI = ["appdirs",
+       "matplotlib>=2.2.2",
+       "tifffile>=0.15.0",
+    ]
+
+[project.scripts]
+nanite-setup-profile = "nanite.cli:setup_profile [CLI]"
+nanite-rate = "nanite.cli:rate [CLI]"
+nanite-fit = "nanite.cli:fit [CLI]"
+nanite-generate-training-set = "nanite.cli:generate_training_set [CLI]"
+
+[project.urls]
+source = "https://github.com/AFM-Analysis/nanite"
+tracker = "https://github.com/AFM-Analysis/nanite/issues"
+documentation = "https://nanite.readthedocs.io/en/stable/"
+changelog = "https://nanite.readthedocs.io/en/stable/sec_changelog.html"
+
+[tool.setuptools.packages]
+find = {}
+
+[tool.setuptools_scm]
+write_to = "nanite/_version.py"
+version_scheme = "post-release"

@@ -1,73 +1,13 @@
-from os.path import dirname, exists, realpath
-from setuptools import setup, Extension, find_packages
-import sys
+from setuptools import Extension, setup
 
-# numpy and cython are installed via pyproject.toml [build-system]
 import numpy as np
-
-maintainer = "Paul Müller"
-maintainer_email = "dev@craban.de"
-description = 'Loading, fitting, and rating AFM force-distance data'
-name = 'nanite'
-year = "2018"
-
-
-sys.path.insert(0, realpath(dirname(__file__))+"/"+name)
-try:
-    from _version import version  # noqa: F821
-except BaseException:
-    version = "unknown"
 
 
 setup(
-    name=name,
-    maintainer=maintainer,
-    maintainer_email=maintainer_email,
-    url='https://github.com/AFM-analysis/nanite',
-    version=version,
-    packages=find_packages(),
-    package_dir={name: name},
-    include_package_data=True,
-    license="GPL v3",
-    description=description,
-    long_description=open('README.rst').read() if exists('README.rst') else '',
-    install_requires=["afmformats>=0.16.4",
-                      "h5py>=2.8.0",
-                      "lmfit>=1",
-                      "numpy>=1.22.0",  # cython build
-                      "scikit-learn>=0.23.0",  # rating tests
-                      "scipy",
-                      ],
-    ext_modules=[Extension("nanite.model.model_sneddon_spherical",
-                           sources=[
-                               "nanite/model/model_sneddon_spherical.pyx"],
-                           include_dirs=[np.get_include()],
-                           )
-                 ],
-    extras_require={
-        'CLI':  ["appdirs",
-                 "matplotlib>=2.2.2",
-                 "tifffile>=0.15.0",
-                 ],
-    },
-    python_requires='>=3.8, <4',
-    entry_points={
-        "console_scripts": [
-            "nanite-setup-profile = nanite.cli:setup_profile [CLI]",
-            "nanite-rate = nanite.cli:rate [CLI]",
-            "nanite-fit = nanite.cli:fit [CLI]",
-            "nanite-generate-training-set = nanite.cli:generate_training_set"
-            + " [CLI]",
-        ],
-    },
-    keywords=["atomic force microscopy",
-              "mechanical phenotyping",
-              "tissue analysis"],
-    classifiers=[
-        'Operating System :: OS Independent',
-        'Programming Language :: Python :: 3',
-        'Topic :: Scientific/Engineering :: Visualization',
-        'Intended Audience :: Science/Research'
-    ],
-    platforms=['ALL'],
+    ext_modules=[
+        Extension("nanite.model.model_sneddon_spherical",
+                  sources=["nanite/model/model_sneddon_spherical.pyx"],
+                  include_dirs=[np.get_include()],
+                  )
+        ]
 )
