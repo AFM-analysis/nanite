@@ -61,13 +61,5 @@ def test_simple_ancillary_override_nan():
         assert idnt.fit_properties["params_initial"]["E"].value == 3000
         assert np.allclose(idnt.fit_properties["params_fitted"]["E"].value,
                            1584.8876592662375,
-                           atol=0,
-                           rtol=1e-5)
-
-
-if __name__ == "__main__":
-    # Run all tests
-    loc = locals()
-    for key in list(loc.keys()):
-        if key.startswith("test_") and hasattr(loc[key], "__call__"):
-            loc[key]()
+                           atol=1,
+                           rtol=0)

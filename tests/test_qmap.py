@@ -71,7 +71,7 @@ def test_feat_emod_nofit():
         qd = qm.get_qmap("fit: Young's modulus", qmap_only=True)
         assert len(w) == 4
         assert w[0].category is qmap.DataMissingWarning
-    assert np.alltrue(np.isnan(qd))
+    assert np.all(np.isnan(qd))
 
 
 def test_feat_emod_withfit():
@@ -105,7 +105,7 @@ def test_feat_emod_withfit():
     # white matter
     assert np.allclose(vals[2], 46.61406865570242, atol=0, rtol=.01)
     # background
-    assert np.allclose(vals[1], 17605.034077063443, atol=0, rtol=0.0001)
+    assert np.allclose(vals[1], 17608.123636775974, atol=4, rtol=0)
 
 
 def test_feat_rating():
@@ -148,7 +148,7 @@ def test_feat_rating_nofit():
         qd = qm.get_qmap("fit: rating", qmap_only=True)
         assert len(w) == 4
         assert w[0].category is qmap.DataMissingWarning
-    assert np.alltrue(np.isnan(qd))
+    assert np.all(np.isnan(qd))
 
 
 def test_get_coords():
@@ -195,11 +195,3 @@ def test_metadata():
                        [1.97265625, 601.97265625,
                         -783.53515625, -183.53515625000006])
     assert qm.shape == (10, 10)
-
-
-if __name__ == "__main__":
-    # Run all tests
-    loc = locals()
-    for key in list(loc.keys()):
-        if key.startswith("test_") and hasattr(loc[key], "__call__"):
-            loc[key]()

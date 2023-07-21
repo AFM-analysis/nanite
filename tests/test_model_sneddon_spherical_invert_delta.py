@@ -13,11 +13,3 @@ def test_get_a_sneddon():
         delta_predict[i] = hertz_spherical.delta_of_a(a, r)
 
     assert np.allclose(delta_real, delta_predict, rtol=1e-06, atol=0)
-
-
-if __name__ == "__main__":
-    # Run all tests
-    loc = locals()
-    for key in list(loc.keys()):
-        if key.startswith("test_") and hasattr(loc[key], "__call__"):
-            loc[key]()

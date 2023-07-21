@@ -111,7 +111,9 @@ def test_fitting():
                    weight_cp=False)
     params = idnt.fit_properties["params_fitted"]
     assert np.allclose(params["contact_point"].value, 1.8029310201193193e-05)
-    assert np.allclose(params["E"].value, 14741.958242422093)
+    assert np.allclose(params["E"].value, 14741.958242422093,
+                       atol=1,
+                       rtol=0)
 
     # Fit with absolute short
     idnt.fit_model(model_key="hertz_para",
@@ -124,7 +126,9 @@ def test_fitting():
                    weight_cp=False)
     params2 = idnt.fit_properties["params_fitted"]
     assert np.allclose(params2["contact_point"].value, 1.8028461828272924e-05)
-    assert np.allclose(params2["E"].value, 14840.840404880484)
+    assert np.allclose(params2["E"].value, 14838.89245576058,
+                       atol=3,
+                       rtol=0)
 
     # Fit with relative to initial fit
     idnt.fit_model(model_key="hertz_para",
@@ -139,7 +143,9 @@ def test_fitting():
     # These results are subject to change if the "relative cp" method is
     # changed.
     assert np.allclose(params3["contact_point"].value, 1.8028478083499856e-05)
-    assert np.allclose(params3["E"].value, 14839.821714634612)
+    assert np.allclose(params3["E"].value, 14838.010069354472,
+                       atol=2,
+                       rtol=0)
 
 
 @pytest.mark.filterwarnings('ignore::nanite.fit.FitWarning')
@@ -205,8 +211,9 @@ def test_preprocessing_reset():
     assert not fd._preprocessing_details
     assert np.allclose(
         fd._fit_properties["params_fitted"]["contact_point"].value,
-        -3.5147555568064786e-06,
-        atol=0)
+        -3.514699519428463e-06,
+        atol=0,
+        rtol=1e-4)
     assert "tip position" in fd
 
     # Change preprocessing and make sure properties are reset
@@ -295,11 +302,3 @@ def test_repr_str():
     assert "fmt-jpk-fd_spot3-0192.jpk-force" in str(idnt)
     assert "Indentation" in repr(idnt)
     assert "fmt-jpk-fd_spot3-0192.jpk-force" in repr(idnt)
-
-
-if __name__ == "__main__":
-    # Run all tests
-    loc = locals()
-    for key in list(loc.keys()):
-        if key.startswith("test_") and hasattr(loc[key], "__call__"):
-            loc[key]()

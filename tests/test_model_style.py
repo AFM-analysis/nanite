@@ -51,11 +51,3 @@ def test_model_parameter_units():
             else:
                 msg = "Parameter {} not registered for test!".format(key2)
                 assert False, msg
-
-
-if __name__ == "__main__":
-    # Run all tests
-    loc = locals()
-    for _key in list(loc.keys()):
-        if _key.startswith("test_") and hasattr(loc[_key], "__call__"):
-            loc[_key]()

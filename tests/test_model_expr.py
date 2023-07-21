@@ -125,11 +125,3 @@ def test_expr_model_sign():
         emod = parms["E1"].value
         # There are some difference due to heuristics
         assert np.allclose(emod, remod, atol=0, rtol=3e-3)
-
-
-if __name__ == "__main__":
-    # Run all tests
-    loc = locals()
-    for key in list(loc.keys()):
-        if key.startswith("test_") and hasattr(loc[key], "__call__"):
-            loc[key]()

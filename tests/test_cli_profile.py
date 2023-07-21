@@ -75,11 +75,3 @@ def test_single_fitparam():
     params = pf.get_fit_params()
     assert params["E"].value == 50
     assert params["R"].value == 16e-6
-
-
-if __name__ == "__main__":
-    # Run all tests
-    loc = locals()
-    for key in list(loc.keys()):
-        if key.startswith("test_") and hasattr(loc[key], "__call__"):
-            loc[key]()

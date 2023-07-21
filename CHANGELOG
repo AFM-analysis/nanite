@@ -1,3 +1,5 @@
+3.5.5
+ - tests: make tests less strict and some cleanup
 3.5.4
  - setup: drop support for Python 3.7
 3.5.3

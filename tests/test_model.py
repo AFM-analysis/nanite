@@ -74,11 +74,3 @@ def test_bad_model_func_args():
                 mod.__exit__(None, None, None)
             except KeyError:
                 pass
-
-
-if __name__ == "__main__":
-    # Run all tests
-    loc = locals()
-    for key in list(loc.keys()):
-        if key.startswith("test_") and hasattr(loc[key], "__call__"):
-            loc[key]()

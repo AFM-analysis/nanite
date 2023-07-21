@@ -25,11 +25,3 @@ def test_plotting():
                    segment="retract")
     plotting.plot_data(idnt=idnt, path=name)
     assert name.stat().st_size > 90000
-
-
-if __name__ == "__main__":
-    # Run all tests
-    loc = locals()
-    for key in list(loc.keys()):
-        if key.startswith("test_") and hasattr(loc[key], "__call__"):
-            loc[key]()

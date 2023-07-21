@@ -145,11 +145,3 @@ def test_wrong_order_2():
         # order matters
         idnt.apply_preprocessing(["correct_split_approach_retract",
                                   "compute_tip_position"])
-
-
-if __name__ == "__main__":
-    # Run all tests
-    loc = locals()
-    for key in list(loc.keys()):
-        if key.startswith("test_") and hasattr(loc[key], "__call__"):
-            loc[key]()

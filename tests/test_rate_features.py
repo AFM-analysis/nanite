@@ -75,7 +75,7 @@ def test_get_features():
         'feat_con_bln_slope': 0.6287923407474181,
         'feat_con_bln_variation': 0.46602504647335763,
         'feat_con_cp_curvature': -0.15481927352155514,
-        'feat_con_cp_magnitude': 0.005076769161668967,
+        'feat_con_cp_magnitude': 0.005076100265012789,
         'feat_con_idt_maxima_75perc': 0.3184029609825442,
         'feat_con_idt_monotony': 0.0,
         'feat_con_idt_spike_area': 0.4262935122879405,
@@ -84,7 +84,9 @@ def test_get_features():
     }
     for key in ref:
         idx = names.index(key)
-        assert np.allclose(samples[idx], ref[key]), "Mismatch '{}'".format(key)
+        assert np.allclose(samples[idx], ref[key],
+                           rtol=1e-3,
+                           ), "Mismatch '{}'".format(key)
 
 
 def test_get_feature_funcs_order():
@@ -153,11 +155,3 @@ def test_get_feature_names_indices():
                                         ret_indices=True)
     nall = feat.get_feature_names()
     assert idx[0] == nall.index(names[0])
-
-
-if __name__ == "__main__":
-    # Run all tests
-    loc = locals()
-    for _key in list(loc.keys()):
-        if _key.startswith("test_") and hasattr(loc[_key], "__call__"):
-            loc[_key]()

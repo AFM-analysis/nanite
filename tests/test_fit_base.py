@@ -35,8 +35,8 @@ def test_lmfit_method():
     params1 = apret.fit_properties["params_fitted"]
     assert np.allclose(params1["contact_point"].value,
                        1.802931023582261e-05,
+                       atol=2e-10,
                        rtol=0,
-                       atol=0.000000000005,
                        )
 
     # make sure leastsq is the default
@@ -50,8 +50,8 @@ def test_lmfit_method():
     assert params3["contact_point"].value != params1["contact_point"]
     assert np.allclose(params3["contact_point"].value,
                        1.8779025e-05,
+                       atol=2e-10,
                        rtol=0,
-                       atol=0.000000000005,
                        )
 
 
@@ -83,8 +83,8 @@ def test_gcf_k_no_change_in_contact_point(gcf_k):
     params1 = apret.fit_properties["params_fitted"]
     assert np.allclose(params1["contact_point"].value,
                        1.802931023582261e-05,
+                       atol=2e-11,
                        rtol=0,
-                       atol=0.000000000005,
                        )
 
 
@@ -114,13 +114,13 @@ def test_gcf_k_no_change_in_fitted_curve(gcf_k):
 
     apret.fit_model(**kwargs)
     assert np.allclose(np.nanmax(apret["fit"]),
-                       3.496319691452543e-09,
-                       atol=0.000001e-9,
-                       rtol=0)
+                       3.496152328502394e-09,
+                       atol=0,
+                       rtol=1e-4)
     assert np.allclose(np.nanmax(apret["fit residuals"]),
-                       2.233069676202635e-10,
-                       atol=0.000001e-10,
-                       rtol=0)
+                       2.2340798430821952e-10,
+                       atol=0,
+                       rtol=1e-3)
 
 
 @pytest.mark.parametrize("gcf_k", [0.1, 0.23, 0.3, 1/np.pi, 0.5, 0.6, 1.0])

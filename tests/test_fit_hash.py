@@ -44,11 +44,3 @@ def test_hash_time():
     assert t3-t2 >= 100 * \
         (t2-t1), "Changing parameters again should cause a new fit"
     assert t3-t2 >= 100*(t4-t3), "And computing the same should be faster"
-
-
-if __name__ == "__main__":
-    # Run all tests
-    loc = locals()
-    for key in list(loc.keys()):
-        if key.startswith("test_") and hasattr(loc[key], "__call__"):
-            loc[key]()

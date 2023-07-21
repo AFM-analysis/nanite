@@ -69,12 +69,3 @@ def test_fit_data_with_zef18():
     assert stats[0, 2] == 9.5
     assert stats[1, 2] == 2.4
     assert stats[2, 2] == 4.9
-
-
-if __name__ == "__main__":
-    # Run all tests
-    test_fit_data_with_zef18()
-    loc = locals()
-    for key in list(loc.keys()):
-        if key.startswith("test_") and hasattr(loc[key], "__call__"):
-            loc[key]()

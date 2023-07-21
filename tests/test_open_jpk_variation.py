@@ -26,11 +26,3 @@ def test_process_flipsign():
                        5230.008779761989,
                        atol=1,
                        rtol=0)
-
-
-if __name__ == "__main__":
-    # Run all tests
-    loc = locals()
-    for key in list(loc.keys()):
-        if key.startswith("test_") and hasattr(loc[key], "__call__"):
-            loc[key]()

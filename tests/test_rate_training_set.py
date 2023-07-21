@@ -39,11 +39,3 @@ def test_user_training_set():
     assert r1 > 9, "sanity check"
     r2 = idnt.rate_quality(regressor="Extra Trees", training_set=tdir)
     assert 4 < r2 < 5, "with the given random state we end up at 4.55"
-
-
-if __name__ == "__main__":
-    # Run all tests
-    loc = locals()
-    for key in list(loc.keys()):
-        if key.startswith("test_") and hasattr(loc[key], "__call__"):
-            loc[key]()
