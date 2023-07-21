@@ -1,3 +1,5 @@
+3.6.1
+ - setup: bump scipy to 1.10.0 due to memory leak vulnerability
 3.6.0
  - tests: make tests less strict and some cleanup
  - setup: drop support for Python 3.8 and 3.9

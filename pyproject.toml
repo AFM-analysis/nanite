@@ -38,7 +38,7 @@ dependencies = [
     "lmfit>=1",
     "numpy>=1.22.0",  # cython build
     "scikit-learn>=0.23.0",  # rating tests
-    "scipy",
+    "scipy>=1.10.0",  # scipy memory leak vulnerability
   ]
 dynamic = ["version"]
 [project.optional-dependencies]
