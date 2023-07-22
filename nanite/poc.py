@@ -126,6 +126,7 @@ def poc_deviation_from_baseline(force, ret_details=False):
                                                       bl_avg + bl_rng]]
             details["plot poc"] = [[cp, cp],
                                    [force.min(), force.max()]]
+            details["norm"] = "force"
 
     if ret_details:
         return cp, details
@@ -164,13 +165,15 @@ def poc_fit_constant_line(force, ret_details=False):
     def residual(params, x, data):
         return data - model(params, x)
 
-    y = np.array(force, copy=True)
     cp = np.nan
     details = {}
-    if y.size > 4:  # 3 fit parameters
-        ymin, ymax = np.min(y), np.max(y)
-        y = (y - ymin) / (ymax - ymin)
+    if force.size > 4:  # 3 fit parameters
+        # normalize force
+        fmin = np.min(force)
+        fptp = np.max(force) - fmin
+        y = (force - fmin) / fptp
         x = np.arange(y.size)
+        # get estimate for cp
         x0 = poc_frechet_direct_path(force)
         if np.isnan(x0):
             x0 = y.size // 2
@@ -183,11 +186,12 @@ def poc_fit_constant_line(force, ret_details=False):
         if out.success:
             cp = int(out.params["x0"])
             if ret_details:
-                details["plot force"] = [x, y]
+                details["plot force"] = [x, force]
                 details["plot fit"] = [np.arange(force.size),
-                                       model(out.params, x)]
+                                       model(out.params, x) * fptp + fmin]
                 details["plot poc"] = [[cp, cp],
-                                       [y.min(), y.max()]]
+                                       [fmin, fmin + fptp]]
+                details["norm"] = "force"
 
     if ret_details:
         return cp, details
@@ -244,12 +248,12 @@ def poc_fit_constant_polynomial(force, ret_details=False):
         curve = model(params, x)
         return data - curve
 
-    y = np.array(force, copy=True)
     cp = np.nan
     details = {}
-    if y.size > 6:  # 5 fit parameters
-        ymin, ymax = np.min(y), np.max(y)
-        y = (y - ymin) / (ymax - ymin)
+    if force.size > 6:  # 5 fit parameters
+        fmin = np.min(force)
+        fptp = np.max(force) - fmin
+        y = (force - fmin) / fptp
         x = np.arange(y.size)
         x0 = poc_frechet_direct_path(force)
         if np.isnan(x0):
@@ -273,11 +277,12 @@ def poc_fit_constant_polynomial(force, ret_details=False):
         if out.success:
             cp = int(out.params["x0"])
             if ret_details:
-                details["plot force"] = [x, y]
+                details["plot force"] = [x, force]
                 details["plot fit"] = [np.arange(force.size),
-                                       model(out.params, x)]
+                                       model(out.params, x) * fptp + fmin]
                 details["plot poc"] = [[cp, cp],
-                                       [y.min(), y.max()]]
+                                       [fmin, fmin + fptp]]
+                details["norm"] = "force"
 
     if ret_details:
         return cp, details
@@ -343,12 +348,12 @@ def poc_fit_line_polynomial(force, ret_details=False):
         curve = model(params, x)
         return data - curve
 
-    y = np.array(force, copy=True)
     cp = np.nan
     details = {}
-    if y.size > 7:  # 6 fit parameters
-        ymin, ymax = np.min(y), np.max(y)
-        y = (y - ymin) / (ymax - ymin)
+    if force.size > 7:  # 6 fit parameters
+        fmin = np.min(force)
+        fptp = np.max(force) - fmin
+        y = (force - fmin) / fptp
         x = np.arange(y.size)
         x0 = poc_frechet_direct_path(force)
         if np.isnan(x0):
@@ -374,11 +379,12 @@ def poc_fit_line_polynomial(force, ret_details=False):
         if out.success:
             cp = int(out.params["x0"])
             if ret_details:
-                details["plot force"] = [x, y]
+                details["plot force"] = [x, force]
                 details["plot fit"] = [np.arange(force.size),
-                                       model(out.params, x)]
+                                       model(out.params, x) * fptp + fmin]
                 details["plot poc"] = [[cp, cp],
-                                       [y.min(), y.max()]]
+                                       [fmin, fmin + fptp]]
+                details["norm"] = "force"
 
     if ret_details:
         return cp, details
@@ -418,7 +424,9 @@ def poc_frechet_direct_path(force, ret_details=False):
         details = {"plot normalized rotated force": [np.arange(len(force)),
                                                      yr],
                    "plot poc": [[cp, cp],
-                                [yr.min(), yr.max()]]}
+                                [yr.min(), yr.max()]],
+                   "norm": "force-rotated",
+                   }
         return cp, details
     else:
         return cp
@@ -463,12 +471,14 @@ def poc_gradient_zero_crossing(force, ret_details=False):
                 cp = y.size - np.where(gradpos[::-1])[0][0] - cutoff + filtsize
 
                 if ret_details:
+                    # scale the gradient so that it aligns with the force
                     x = np.arange(gradn.size)
                     details["plot force gradient"] = [x, gradn]
                     details["plot threshold"] = [[x[0], x[-1]],
                                                  [thresh, thresh]]
                     details["plot poc"] = [[cp, cp],
                                            [gradn.min(), gradn.max()]]
+                    details["norm"] = "force-gradient"
 
     if ret_details:
         return cp, details

@@ -297,6 +297,7 @@ def preproc_correct_force_slope(apret, region="baseline", ret_details=False):
     out = mod.fit(apret["force"][:idp], pars, x=apret["tip position"][:idp])
     # Subtract the linear slope from the region data.
     force = apret["force"]
+    force_orig = np.copy(force[:idp])
     if region == "baseline":
         # Only subtract the force from data up until the contact point.
         # Make sure that there is no offset/jump by pulling the last
@@ -321,7 +322,10 @@ def preproc_correct_force_slope(apret, region="baseline", ret_details=False):
     apret["force"] = force
 
     if ret_details:
-        return {"plot slope": [np.arange(idp), out.best_fit]}
+        return {
+            "plot slope data": [np.arange(idp), force_orig],
+            "plot slope fit": [np.arange(idp), out.best_fit],
+            "norm": "force"}
 
 
 @preprocessing_step(
