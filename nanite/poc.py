@@ -379,7 +379,6 @@ def poc_fit_line_polynomial(force, ret_details=False):
                                        model(out.params, x)]
                 details["plot poc"] = [[cp, cp],
                                        [y.min(), y.max()]]
-                print(cp, y.min(), y.max())
 
     if ret_details:
         return cp, details

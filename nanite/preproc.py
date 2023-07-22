@@ -3,6 +3,7 @@ import inspect
 import functools
 import warnings
 
+import lmfit
 import numpy as np
 
 from . import poc
@@ -126,6 +127,34 @@ def check_order(identifiers):
                     f"Wrong optional step order for {pid}: {identifiers}!")
 
 
+def find_turning_point(tip_position, force, contact_point_index):
+    """Compute the turning point for a force-indentation curve
+
+    The turning point is defined as the point that is farthest away
+    from the contact point in the direction of indentation. This
+    implementation normalizes tip position according to their
+    minimum and maximum values. This is necessary, because they
+    live on different orders of magnitudes/units.
+    """
+    x = np.copy(tip_position)
+    y = np.copy(force)
+    idp = contact_point_index
+
+    # Flip and normalize tip position so that maximum is at minimum
+    # z-position (set to 1) which coincides with maximum indentation.
+    x -= x[idp]
+    x /= x.min()
+    x[x < 0] = 0
+
+    # Flip and normalize force so that maximum force is set to 1.
+    y -= np.average(y[:idp])
+    y /= y.max()
+    y[y < np.std(y[:idp])] = 0
+
+    idturn = np.argmax(x ** 2 + y ** 2)
+    return idturn
+
+
 def get_func(identifier):
     """Return preprocessor function for identifier"""
     for func in PREPROCESSORS:
@@ -229,7 +258,9 @@ def preproc_compute_tip_position(apret):
 
 
 @preprocessing_step(identifier="correct_force_offset",
-                    name="baseline correction")
+                    name="baseline offset correction",
+                    steps_optional=["correct_force_slope"]
+                    )
 def preproc_correct_force_offset(apret):
     """Correct the force offset with an average baseline value
     """
@@ -239,6 +270,58 @@ def preproc_correct_force_offset(apret):
         apret["force"] = apret["force"] - np.average(apret["force"][:idp])
     else:
         apret["force"] = apret["force"] - apret["force"][0]
+
+
+@preprocessing_step(identifier="correct_force_slope",
+                    name="baseline slope correction",
+                    steps_required=["correct_tip_offset"],
+                    options=[
+                        {"name": "region",
+                         "type": str,
+                         "choices": ["baseline", "approach", "all"],
+                         "choices_human_readable": [
+                             "Correct up until contact point",
+                             "Correct the approach part",
+                             "Correct the entire dataset"]
+                         }
+                    ])
+def preproc_correct_force_slope(apret, region="baseline", ret_details=False):
+    """Subtract a linear slope from selected parts of the force curve
+    """
+    tip_position = apret["tip position"]
+    # Get the current contact point position computed by "correct_tip_offset".
+    idp = np.argmin(np.abs(tip_position))
+    # Fit a linear slope to the baseline part (all data up until idp)
+    mod = lmfit.models.LinearModel()
+    pars = mod.guess(apret["force"][:idp], x=apret["tip position"][:idp])
+    out = mod.fit(apret["force"][:idp], pars, x=apret["tip position"][:idp])
+    # Subtract the linear slope from the region data.
+    force = apret["force"]
+    if region == "baseline":
+        # Only subtract the force from data up until the contact point.
+        # Make sure that there is no offset/jump by pulling the last
+        # element of the best fit array to zero.
+        force[:idp] = force[:idp] - out.best_fit + out.best_fit[-1]
+    elif region == "approach":
+        # Subtract the force from everything that is part of the
+        # indentation part.
+        idturn = find_turning_point(tip_position=tip_position,
+                                    force=force,
+                                    contact_point_index=idp)
+        # Extend the best fit towards the turning point.
+        best_fit_approach = mod.eval(out.params, x=tip_position[:idturn])
+        best_fit_approach -= best_fit_approach[-1]
+        force[:idturn] = force[:idturn] - best_fit_approach
+    elif region == "all":
+        # Subtract the slope from EVERYTHING!!12
+        best_fit_all = mod.eval(out.params, x=tip_position)
+        force -= best_fit_all
+
+    # Override the force information
+    apret["force"] = force
+
+    if ret_details:
+        return {"plot slope": [np.arange(idp), out.best_fit]}
 
 
 @preprocessing_step(
@@ -273,7 +356,9 @@ def preproc_correct_tip_offset(apret, method="deviation_from_baseline",
 
 @preprocessing_step(identifier="correct_split_approach_retract",
                     name="segment discovery",
-                    steps_required=["compute_tip_position"])
+                    steps_required=["compute_tip_position"],
+                    steps_optional=["correct_force_slope"],
+                    )
 def preproc_correct_split_approach_retract(apret):
     """Split the approach and retract curves (farthest point method)
 
@@ -286,26 +371,18 @@ def preproc_correct_split_approach_retract(apret):
     To repair this time lag, we append parts of the retract curve to the
     approach curve, such that the curves are split at the minimum height.
     """
-    x = np.array(apret["tip position"], copy=True)
-    y = np.array(apret["force"], copy=True)
+    force = apret["force"]
 
-    idp = poc.poc_deviation_from_baseline(y)
+    idp = poc.poc_deviation_from_baseline(force)
     if idp and not np.isnan(idp):
-        # Flip and normalize tip position so that maximum is at minimum
-        # z-position (set to 1) which coincides with maximum indentation.
-        x -= x[idp]
-        x /= x.min()
-        x[x < 0] = 0
-
-        # Flip and normalize force so that maximum force is set to 1.
-        y -= np.average(y[:idp])
-        y /= y.max()
-        y[y < np.std(y[:idp])] = 0
-
-        idmin = np.argmax(x ** 2 + y ** 2)
+        idturn = find_turning_point(
+            tip_position=apret["tip position"],
+            force=force,
+            contact_point_index=idp,
+        )
 
         segment = np.zeros(len(apret), dtype=np.uint8)
-        segment[idmin:] = 1
+        segment[idturn:] = 1
         apret["segment"] = segment
     else:
         msg = "Cannot correct splitting of approach and retract curve " + \
@@ -321,7 +398,10 @@ def preproc_correct_split_approach_retract(apret):
                         "correct_split_approach_retract",
                         # Otherwise it might not be applied to
                         # "tip position":
-                        "compute_tip_position"])
+                        "compute_tip_position",
+                        # Slope subtraction should happen first:
+                        "correct_force_slope"
+                        ])
 def preproc_smooth_height(apret):
     """Make height data monotonic
 

@@ -1,4 +1,5 @@
-3.6.1
+3.7.0
+ - feat: subtract linear slope from indentation curve (#22)
  - setup: bump scipy to 1.10.0 due to memory leak vulnerability
 3.6.0
  - tests: make tests less strict and some cleanup
