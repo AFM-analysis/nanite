@@ -111,12 +111,11 @@ def test_preproc_correct_force_slope_control():
     fd = IndentationGroup(
         data_path
         / "fmt-jpk-fd_single_tilted-baseline-mitotic_2021-01-29.jpk-force")[0]
-    details = fd.apply_preprocessing(
+    fd.apply_preprocessing(
         ["compute_tip_position", "correct_tip_offset"],
         options={
             "correct_tip_offset": {"method": "fit_line_polynomial"},
-        },
-        ret_details=True)
+        })
     # Make sure the baseline is not as flat as in the test above.
     assert np.ptp(fd["force"][:15000]) > .35e-9, "larger ptp with tilt"
     bl0 = np.mean(fd["force"][:100])
