@@ -287,6 +287,30 @@ def preproc_correct_force_offset(apret):
                     ])
 def preproc_correct_force_slope(apret, region="baseline", ret_details=False):
     """Subtract a linear slope from selected parts of the force curve
+
+    Slope correction is a debatable topic in AFM analysis. Many voices
+    are of the opinion that this falsifies data and should not be done.
+    But when data are scarce, slope correction can help to extract valuable
+    information.
+
+    Slope correction uses the baseline (the part of the curve before the POC)
+    to determine the slope that should be subtracted from the data. Note
+    that for tilted data, you should use a contact point estimate based
+    on a line and a polynomial.
+
+    There are three modes of curve correction:
+
+    - baseline: Only the data leading up to the contact point are modified.
+      This has the advantage that indentation data are not modified, but the
+      baseline can still be used (as weight) in the fitting scheme.
+    - appraoch: The slope is subtracted from the entire approach curve.
+      This makes sense when you know that the slope affects baseline and
+      indentation part of your dataset.
+    - all: The entire dataset is currected. This makes sense if you would
+      like to extract information about e.g. viscosity from the area between
+      the approach and retract curves of your dataset. Note that this
+      correction assumes that there is a systematic slope throughout the
+      entire measurement (caused e.g. by the sample expanding continuously).
     """
     tip_position = apret["tip position"]
     # Get the current contact point position computed by "correct_tip_offset".
@@ -302,8 +326,8 @@ def preproc_correct_force_slope(apret, region="baseline", ret_details=False):
         # Only subtract the force from data up until the contact point.
         # Make sure that there is no offset/jump by pulling the last
         # element of the best fit array to zero.
-        force[:idp] = force[:idp] - out.best_fit + out.best_fit[-1]
-    elif region == "approach":
+        force[:idp] -= out.best_fit - out.best_fit[-1]
+    else:
         # Subtract the force from everything that is part of the
         # indentation part.
         idturn = find_turning_point(tip_position=tip_position,
@@ -311,12 +335,18 @@ def preproc_correct_force_slope(apret, region="baseline", ret_details=False):
                                     contact_point_index=idp)
         # Extend the best fit towards the turning point.
         best_fit_approach = mod.eval(out.params, x=tip_position[:idturn])
-        best_fit_approach -= best_fit_approach[-1]
-        force[:idturn] = force[:idturn] - best_fit_approach
-    elif region == "all":
-        # Subtract the slope from EVERYTHING!!12
-        best_fit_all = mod.eval(out.params, x=tip_position)
-        force -= best_fit_all
+        force[:idturn] -= best_fit_approach - best_fit_approach[-1]
+        if region == "all":
+            # Also subtract from the retract curve.
+            best_fit_retract = mod.eval(out.params, x=tip_position[idturn:])
+            # Note that here the slope is negated for the retraction part,
+            # because we only fitted the baseline data, but the cantilever
+            # reversed direction and the fit model takes the tip position
+            # as an argument and not something linear such as time or
+            # array index. Hence, in the following we do "+=" instead of "-=".
+            # Also note that we perform the same normalization as for the
+            # approach part above (with best_fit_approach[-1]).
+            force[idturn:] += best_fit_retract - best_fit_approach[-1]
 
     # Override the force information
     apret["force"] = force
