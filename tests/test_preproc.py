@@ -72,7 +72,63 @@ def test_check_order():
             "correct_split_approach_retract"])
 
 
-def test_correct_split_approach_retract():
+def test_get_steps_required():
+    req_act = preproc.get_steps_required("correct_tip_offset")
+    req_exp = ["compute_tip_position"]
+    assert req_act == req_exp
+
+
+def test_preproc_correct_force_slope():
+    fd = IndentationGroup(
+        data_path
+        / "fmt-jpk-fd_single_tilted-baseline-mitotic_2021-01-29.jpk-force")[0]
+    details = fd.apply_preprocessing(
+        ["compute_tip_position", "correct_tip_offset", "correct_force_slope"],
+        options={
+            "correct_tip_offset": {"method": "fit_line_polynomial"},
+            "correct_force_slope": {"region": "baseline"},
+        },
+        ret_details=True)
+    slopedet = details["correct_force_slope"]
+    for key in ["plot slope data",
+                "plot slope fit",
+                "norm"]:
+        assert key in slopedet
+    # Sanity check for size of baseline (determined by POC via line+poly)
+    assert len(slopedet["plot slope data"][0]) == 15602
+    # Check for flatness of baseline.
+    assert np.ptp(fd["force"][:15000]) < .095e-9, "ptp less than 0.1 nN"
+    bl0 = np.mean(fd["force"][:100])
+    bl1 = np.mean(fd["force"][10000:10100])
+    assert np.allclose(bl0, bl1,
+                       atol=0,
+                       rtol=.01)
+    assert np.abs(bl1 - bl0) < 0.009e-9
+
+
+def test_preproc_correct_force_slope_control():
+    """Same test as above, but without slope correction"""
+    fd = IndentationGroup(
+        data_path
+        / "fmt-jpk-fd_single_tilted-baseline-mitotic_2021-01-29.jpk-force")[0]
+    details = fd.apply_preprocessing(
+        ["compute_tip_position", "correct_tip_offset"],
+        options={
+            "correct_tip_offset": {"method": "fit_line_polynomial"},
+        },
+        ret_details=True)
+    # Make sure the baseline is not as flat as in the test above.
+    assert np.ptp(fd["force"][:15000]) > .35e-9, "larger ptp with tilt"
+    bl0 = np.mean(fd["force"][:100])
+    bl1 = np.mean(fd["force"][10000:10100])
+    assert not np.allclose(bl0, bl1,
+                           atol=0,
+                           rtol=.01)
+    assert bl1 > bl0
+    assert bl1 - bl0 > 0.19e-9
+
+
+def test_preproc_correct_split_approach_retract():
     fd = IndentationGroup(data_path / "fmt-jpk-fd_spot3-0192.jpk-force")[0]
 
     fd.apply_preprocessing(["compute_tip_position",
@@ -84,12 +140,6 @@ def test_correct_split_approach_retract():
                             "correct_tip_offset",
                             "correct_split_approach_retract"])
     assert fd.appr["segment"].size == 2006
-
-
-def test_get_steps_required():
-    req_act = preproc.get_steps_required("correct_tip_offset")
-    req_exp = ["compute_tip_position"]
-    assert req_act == req_exp
 
 
 @pytest.mark.filterwarnings('ignore::nanite.preproc.CannotSplitWarning',
