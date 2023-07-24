@@ -342,8 +342,10 @@ def preproc_correct_force_slope(apret, region="baseline", strategy="shift",
     mod = lmfit.models.LinearModel()
     if strategy == "shift":
         abscissa = tip_position
-    else:
+    elif strategy == "drift":
         abscissa = time_position
+    else:
+        raise ValueError(f"Invalid strategy '{strategy}'!")
     pars = mod.guess(force[:idp], x=abscissa[:idp])
     out = mod.fit(force[:idp], pars, x=abscissa[:idp])
 
@@ -354,21 +356,22 @@ def preproc_correct_force_slope(apret, region="baseline", strategy="shift",
         # Make sure that there is no offset/jump by pulling the last
         # element of the best fit array to zero.
         force_edit[:idp] -= out.best_fit - out.best_fit[-1]
-    else:
+    elif region == "approach":
+        # Subtract the force from everything that is part of the
+        # indentation part.
         idturn = find_turning_point(tip_position=tip_position,
                                     force=force_edit,
                                     contact_point_index=idp)
-        if region == "appraoch":
-            # Subtract the force from everything that is part of the
-            # indentation part.
-            # Extend the best fit towards the turning point.
-            best_fit_approach = mod.eval(out.params, x=abscissa[:idturn])
-            force_edit[:idturn] -= best_fit_approach - best_fit_approach[-1]
-        elif region == "all":
-            # Use the same approach as above, but subtract from the entire
-            # curve.
-            best_fit_all = mod.eval(out.params, x=abscissa)
-            force_edit -= best_fit_all - best_fit_all[idp]
+        # Extend the best fit towards the turning point.
+        best_fit_approach = mod.eval(out.params, x=abscissa[:idturn])
+        force_edit[:idturn] -= best_fit_approach - best_fit_approach[-1]
+    elif region == "all":
+        # Use the same approach as above, but subtract from the entire
+        # curve.
+        best_fit_all = mod.eval(out.params, x=abscissa)
+        force_edit -= best_fit_all - best_fit_all[idp]
+    else:
+        raise ValueError(f"Invalid region '{region}'!")
 
     # Override the force information
     apret["force"] = force_edit

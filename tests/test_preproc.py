@@ -78,15 +78,99 @@ def test_get_steps_required():
     assert req_act == req_exp
 
 
-def test_preproc_correct_force_slope():
+def test_preproc_correct_force_slope_drift_approach():
     fd = IndentationGroup(
         data_path
-        / "fmt-jpk-fd_single_tilted-baseline-drift-mitotic_2021-01-29.jpk-force")[0]
+        / "fmt-jpk-fd_single_tilted-baseline-drift-"
+          "mitotic_2021-01-29.jpk-force")[0]
+    details = fd.apply_preprocessing(
+        ["compute_tip_position", "correct_tip_offset", "correct_force_slope",
+         "correct_force_offset"],
+        options={
+            "correct_tip_offset": {"method": "fit_line_polynomial"},
+            "correct_force_slope": {"region": "approach",
+                                    "strategy": "drift"},
+        },
+        ret_details=True)
+    slopedet = details["correct_force_slope"]
+    for key in ["plot slope data",
+                "plot slope fit",
+                "norm"]:
+        assert key in slopedet
+    # Sanity check for size of baseline (determined by POC via line+poly)
+    assert len(slopedet["plot slope data"][0]) == 15602
+    # Check for flatness of baseline.
+    assert np.ptp(fd["force"][:15000]) < .094e-9, "ptp less than 0.1 nN"
+    bl0 = np.mean(fd["force"][:100])
+    bl1 = np.mean(fd["force"][10000:10100])
+    assert np.allclose(bl0, bl1,
+                       atol=1e-11,
+                       rtol=0)
+    assert np.abs(bl1 - bl0) < 0.0085e-9
+    # Now check whether the maximum force is lower than normal.
+    assert np.allclose(np.max(fd["force"]), 1.6688553846662955e-09,
+                       atol=0)
+    assert np.allclose(np.min(fd["force"]), -5.935613094149927e-10,
+                       atol=0)
+    # Compare it to the correction obtained with just "baseline".
+    # For this dataset, the drift is resulting in a continuous increase
+    # in the force. Thus, if we compare the "approach" correction with
+    # just the "baseline" correction, we should arrive at a lower number
+    # for the "approach" correction.
+    assert np.max(fd["force"]) < 1.6903757572616587e-09
+
+
+def test_preproc_correct_force_slope_drift_full():
+    fd = IndentationGroup(
+        data_path
+        / "fmt-jpk-fd_single_tilted-baseline-drift-"
+          "mitotic_2021-01-29.jpk-force")[0]
     details = fd.apply_preprocessing(
         ["compute_tip_position", "correct_tip_offset", "correct_force_slope"],
         options={
             "correct_tip_offset": {"method": "fit_line_polynomial"},
-            "correct_force_slope": {"region": "baseline"},
+            "correct_force_slope": {"region": "all",
+                                    "strategy": "drift"},
+        },
+        ret_details=True)
+    slopedet = details["correct_force_slope"]
+    for key in ["plot slope data",
+                "plot slope fit",
+                "norm"]:
+        assert key in slopedet
+    # Sanity check for size of baseline (determined by POC via line+poly)
+    assert len(slopedet["plot slope data"][0]) == 15602
+    # Check for flatness of baseline.
+    assert np.ptp(fd["force"][:15000]) < .094e-9, "ptp less than 0.1 nN"
+    bl0 = np.mean(fd["force"][:100])
+    bl1 = np.mean(fd["force"][10000:10100])
+    assert np.allclose(bl0, bl1,
+                       atol=0,
+                       rtol=.01)
+    assert np.abs(bl1 - bl0) < 0.0085e-9
+    # Now check for flatness of retract tail
+    rt0 = np.mean(fd["force"][-100])
+    rt1 = np.mean(fd["force"][-10100:-10000])
+    assert rt1 < rt0, "There is still a little drift left in the retract tail"
+    # The following test would fail if we set "strategy" to "shift" or if
+    # we set region to "baseline" or "approach".
+    assert np.allclose(rt0, rt1,
+                       atol=0.06e-9, rtol=0)
+
+
+def test_preproc_correct_force_slope_shift():
+    fd = IndentationGroup(
+        data_path
+        # Note: this dataset actually resembles a drift over time, not
+        # a shift. But we are only looking at the baseline, so it's OK.
+        / "fmt-jpk-fd_single_tilted-baseline-drift-"
+          "mitotic_2021-01-29.jpk-force")[0]
+    details = fd.apply_preprocessing(
+        ["compute_tip_position", "correct_tip_offset", "correct_force_slope"],
+        options={
+            "correct_tip_offset": {"method": "fit_line_polynomial"},
+            "correct_force_slope": {"region": "baseline",
+                                    "strategy": "shift"},
         },
         ret_details=True)
     slopedet = details["correct_force_slope"]
@@ -106,11 +190,14 @@ def test_preproc_correct_force_slope():
     assert np.abs(bl1 - bl0) < 0.009e-9
 
 
-def test_preproc_correct_force_slope_control():
+def test_preproc_correct_force_slope_shift_control():
     """Same test as above, but without slope correction"""
     fd = IndentationGroup(
         data_path
-        / "fmt-jpk-fd_single_tilted-baseline-drift-mitotic_2021-01-29.jpk-force")[0]
+        # Note: this dataset actually resembles a drift over time, not
+        # a shift. But we are only looking at the baseline, so it's OK.
+        / "fmt-jpk-fd_single_tilted-baseline-drift-"
+          "mitotic_2021-01-29.jpk-force")[0]
     fd.apply_preprocessing(
         ["compute_tip_position", "correct_tip_offset"],
         options={
