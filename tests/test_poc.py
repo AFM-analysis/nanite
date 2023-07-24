@@ -83,7 +83,7 @@ def test_poc_details_deviation_from_baseline():
 def test_poc_details_fit_line_polynomial():
     fd = IndentationGroup(
         data_path
-        / "fmt-jpk-fd_single_tilted-baseline-mitotic_2021-01-29.jpk-force")[0]
+        / "fmt-jpk-fd_single_tilted-baseline-drift-mitotic_2021-01-29.jpk-force")[0]
     details = fd.apply_preprocessing(
         ["compute_tip_position", "correct_tip_offset"],
         options={"correct_tip_offset": {"method": "fit_line_polynomial"}},

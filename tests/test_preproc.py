@@ -81,7 +81,7 @@ def test_get_steps_required():
 def test_preproc_correct_force_slope():
     fd = IndentationGroup(
         data_path
-        / "fmt-jpk-fd_single_tilted-baseline-mitotic_2021-01-29.jpk-force")[0]
+        / "fmt-jpk-fd_single_tilted-baseline-drift-mitotic_2021-01-29.jpk-force")[0]
     details = fd.apply_preprocessing(
         ["compute_tip_position", "correct_tip_offset", "correct_force_slope"],
         options={
@@ -110,7 +110,7 @@ def test_preproc_correct_force_slope_control():
     """Same test as above, but without slope correction"""
     fd = IndentationGroup(
         data_path
-        / "fmt-jpk-fd_single_tilted-baseline-mitotic_2021-01-29.jpk-force")[0]
+        / "fmt-jpk-fd_single_tilted-baseline-drift-mitotic_2021-01-29.jpk-force")[0]
     fd.apply_preprocessing(
         ["compute_tip_position", "correct_tip_offset"],
         options={
