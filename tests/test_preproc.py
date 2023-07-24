@@ -149,13 +149,13 @@ def test_preproc_correct_force_slope_drift_full():
                        rtol=.01)
     assert np.abs(bl1 - bl0) < 0.0085e-9
     # Now check for flatness of retract tail
-    rt0 = np.mean(fd["force"][-100])
+    rt0 = np.mean(fd["force"][-100:])
     rt1 = np.mean(fd["force"][-10100:-10000])
     assert rt1 < rt0, "There is still a little drift left in the retract tail"
     # The following test would fail if we set "strategy" to "shift" or if
     # we set region to "baseline" or "approach".
     assert np.allclose(rt0, rt1,
-                       atol=0.06e-9, rtol=0)
+                       atol=5e-11, rtol=0)
 
 
 def test_preproc_correct_force_slope_shift():
@@ -212,6 +212,43 @@ def test_preproc_correct_force_slope_shift_control():
                            rtol=.01)
     assert bl1 > bl0
     assert bl1 - bl0 > 0.19e-9
+
+
+def test_preproc_correct_force_slope_shift_full():
+    fd = IndentationGroup(
+        data_path
+        / "fmt-jpk-fd_single_tilted-baseline-shift-"
+          "adyp_2023-06-26.jpk-force")[0]
+    details = fd.apply_preprocessing(
+        ["compute_tip_position", "correct_tip_offset", "correct_force_slope"],
+        options={
+            "correct_tip_offset": {"method": "fit_line_polynomial"},
+            "correct_force_slope": {"region": "all",
+                                    "strategy": "shift"},
+        },
+        ret_details=True)
+    slopedet = details["correct_force_slope"]
+    for key in ["plot slope data",
+                "plot slope fit",
+                "norm"]:
+        assert key in slopedet
+    # Sanity check for size of baseline (determined by POC via line+poly)
+    assert len(slopedet["plot slope data"][0]) == 3201
+    # Check for flatness of baseline.
+    assert np.ptp(fd["force"][:3000]) < .04e-9, "ptp less than 0.04 nN"
+    bl0 = np.mean(fd["force"][:50])
+    bl1 = np.mean(fd["force"][3000:3050])
+    assert np.allclose(bl0, bl1,
+                       atol=0.004e-9,
+                       rtol=0)
+    assert np.abs(bl1 - bl0) < 0.0085e-9
+    # Now check for flatness of retract tail
+    rt0 = np.mean(fd["force"][-50:])
+    rt1 = np.mean(fd["force"][-1050:-1000])
+    # The following test would fail if we set "strategy" to "drift" or if
+    # we set region to "baseline" or "approach".
+    assert np.allclose(rt0, rt1,
+                       atol=2e-11, rtol=0)
 
 
 def test_preproc_correct_split_approach_retract():
