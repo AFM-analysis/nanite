@@ -282,10 +282,18 @@ def preproc_correct_force_offset(apret):
                          "choices_human_readable": [
                              "Correct up until contact point",
                              "Correct the approach part",
-                             "Correct the entire dataset"]
+                             "Correct the entire dataset"],
+                         },
+                        {"name": "strategy",
+                         "type": str,
+                         "choices": ["drift", "shift"],
+                         "choices_human_readable": [
+                             "Temporal drift correction",
+                             "Spatial shift correction"]
                          }
                     ])
-def preproc_correct_force_slope(apret, region="baseline", ret_details=False):
+def preproc_correct_force_slope(apret, region="baseline", strategy="shift",
+                                ret_details=False):
     """Subtract a linear slope from selected parts of the force curve
 
     Slope correction is a debatable topic in AFM analysis. Many voices
@@ -298,7 +306,7 @@ def preproc_correct_force_slope(apret, region="baseline", ret_details=False):
     that for tilted data, you should use a contact point estimate based
     on a line and a polynomial.
 
-    There are three modes of curve correction:
+    There are three regions for curve correction:
 
     - baseline: Only the data leading up to the contact point are modified.
       This has the advantage that indentation data are not modified, but the
@@ -306,54 +314,68 @@ def preproc_correct_force_slope(apret, region="baseline", ret_details=False):
     - appraoch: The slope is subtracted from the entire approach curve.
       This makes sense when you know that the slope affects baseline and
       indentation part of your dataset.
-    - all: The entire dataset is currected. This makes sense if you would
+    - all: The entire dataset is corrected. This makes sense if you would
       like to extract information about e.g. viscosity from the area between
-      the approach and retract curves of your dataset. Note that this
-      correction assumes that there is a systematic slope throughout the
-      entire measurement (caused e.g. by the sample expanding continuously).
+      the approach and retract curves of your dataset.
+
+    In addition, there are two strategies available:
+
+    - The "drift" approach assumes that the there is a global drift in the
+      dataset (caused e.g. by a thermal drift). Since these things are
+      usually of temporal nature, the correction in done over the time axis.
+      Use this if the beggining of the approach part and the end of the
+      retract part of your dataset "stick out" in opposite directions when
+      plotting force over tip position.
+    - The "shift" approach assumes that there is a global shift that is a
+      function of the distance between sample and cantilever. Use this if
+      the beginning of the approach part and the end of the retract part
+      align when plotting force over tip position.
     """
     tip_position = apret["tip position"]
+    time_position = apret["time"]
+    force = apret["force"]
+
     # Get the current contact point position computed by "correct_tip_offset".
     idp = np.argmin(np.abs(tip_position))
+    # Determine whether we want to do temporal or spatial correction:
     # Fit a linear slope to the baseline part (all data up until idp)
     mod = lmfit.models.LinearModel()
-    pars = mod.guess(apret["force"][:idp], x=apret["tip position"][:idp])
-    out = mod.fit(apret["force"][:idp], pars, x=apret["tip position"][:idp])
+    if strategy == "shift":
+        abscissa = tip_position
+    else:
+        abscissa = time_position
+    pars = mod.guess(force[:idp], x=abscissa[:idp])
+    out = mod.fit(force[:idp], pars, x=abscissa[:idp])
+
+    force_edit = np.copy(force)
     # Subtract the linear slope from the region data.
-    force = apret["force"]
-    force_orig = np.copy(force[:idp])
     if region == "baseline":
         # Only subtract the force from data up until the contact point.
         # Make sure that there is no offset/jump by pulling the last
         # element of the best fit array to zero.
-        force[:idp] -= out.best_fit - out.best_fit[-1]
+        force_edit[:idp] -= out.best_fit - out.best_fit[-1]
     else:
-        # Subtract the force from everything that is part of the
-        # indentation part.
         idturn = find_turning_point(tip_position=tip_position,
-                                    force=force,
+                                    force=force_edit,
                                     contact_point_index=idp)
-        # Extend the best fit towards the turning point.
-        best_fit_approach = mod.eval(out.params, x=tip_position[:idturn])
-        force[:idturn] -= best_fit_approach - best_fit_approach[-1]
-        if region == "all":
-            # Also subtract from the retract curve.
-            best_fit_retract = mod.eval(out.params, x=tip_position[idturn:])
-            # Note that here the slope is negated for the retraction part,
-            # because we only fitted the baseline data, but the cantilever
-            # reversed direction and the fit model takes the tip position
-            # as an argument and not something linear such as time or
-            # array index. Hence, in the following we do "+=" instead of "-=".
-            # Also note that we perform the same normalization as for the
-            # approach part above (with best_fit_approach[-1]).
-            force[idturn:] += best_fit_retract - best_fit_approach[-1]
+        if region == "appraoch":
+            # Subtract the force from everything that is part of the
+            # indentation part.
+            # Extend the best fit towards the turning point.
+            best_fit_approach = mod.eval(out.params, x=abscissa[:idturn])
+            force_edit[:idturn] -= best_fit_approach - best_fit_approach[-1]
+        elif region == "all":
+            # Use the same approach as above, but subtract from the entire
+            # curve.
+            best_fit_all = mod.eval(out.params, x=abscissa)
+            force_edit -= best_fit_all - best_fit_all[idp]
 
     # Override the force information
-    apret["force"] = force
+    apret["force"] = force_edit
 
     if ret_details:
         return {
-            "plot slope data": [np.arange(idp), force_orig],
+            "plot slope data": [np.arange(idp), force[:idp]],
             "plot slope fit": [np.arange(idp), out.best_fit],
             "norm": "force"}
 
