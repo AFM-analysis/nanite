@@ -63,7 +63,7 @@ changelog = "https://nanite.readthedocs.io/en/stable/sec_changelog.html"
 # when running cibuildwheel on GitHub Actions (there will be a "wheelhouse"
 # directory).
 [tool.setuptools]
-packages = ["dclab"]
+packages = ["nanite"]
 
 [tool.setuptools_scm]
 write_to = "nanite/_version.py"
