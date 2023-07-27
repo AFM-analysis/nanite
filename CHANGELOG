@@ -1,3 +1,5 @@
+3.7.1
+ - setup: wrong package setup
 3.7.0
  - feat: subtract linear slope from indentation curve (#22)
  - ref: return normalization reference type for details from POC and preproc

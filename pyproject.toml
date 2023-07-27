@@ -59,9 +59,6 @@ tracker = "https://github.com/AFM-Analysis/nanite/issues"
 documentation = "https://nanite.readthedocs.io/en/stable/"
 changelog = "https://nanite.readthedocs.io/en/stable/sec_changelog.html"
 
-[tool.setuptools.packages]
-find = {}
-
 [tool.setuptools_scm]
 write_to = "nanite/_version.py"
 version_scheme = "post-release"
