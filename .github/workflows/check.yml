@@ -33,6 +33,6 @@ jobs:
         coverage run --source=nanite -m pytest tests
     - name: Lint with flake8
       run: |
-        flake8 --exclude _version .
+        flake8 --exclude _version.py .
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
