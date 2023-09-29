@@ -10,4 +10,4 @@ python:
       path: .
       extra_requirements:
         - CLI
-  system_packages: false
+
