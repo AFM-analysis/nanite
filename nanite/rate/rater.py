@@ -175,7 +175,7 @@ class IndentationRater(IndentationFeatures):
         response = np.loadtxt(resp_path, dtype=float)
         if remove_nan:
             # Remove nan-values from training set
-            valid = ~np.isnan(np.sum(samples, axis=1))
+            valid = ~np.array(np.sum(np.isnan(samples), axis=1), dtype=bool)
             samples = samples[valid, :]
             # remove corresponding responses
             response = response[valid]
