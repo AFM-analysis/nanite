@@ -6,6 +6,7 @@ import pathlib
 import shutil
 import tempfile
 import time
+import warnings
 
 import h5py
 import lmfit
@@ -239,6 +240,9 @@ def load_hdf5(path, meta_only=False):
         # load individual curves
         for akey in h5["analysis"]:
             h5gr = h5["analysis"][akey]
+            if "fit" not in h5gr:
+                warnings.warn(f"Ignoring incomplete '{akey}'!")
+                continue
             attrs = h5gr.attrs
             if not meta_only:
                 indent = dataset_dict[attrs["data hash"]].get_enum(
