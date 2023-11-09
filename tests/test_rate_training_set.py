@@ -18,10 +18,10 @@ def setup_training_set(n=300):
     np.random.set_state(np.random.RandomState(47).get_state())
     for bb in IndentationRater.get_feature_names(which_type="binary"):
         bvals = np.random.choice([0, 1], size=n, p=[.05, .95])
-        np.savetxt(tdir / "train_{}.txt".format(bb), bvals)
+        np.savetxt(tdir / f"train_{bb}.txt", bvals)
     for cc in IndentationRater.get_feature_names(which_type="continuous"):
         cvals = np.random.random_sample(size=n)
-        np.savetxt(tdir / "train_{}.txt".format(cc), cvals)
+        np.savetxt(tdir / f"train_{cc}.txt", cvals)
     rating = np.random.choice(range(11), size=n)
     np.savetxt(tdir / "train_response.txt", rating)
     return tdir
@@ -39,3 +39,29 @@ def test_user_training_set():
     assert r1 > 9, "sanity check"
     r2 = idnt.rate_quality(regressor="Extra Trees", training_set=tdir)
     assert 4 < r2 < 5, "with the given random state we end up at 4.55"
+
+
+def test_training_set_inf_values():
+    tdir = setup_training_set()
+    # edit one of the training feature data to contain an inf value
+    fpath = tdir / "train_feat_con_apr_flatness.txt"
+    fdat = np.loadtxt(fpath)
+    fdat[10] = np.inf
+    fdat[11] = -np.inf
+    fdat[12] = 1.5
+    fdat[13] = -1.4
+    np.savetxt(fpath, fdat)
+
+    samples, response, names = IndentationRater.load_training_set(
+        path=tdir,
+        which_type=["continuous"],
+        replace_inf=True,  # This should be the default
+        ret_names=True,
+    )
+    idf = names.index("feat_con_apr_flatness")
+    data = samples[:, idf]
+
+    assert np.allclose(data[10], 3)
+    assert np.allclose(data[11], -3)
+    assert np.allclose(data[12], 1.5)
+    assert np.allclose(data[13], -1.4)

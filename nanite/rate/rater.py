@@ -148,15 +148,17 @@ class IndentationRater(IndentationFeatures):
         return resp_path
 
     @classmethod
-    def load_training_set(cls, path=None, names=None,
-                          which_type=["continuous"],
-                          remove_nan=True, ret_names=False):
+    def load_training_set(cls, path=None, names=None, which_type=None,
+                          replace_inf=True, remove_nan=True,
+                          ret_names=False):
         """Load a training set from a directory
 
         By default, only the "continuous" features are imported. The
         "binary" features are not needed for training; they are used
         to sort out new force-distance data.
         """
+        if which_type is None:
+            which_type = ["continuous"]
         fnames = cls.get_feature_names(which_type=which_type, names=names)
         sample_paths = []
         if path is None:
@@ -177,6 +179,18 @@ class IndentationRater(IndentationFeatures):
             samples = samples[valid, :]
             # remove corresponding responses
             response = response[valid]
+        if replace_inf:
+            for ii in range(samples.shape[1]):
+                si = samples[:, ii]
+                isinf = np.isinf(si)
+                if np.any(isinf):
+                    extreme = np.nanmax(np.abs(si[~isinf]))
+                    posinf = np.isposinf(si)
+                    if np.any(posinf):
+                        samples[posinf, ii] = 2 * extreme
+                    neginf = np.isneginf(si)
+                    if np.any(neginf):
+                        samples[neginf, ii] = -2 * extreme
 
         res = [samples, response]
 

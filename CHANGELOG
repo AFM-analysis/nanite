@@ -1,5 +1,7 @@
 3.7.4
  - enh: allow empty-valued groups in rating HDF5 file
+ - enh: when encountering inf values in a training set, replace them
+   with twice the maxium of that feature
 3.7.3
  - setup: wrong package setup
 3.7.2
