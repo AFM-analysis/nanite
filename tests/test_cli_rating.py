@@ -66,6 +66,6 @@ def test_fit_data_with_zef18():
     rating.fit_perform(path=jpkfile2, path_results=pout, profile_path=name)
     stats = np.loadtxt(pout / "statistics.tsv", skiprows=1, usecols=(1, 2, 3))
     assert np.all(stats[:, 0] == [109, 129, 416])
-    assert stats[0, 2] == 9.5
-    assert stats[1, 2] == 2.4
-    assert stats[2, 2] == 4.9
+    assert stats[0, 2] == 9.6
+    assert stats[1, 2] == 2.5
+    assert stats[2, 2] == 5.0

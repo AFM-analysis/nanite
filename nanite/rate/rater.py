@@ -1,5 +1,6 @@
 import pathlib
 from pkg_resources import resource_filename
+from typing import List, Literal
 
 import numpy as np
 from sklearn.pipeline import make_pipeline
@@ -148,14 +149,52 @@ class IndentationRater(IndentationFeatures):
         return resp_path
 
     @classmethod
-    def load_training_set(cls, path=None, names=None, which_type=None,
-                          replace_inf=True, remove_nan=True,
-                          ret_names=False):
+    def load_training_set(
+            cls,
+            path: pathlib.Path | str = None,
+            names: List[str] = None,
+            which_type: Literal["all", "binary", "continuous"] | List = None,
+            replace_inf: bool = True,
+            impute_zero_rated_nan: bool = True,
+            remove_nan: bool = True,
+            ret_names: bool = False):
         """Load a training set from a directory
 
-        By default, only the "continuous" features are imported. The
-        "binary" features are not needed for training; they are used
-        to sort out new force-distance data.
+        Parameters
+        ----------
+        path: pathlib.Path or str
+            Optional path to the training set directory. If none
+            is specified, the default "zef18" is loaded.
+        names: list of str
+            List of features to use, defaults to all features.
+        which_type: str
+            Which type of feature to return see :const:`.VALID_FEATURE_TYPES`
+            for valid options. By default, only the "continuous" features
+            are imported. The "binary" features are not needed for training;
+            they are used to sort out new force-distance data.
+        replace_inf: bool
+            Replace infinity-valued feature values with
+            `2 * sign * max(abs(values))`.
+        impute_zero_rated_nan: bool
+            If there are nan-valued features that have a zero response
+            (rated worst), replace those feature values with the mean
+            of the zero-response features that are not nan-valued.
+        remove_nan: bool
+            Remove any nan-valued features (after `impute_zero_rated_nan`
+            was applied). This is necessary, since skimage cannot handle
+            nan-valued sample values.
+        ret_names: bool
+            Return the names of the features in addition to the samples
+            and response.
+
+        Returns
+        -------
+        samples: 2d ndarray
+            Sample values with axes `(data_size, num_features)`
+        response: 1d ndarray
+            Response array of length `data_size`
+        names: list, optional
+            List of feature names corresponsing to axis `1` in `samples`
         """
         if which_type is None:
             which_type = ["continuous"]
@@ -173,14 +212,39 @@ class IndentationRater(IndentationFeatures):
         samples = [np.loadtxt(sp, dtype=float, ndmin=2) for sp in sample_paths]
         samples = np.concatenate(samples, axis=1)
         response = np.loadtxt(resp_path, dtype=float)
+
+        # Deal with NaN-valued feature data with a response of 0.
+        if impute_zero_rated_nan:
+            resp0 = response == 0
+            # For each feature, find values that are NaN where the
+            # response is zero. Those values are then be set to values
+            # where the response is zero and the values are not NaN.
+            for ii, fn in enumerate(fnames):
+                # locations where the feature is nan
+                fdat = samples[:, ii]
+                fnans = np.isnan(fdat)
+                # locations where feature is nan AND response is 0
+                # (those are the locations we would like to change)
+                coloc = np.logical_and(resp0, fnans)
+                # location where the feature is not nan AND response is 0
+                # (those are the reference locations)
+                ref = np.logical_and(resp0, ~fnans)
+                if np.any(coloc) and np.any(ref):
+                    # We have values
+                    refval = np.mean(fdat[ref])
+                    samples[coloc, ii] = refval
+
+        # Deal with remaining NaN-valued feature data.
         if remove_nan:
             # Remove nan-values from training set
             valid = ~np.array(np.sum(np.isnan(samples), axis=1), dtype=bool)
             samples = samples[valid, :]
             # remove corresponding responses
             response = response[valid]
+
+        # Deal with infinite feature data.
         if replace_inf:
-            for ii in range(samples.shape[1]):
+            for ii in range(len(fnames)):
                 si = samples[:, ii]
                 isinf = np.isinf(si)
                 if np.any(isinf):
