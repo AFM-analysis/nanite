@@ -143,7 +143,9 @@ def find_turning_point(tip_position, force, contact_point_index):
     # Flip and normalize tip position so that maximum is at minimum
     # z-position (set to 1) which coincides with maximum indentation.
     x -= x[idp]
-    x /= x.min()
+    xmin = x.min()
+    if xmin != 0:
+        x /= x.min()
     x[x < 0] = 0
 
     # Flip and normalize force so that maximum force is set to 1.
@@ -336,7 +338,7 @@ def preproc_correct_force_slope(apret, region="baseline", strategy="shift",
     force = apret["force"]
 
     # Get the current contact point position computed by "correct_tip_offset".
-    idp = np.argmin(np.abs(tip_position))
+    idp = max(2, np.argmin(np.abs(tip_position)))
     # Determine whether we want to do temporal or spatial correction:
     # Fit a linear slope to the baseline part (all data up until idp)
     mod = lmfit.models.LinearModel()
@@ -362,6 +364,7 @@ def preproc_correct_force_slope(apret, region="baseline", strategy="shift",
         idturn = find_turning_point(tip_position=tip_position,
                                     force=force_edit,
                                     contact_point_index=idp)
+        idturn = max(2, idturn)
         # Extend the best fit towards the turning point.
         best_fit_approach = mod.eval(out.params, x=abscissa[:idturn])
         force_edit[:idturn] -= best_fit_approach - best_fit_approach[-1]

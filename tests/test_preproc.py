@@ -78,6 +78,37 @@ def test_get_steps_required():
     assert req_act == req_exp
 
 
+def test_preproc_correct_force_slope_bad_monotonic_data_issue_25():
+    fd = IndentationGroup(
+        data_path
+        / "fmt-jpk-fd_single_tilted-baseline-drift-"
+          "mitotic_2021-01-29.jpk-force")[0]
+    # put a custom, bad tip position (this requires some hacking)
+    s = len(fd["force"])
+    raw_data = {}
+    for col in fd.columns_innate:
+        raw_data[col] = fd[col]
+    tippos = np.linspace(0, 5e-9, s)
+    tippos = np.roll(tippos, s//2)
+    tippos[:s//2] = 0
+    raw_data["tip position"] = tippos
+    fd._raw_data = raw_data
+    # sanity check
+    assert np.all(fd["tip position"] == tippos)
+    assert "tip position" in fd.columns_innate
+    # This caused "TypeError: expected non-empty vector for x" in
+    # np.polynomial in nanite 3.7.3.
+    fd.apply_preprocessing(
+        ["compute_tip_position", "correct_tip_offset", "correct_force_slope",
+         "correct_force_offset"],
+        options={
+            "correct_tip_offset": {"method": "deviation_from_baseline"},
+            "correct_force_slope": {"region": "approach",
+                                    "strategy": "drift"},
+        },
+        ret_details=True)
+
+
 def test_preproc_correct_force_slope_drift_approach():
     fd = IndentationGroup(
         data_path
