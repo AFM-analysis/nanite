@@ -1,8 +1,14 @@
 import pathlib
 import tempfile
 
-from nanite.cli import plotting
 from nanite import load_group
+
+import pytest
+
+pytest.importorskip("appdirs", reason="appdirs not installed")
+
+from nanite.cli import plotting
+
 
 data_path = pathlib.Path(__file__).resolve().parent / "data"
 jpkfile = data_path / "fmt-jpk-fd_spot3-0192.jpk-force"

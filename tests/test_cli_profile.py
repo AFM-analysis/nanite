@@ -2,6 +2,10 @@ import pathlib
 import shutil
 import tempfile
 
+import pytest
+
+pytest.importorskip("appdirs", reason="appdirs not installed")
+
 from nanite.cli import profile
 
 

@@ -3,8 +3,13 @@ import tempfile
 
 import numpy as np
 
-from nanite.cli import profile, rating
 from nanite.rate import IndentationRater
+
+import pytest
+
+pytest.importorskip("appdirs", reason="appdirs not installed")
+
+from nanite.cli import profile, rating
 
 
 data_path = pathlib.Path(__file__).resolve().parent / "data"
