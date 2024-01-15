@@ -12,6 +12,7 @@ jobs:
       matrix:
         python-version: ['3.10', '3.11']
         os: [macos-latest, ubuntu-latest, windows-latest]
+        extras: ['all', 'none']
 
     steps:
     - uses: actions/checkout@v3
@@ -24,10 +25,16 @@ jobs:
         # prerequisites
         python -m pip install --upgrade pip wheel
         python -m pip install coverage flake8 pytest
-        # install dependencies
-        pip install -e .[ALL]
         # show installed packages
         pip freeze
+    - name: Install nanite with all possible dependencies
+      if: matrix.extras == 'all'
+      run: |
+        pip install -e .[ALL]
+    - name: Install nanite with no dependencies
+      if: matrix.extras == 'none'
+      run: |
+        pip install -e .
     - name: Lint with flake8
       run: |
         flake8 --exclude _version.py .
