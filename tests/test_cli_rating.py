@@ -9,7 +9,7 @@ import pytest
 
 pytest.importorskip("appdirs", reason="appdirs not installed")
 
-from nanite.cli import profile, rating
+from nanite.cli import profile, rating  # noqa: E402
 
 
 data_path = pathlib.Path(__file__).resolve().parent / "data"

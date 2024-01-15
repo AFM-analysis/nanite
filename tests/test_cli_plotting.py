@@ -7,7 +7,7 @@ import pytest
 
 pytest.importorskip("appdirs", reason="appdirs not installed")
 
-from nanite.cli import plotting
+from nanite.cli import plotting  # noqa: E402
 
 
 data_path = pathlib.Path(__file__).resolve().parent / "data"
