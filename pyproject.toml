@@ -42,7 +42,7 @@ CLI = ["appdirs",
        "matplotlib>=2.2.2",
        "tifffile>=0.15.0",
     ]
-ACA = ["nanite_model_sneddon_spher"]
+ACA = ["nanite_model_sneddon_spher>=1.0,<2.0"]
 ALL = ["nanite[CLI,ACA]"]
 
 [project.scripts]
