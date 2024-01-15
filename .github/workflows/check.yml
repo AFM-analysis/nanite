@@ -25,7 +25,7 @@ jobs:
         python -m pip install --upgrade pip wheel
         python -m pip install coverage flake8 pytest
         # install dependencies
-        pip install -e .[CLI]
+        pip install -e .[ALL]
         # show installed packages
         pip freeze
     - name: Test with pytest

@@ -1,3 +1,7 @@
+4.1.0
+ - ref: move to "src"-rooted source tree
+ - ref: move iterative `sneddon_spher` model to separate package which
+   makes nanite a pure Python package
 4.0.0
  - BREAKING CHANGE: Due to the new imputation of nan-valued features,
    rating inference might change slightly. For the "zef18" dataset,

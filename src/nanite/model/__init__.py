@@ -3,13 +3,20 @@ import warnings
 from . import model_conical_indenter  # noqa: F401
 from . import model_hertz_paraboloidal  # noqa: F401
 from . import model_hertz_three_sided_pyramid  # noqa: F401
-from . import model_sneddon_spherical  # noqa: F401
 from . import model_sneddon_spherical_approximation  # noqa: F401
 
 from .core import NaniteFitModel  # noqa: F401
 from . import residuals  # noqa: F401
 from .logic import models_available, register_model
 from .logic import deregister_model, load_model_from_file  # noqa: F401
+
+try:
+    # Since version 4.1.0, the iterative sneddon_spher model is not
+    # part of nanite anymore.
+    from nanite_model_sneddon_spher import \
+        model_sneddon_spherical  # noqa: F401
+except (ImportError, MemoryError):
+    pass
 
 
 def compute_anc_parms(idnt, model_key):
