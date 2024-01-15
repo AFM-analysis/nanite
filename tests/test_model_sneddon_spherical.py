@@ -5,13 +5,21 @@ import lmfit
 import numpy as np
 
 from nanite import IndentationGroup
-from nanite.model import model_sneddon_spherical as hertzSpherical
+
+try:
+    from nanite.model import model_sneddon_spherical as hertzSpherical
+except ImportError:
+    hertzSpherical = None
+
+import pytest
 
 
 data_path = pathlib.Path(__file__).resolve().parent / "data"
 jpkfile = data_path / "fmt-jpk-fd_spot3-0192.jpk-force"
 
 
+@pytest.mark.skipif(hertzSpherical is None,
+                    reason="nanite_model_sneddon_spherical not installed")
 def test_app_ret():
     ds = IndentationGroup(jpkfile)
     ar = ds[0]
@@ -74,6 +82,8 @@ def test_app_ret():
         plt.show()
 
 
+@pytest.mark.skipif(hertzSpherical is None,
+                    reason="nanite_model_sneddon_spherical not installed")
 def test_fit_apret():
     ds = IndentationGroup(jpkfile)
     ar = ds[0]
