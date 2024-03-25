@@ -42,7 +42,7 @@ def load_model_from_file(path, register=False):
         raise ModelImportError(f"Could not import '{path}'!")
     finally:
         # undo our path insertion
-        sys.path.pop(0)
+        sys.path.remove(str(path.parent))
         sys.dont_write_bytecode = False
 
         mod = NaniteFitModel(module)

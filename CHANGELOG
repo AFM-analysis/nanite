@@ -1,3 +1,5 @@
+4.1.1
+ - fix: incorrect reversion of insertion in sys.path when registering a model
 4.1.0
  - ref: move to "src"-rooted source tree
  - ref: move iterative `sneddon_spher` model to separate package which
