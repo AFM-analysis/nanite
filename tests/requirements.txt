@@ -1,3 +1,5 @@
+appdirs
 matplotlib
+nanite_model_sneddon_spher
 pytest
 tifffile
