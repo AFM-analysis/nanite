@@ -1,5 +1,6 @@
+from contextlib import ExitStack
 import pathlib
-from pkg_resources import resource_filename
+from importlib import resources
 from typing import List, Literal
 
 import numpy as np
@@ -11,6 +12,9 @@ from sklearn.preprocessing import FunctionTransformer
 
 from .features import IndentationFeatures
 from .regressors import reg_dict, reg_names, reg_trees
+
+
+file_manager = ExitStack()
 
 
 class IndentationRater(IndentationFeatures):
@@ -144,9 +148,9 @@ class IndentationRater(IndentationFeatures):
         Training sets are stored in the `nanite.rate`
         module path with ``ts_`` prepended to `label`.
         """
-        data_loc = "nanite.rate"
-        resp_path = resource_filename(data_loc, "ts_{}".format(label))
-        return resp_path
+        ref = resources.files("nanite.rate") / f"ts_{label}"
+        path = file_manager.enter_context(resources.as_file(ref))
+        return path
 
     @classmethod
     def load_training_set(
@@ -338,12 +342,9 @@ class IndentationRater(IndentationFeatures):
 
 def get_available_training_sets():
     """List of internal training sets"""
-    data_loc = "nanite"
-    resp_path = resource_filename(data_loc, "rate")
-    avail = []
-    for pp in pathlib.Path(resp_path).glob("ts_*"):
-        avail.append(pp.name[3:])
-    return sorted(avail)
+    dirs = sorted(resources.files("nanite.rate").iterdir())
+    dirs = [d.name[3:] for d in dirs if d.name.startswith("ts_")]
+    return dirs
 
 
 def get_rater(regressor, training_set="zef18", names=None,
