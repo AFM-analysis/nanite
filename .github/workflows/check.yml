@@ -30,16 +30,18 @@ jobs:
     - name: Install nanite with all possible dependencies
       if: matrix.extras == 'all'
       run: |
-        pip install -e .[ALL]
+        pip install .[ALL]
     - name: Install nanite with no dependencies
       if: matrix.extras == 'none'
       run: |
-        pip install -e .
+        pip install .
     - name: Lint with flake8
       run: |
         flake8 --exclude _version.py .
     - name: Test with pytest
       run: |
+        # https://github.com/lmfit/lmfit-py/issues/958
+        pip install "numpy<2"
         coverage run --source=nanite -m pytest tests
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
