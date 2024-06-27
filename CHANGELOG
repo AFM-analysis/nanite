@@ -1,3 +1,5 @@
+4.2.0
+ - feat: new model "power_layer_clifford_2009"
 4.1.1
  - fix: incorrect reversion of insertion in sys.path when registering a model
 4.1.0

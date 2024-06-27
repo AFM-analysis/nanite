@@ -1,6 +1,7 @@
 import warnings
 
 from . import model_conical_indenter  # noqa: F401
+from . import model_power_layer_clifford_2009  # noqa: F401
 from . import model_hertz_paraboloidal  # noqa: F401
 from . import model_hertz_three_sided_pyramid  # noqa: F401
 from . import model_sneddon_spherical_approximation  # noqa: F401

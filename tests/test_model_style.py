@@ -7,8 +7,13 @@ NAME_MAPPING = {
     "baseline": ["Force Baseline"],
     "contact_point": ["Contact Point"],
     "E": ["Young's Modulus"],
+    "E_S": ["Sample Young's Modulus"],
+    "E_L": ["Layer Young's Modulus"],
     "nu": ["Poisson's Ratio"],
+    "nu_S": ["Sample Poisson's Ratio"],
+    "nu_L": ["Layer Poisson's Ratio"],
     "R": "Tip Radius",
+    "t": "Layer Thickness"
 }
 
 UNIT_MAPPING = {
@@ -16,8 +21,13 @@ UNIT_MAPPING = {
     "baseline": "N",
     "contact_point": "m",
     "E": "Pa",
+    "E_S": "Pa",
+    "E_L": "Pa",
     "nu": "",
+    "nu_S": "",
+    "nu_L": "",
     "R": "m",
+    "t": "m",
 }
 
 
