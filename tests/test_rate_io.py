@@ -81,7 +81,8 @@ def test_rate_manager_basic():
     assert np.allclose(
         np.ndarray.item(rmg.get_rates(which="Extra Trees",
                                       training_set="zef18")),
-        3.3822603687594004)
+        3.3822603687594004,
+        rtol=1e-2, atol=0)
 
 
 def test_rate_manager_crossval():

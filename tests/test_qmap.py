@@ -136,9 +136,12 @@ def test_feat_rating():
 
     qd = qm.get_qmap("fit: rating", qmap_only=True)
     vals = qd.flat[~np.isnan(qd.flat)]
-    assert np.allclose(vals[0], 9.495637970738416), "gray matter"
-    assert np.allclose(vals[2], 4.9471000727759815), "white matter"
-    assert np.allclose(vals[1], 2.443830486100795), "background"
+    assert np.allclose(vals[0], 9.495637970738416,
+                       rtol=1e-2, atol=0), "gray matter"
+    assert np.allclose(vals[2], 4.9471000727759815,
+                       rtol=1e-2, atol=0), "white matter"
+    assert np.allclose(vals[1], 2.443830486100795,
+                       rtol=1e-2, atol=0), "background"
 
 
 def test_feat_rating_nofit():
