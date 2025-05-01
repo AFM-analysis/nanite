@@ -13,6 +13,32 @@ data_path = pathlib.Path(__file__).parent / "data"
 jpkfile = data_path / "fmt-jpk-fd_spot3-0192.jpk-force"
 
 
+def test_error_ancillary_yields_nan():
+    """nan values are not used and should be ignored"""
+    ds1 = nanite.IndentationGroup(jpkfile)
+    idnt = ds1[0]
+
+    def compute_ancillaries(*args, **kwargs):
+        raise ValueError("Not computed")
+
+    with MockModelModule(
+        compute_ancillaries=compute_ancillaries,
+        parameter_anc_keys=["J"],
+        parameter_anc_names=["ancillary J guess"],
+        parameter_anc_units=["Pa"],
+            model_key="test2"):
+        # We need to perform preprocessing first, if we want to get the
+        # correct initial contact point.
+        idnt.apply_preprocessing(["compute_tip_position"])
+        # We set the baseline fixed, because this test was written so)
+        params_initial = idnt.get_initial_fit_parameters(model_key="test2")
+        params_initial["baseline"].set(vary=False)
+        idnt.fit_model(model_key="test2",
+                       params_initial=params_initial)
+        anc_params = idnt.get_ancillary_parameters()
+        assert np.isnan(anc_params["J"])
+
+
 def test_simple_ancillary_override():
     """basic test for ancillary parameters"""
     ds1 = nanite.IndentationGroup(jpkfile)

@@ -1,10 +1,15 @@
+import traceback
 from collections import OrderedDict
 import inspect
+import logging
 import warnings
 
 import numpy as np
 
 from . import residuals
+
+
+logger = logging.getLogger(__name__)
 
 
 class ModelError(BaseException):
@@ -213,7 +218,13 @@ class NaniteFitModel:
             anc_ord[key] = gmeth(fd)
         # from module
         if self.has_module_ancillaries:
-            anc_md = self.module.compute_ancillaries(fd)
+            try:
+                anc_md = self.module.compute_ancillaries(fd)
+            except BaseException:
+                logger.error(traceback.format_exc())
+                logger.error(f"Failed to compute ancillary parameters for "
+                             f"model {self} and data {fd}.")
+                anc_md = {kk: np.nan for kk in self.parameter_anc_keys}
             for kk in self.parameter_anc_keys:
                 anc_ord[kk] = anc_md[kk]
         return anc_ord
