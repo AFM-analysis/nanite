@@ -65,11 +65,15 @@ def register_model(module, *args):
     -------
     model: NaniteFitModel
         the corresponding NaniteFitModel instance
+
+    Notes
+    -----
+    This function modifies the `models_available` dictionary.
     """
     if args:
         warnings.warn("Please only pass the module to `register_model`!",
                       DeprecationWarning)
-    global models_available  # this is not necessary, but clarifies things
+
     # add model
     if isinstance(module, NaniteFitModel):
         # we already have a fit model
@@ -82,6 +86,10 @@ def register_model(module, *args):
 
 
 def deregister_model(model):
-    """Deregister a NaniteFitModel"""
-    global models_available  # this is not necessary, but clarifies things
+    """Deregister a NaniteFitModel
+
+    Notes
+    -----
+    This function modifies the `models_available` dictionary.
+    """
     models_available.pop(model.model_key)
