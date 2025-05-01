@@ -15,9 +15,9 @@ jobs:
         extras: ['all', 'none']
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@main
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@main
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
@@ -40,8 +40,6 @@ jobs:
         flake8 --exclude _version.py .
     - name: Test with pytest
       run: |
-        # https://github.com/lmfit/lmfit-py/issues/958
-        pip install "numpy<2"
         coverage run --source=nanite -m pytest tests
     - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v4
