@@ -55,7 +55,9 @@ class IndentationFeatures(object):
         seg = self.dataset["segment"] == 0
         x = self.dataset[xaxis][seg].copy()
         # Make sure everything is ok
-        assert x[0] > x[-1], "Approach from large distances towards lower"
+        if x[0] <= x[-1]:
+            raise ValueError(
+                "Detected approach from large distances towards lower")
         return x
 
     @property

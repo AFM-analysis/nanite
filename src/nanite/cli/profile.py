@@ -82,7 +82,9 @@ class Profile:
                 default[p].value = cdict[vkey]
             fkey = "fit param {} vary".format(p)
             if fkey in cdict:
-                assert isinstance(cdict[fkey], bool)
+                if not isinstance(cdict[fkey], bool):
+                    raise ValueError(
+                        f"Expected bool for '{fkey}', got '{cdict[fkey]}'")
                 default[p].vary = cdict[fkey]
 
         # write

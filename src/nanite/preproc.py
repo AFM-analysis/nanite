@@ -211,7 +211,8 @@ def preprocessing_step(identifier, name, steps_required=None,
         wraps the preprocessor.
         """
         func.identifier = identifier
-        assert isinstance(name, str)
+        if not isinstance(name, str):
+            raise ValueError("`name` must be a string")
         func.name = name
         func.options = options
         func.steps_required = steps_required

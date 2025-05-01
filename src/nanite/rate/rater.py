@@ -299,7 +299,10 @@ class IndentationRater(IndentationFeatures):
                     if name in fnames:
                         fsamp.append(samp[ii])
                     else:
-                        assert name.startswith("feat_bin_")
+                        if not name.startswith("feat_bin_"):
+                            raise ValueError(
+                                f"Binary sample names must start with "
+                                f"'feat_bin_', got '{name}'")
                         bsamp.append(samp[ii])
                 fsamples.append(fsamp)
                 bsamples.append(bsamp)

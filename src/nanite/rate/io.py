@@ -33,7 +33,9 @@ class RateManager:
         samples = []
         idr = rater.IndentationRater
         for ds in rm.datasets:
-            assert "success" in ds.fit_properties
+            if "success" not in ds.fit_properties:
+                raise ValueError(
+                    "Getting samples only possible with successful fit")
             features = idr.compute_features(ds)
             samples.append(features)
         return np.array(samples, dtype=float)

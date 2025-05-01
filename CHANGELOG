@@ -1,3 +1,5 @@
+4.2.2
+ - ref: rewrite asserts to ValueErrors
 4.2.1
  - enh: allow ancillary computation to fail (issues with external models)
 4.2.0
