@@ -32,6 +32,10 @@ class Indentation(afmformats.AFMForceDistance):
         # Curve rating (see `self.rate_quality`)
         self._rating = None
 
+        # handle ancillary param caching
+        self._anc_cache = {}
+        self._anc_valid = False
+
     @property
     def data(self):
         warnings.warn("Please use __getitem__ instead!", DeprecationWarning)
@@ -258,15 +262,29 @@ class Indentation(afmformats.AFMForceDistance):
             self["fit range"] = fitter.fit_range
             self.fit_properties = fitter.fp
 
+            # handle ancill caching
+            self._anc_valid = False
+
     def get_ancillary_parameters(self, model_key=None):
         """Compute ancillary parameters for the current model"""
+        # handle ancill caching
+        if self._anc_valid:
+            return self._anc_cache
+
         if model_key is None:
             if "model_key" in self.fit_properties:
                 model_key = self.fit_properties["model_key"]
             else:
                 model_key = FP_DEFAULT["model_key"]
-        return model.compute_anc_parms(idnt=self,
-                                       model_key=model_key)
+
+        anc = model.compute_anc_parms(idnt=self,
+                                      model_key=model_key)
+        # handle ancill caching
+        if self.fit_properties.get("success", False):
+            self._anc_cache = anc
+            self._anc_valid = True
+
+        return anc
 
     def get_initial_fit_parameters(self, model_key=None,
                                    common_ancillaries=True,
