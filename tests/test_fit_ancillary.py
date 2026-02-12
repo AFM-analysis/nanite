@@ -108,6 +108,7 @@ def test_request_ancillary_parameters():
         # We set the baseline fixed, because this test was written so)
         params_initial = idnt.get_initial_fit_parameters(model_key=model_key)
         params_initial["baseline"].set(vary=False)
+        # the old ancillary cache is invalidated just before fitting
         idnt.fit_model(model_key=model_key,
                        params_initial=params_initial)
 
@@ -122,6 +123,7 @@ def test_request_ancillary_parameters():
         # check ancillaries
         assert idnt._anc_cache is not None
         assert idnt._anc_valid
+        assert idnt._anc_cache == anc
         # max_indent is a common ancillary
         assert np.allclose(anc["max_indent"], 3.669487775650337e-07,
                            atol=1e-10, rtol=0)
