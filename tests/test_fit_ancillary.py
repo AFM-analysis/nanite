@@ -96,7 +96,12 @@ def test_request_ancillary_parameters():
     idnt = ds1[0]
 
     model_key = "test4"
-    with MockModelModule(model_key=model_key):
+    with MockModelModule(
+            compute_ancillaries=lambda x: {"amazing_ancillary": 42.314},
+            parameter_anc_keys=["amazing_ancillary"],
+            parameter_anc_names=["Amazing Ancillary"],
+            parameter_anc_units=["m/s"],
+            model_key=model_key):
         # We need to perform preprocessing first, if we want to get the
         # correct initial contact point.
         idnt.apply_preprocessing(["compute_tip_position"])
@@ -117,8 +122,12 @@ def test_request_ancillary_parameters():
         # check ancillaries
         assert idnt._anc_cache is not None
         assert idnt._anc_valid
+        # max_indent is a common ancillary
         assert np.allclose(anc["max_indent"], 3.669487775650337e-07,
                            atol=1e-10, rtol=0)
+        # new ancillary for this model
+        assert np.allclose(anc["amazing_ancillary"], 42.314,
+                           atol=1, rtol=0)
 
         # check params_initial and params_fitted
         assert idnt.fit_properties["params_initial"]["E"].value == 3000
