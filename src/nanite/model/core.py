@@ -205,12 +205,8 @@ class NaniteFitModel:
         -------
         ancillaries: collections.OrderedDict
             key-value dictionary of ancillary parameters
+
         """
-        # TODO:
-        # - ancillaries are not cached yet (some ancillaries might depend on
-        #   fitting interval or other initial parameters - take that into
-        #   account)
-        # - "max_indent" actually belongs to "common_ancillaries" (see fit.py)
         anc_ord = OrderedDict()
         # general
         for key in ANCILLARY_COMMON:
