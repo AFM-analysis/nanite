@@ -114,7 +114,6 @@ def test_request_ancillary_parameters():
 
         # ancillary parameters are not yet requested
         assert idnt._anc_cache is None
-        assert not idnt._anc_valid
 
         # actually request the ancillary parameters, as done in pyjibe
         anc = idnt.get_ancillary_parameters(
@@ -122,7 +121,6 @@ def test_request_ancillary_parameters():
 
         # check ancillaries
         assert idnt._anc_cache is not None
-        assert idnt._anc_valid
         assert idnt._anc_cache == anc
         # max_indent is a common ancillary
         assert np.allclose(anc["max_indent"], 3.669487775650337e-07,

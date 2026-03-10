@@ -34,7 +34,6 @@ class Indentation(afmformats.AFMForceDistance):
 
         # ancillary param caching
         self._anc_cache = None
-        self._anc_valid = False
 
     @property
     def data(self):
@@ -253,7 +252,6 @@ class Indentation(afmformats.AFMForceDistance):
             pass
         else:
             # invalidate the cache
-            self._anc_valid = False
             self._anc_cache = None
 
             fitter = IndentationFitter(self)
@@ -268,7 +266,7 @@ class Indentation(afmformats.AFMForceDistance):
 
     def get_ancillary_parameters(self, model_key=None):
         """Compute ancillary parameters for the current model"""
-        if self._anc_valid:
+        if self._anc_cache:
             return self._anc_cache
 
         if model_key is None:
@@ -282,7 +280,6 @@ class Indentation(afmformats.AFMForceDistance):
         # handle ancill cache
         if self.fit_properties.get("success", False):
             self._anc_cache = anc
-            self._anc_valid = True
 
         return anc
 
